@@ -1,5 +1,5 @@
 name: mink_utils
-description: A collection of helper functions
+description: A collection of helper functions mainly for woking with iterables and time
 version: 0.0.1
 homepage: https://github.com/minktec/mink_utils
 
@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  tuple: any
+  tuple: ^2.0.1
+  collection: ^1.16.0
 
 dev_dependencies:
   flutter_test:
