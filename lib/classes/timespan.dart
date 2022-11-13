@@ -46,6 +46,23 @@ class Timespan {
     }
   }
 
+  @override
+  int get hashCode =>
+      begin.microsecondsSinceEpoch +
+      duration.inMicroseconds +
+      end.microsecondsSinceEpoch;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    } else if (runtimeType != other.runtimeType) {
+      return false;
+    } else {
+      return other.hashCode == hashCode;
+    }
+  }
+
   bool intersects(Timespan other) =>
       intersection(other).duration.inMilliseconds != 0;
 
@@ -56,6 +73,8 @@ class Timespan {
               begin: begin.isAfter(other.begin) ? begin : other.begin,
               end: end.isBefore(other.end) ? end : other.end);
 
+  /// Returns a list of two [Timespan]s.
+  /// If [time] is not in [this] it throws an error
   List<Timespan> cut(DateTime time) => (time.isIn(this))
       ? [Timespan(begin: begin, end: time), Timespan(begin: time, end: end)]
       : throw ArgumentError("Given time is not inside timespan");
@@ -66,12 +85,17 @@ class Timespan {
     update(begin: begin, end: end, duration: duration);
   }
 
+  /// Get Timespan of a day.
+  /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
   factory Timespan.today({int daysAgo = 0}) => (daysAgo == 0)
       ? Timespan(begin: DateTime.now().midnight())
       : Timespan(
           begin: DateTime.now().midnight(daysAgo: daysAgo),
           duration: const Duration(days: 1));
 
+  /// Get a symmetric Timespan arround the given time with
+  /// [delta] as the difference of begin and end from [time]
+  /// thus the duration of the timespan is [2 * delta]
   factory Timespan.arround(DateTime time, Duration delta) =>
       Timespan(begin: time.subtract(delta), end: time.add(delta));
 
@@ -80,6 +104,40 @@ class Timespan {
   @override
   String toString() {
     return """Timespan from $begin - $end, lasting $duration""";
+  }
+
+  /// get all weeks that overlap with a the [Timespan]
+  Iterable<Timespan> get weeks sync* {
+    DateTime tempTime = begin.beginOfWeek();
+    const week = Duration(days: 7);
+    while (tempTime.isBefore(end)) {
+      yield Timespan(begin: tempTime, duration: week);
+      tempTime = tempTime.add(week);
+    }
+  }
+
+  /// get all month that overlap with a the [Timespan]
+  Iterable<Timespan> get month sync* {
+    DateTime i = begin.beginOfMonth();
+    int counter = 0;
+    while (DateTime(begin.year, begin.month + counter).isBefore(end)) {
+      yield Timespan(
+          begin: DateTime(i.year, i.month + counter),
+          end: DateTime(i.year, i.month + counter + 1));
+      counter++;
+    }
+  }
+
+  /// get all years that overlap with a the [Timespan]
+  Iterable<Timespan> get years sync* {
+    DateTime i = begin.beginOfYear();
+    int counter = 0;
+    do {
+      yield Timespan(
+          begin: DateTime(i.year + counter),
+          end: DateTime(i.year + counter + 1));
+      counter++;
+    } while (DateTime(begin.year + counter).isBefore(end));
   }
 }
 

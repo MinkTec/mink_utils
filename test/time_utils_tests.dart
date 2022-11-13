@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mink_utils/classes/timespan.dart';
 import 'package:mink_utils/time_utils.dart';
 
 void main() {
@@ -12,9 +13,10 @@ void main() {
       expect(t1.isBetween(t2, t3), false);
       expect(t3.isBetween(t1, t2), false);
 
-      expect(t2.isBetween(t2, t2), false);
-      expect(t2.isBetween(t2, t3), false);
-      expect(t2.isBetween(t1, t2), false);
+      expect(t2.isBetween(t2, t2), true);
+      expect(t2.isBetween(t2, t2, strict: true), false);
+      expect(t2.isBetween(t2, t3, strict: true), false);
+      expect(t2.isBetween(t1, t2), true);
 
       expect(t2.getClosest(t1, t3), t1);
       expect(t2.laterDate(t1), t2);
@@ -59,9 +61,34 @@ void main() {
     });
 
     test("DateTime from list of int", () {
-        expect([1970,1,1,0,1].toDateTime(), DateTime(1970,1,1,0,1));
-        expect([1970].toDateTime(), DateTime(1970));
-        expect([1970,27,1,0,1,5].toDateTime(), DateTime(1970,27,1,0,1,5));
+      expect([1970, 1, 1, 0, 1].toDateTime(), DateTime(1970, 1, 1, 0, 1));
+      expect([22].toDateTime(), DateTime(2022));
+      expect(
+          [1970, 27, 1, 0, 1, 5].toDateTime(), DateTime(1970, 27, 1, 0, 1, 5));
+    });
+
+    test("timespan", () {
+      final m5 = Duration(minutes: 5);
+      final span1 =
+          Timespan(duration: const Duration(minutes: 10), end: DateTime(2021));
+      final span2 = Timespan(
+          duration: const Duration(minutes: 10),
+          end: DateTime(2021).subtract(m5));
+      final span3 = Timespan.arround(DateTime(2021), m5);
+
+      final t1 = DateTime(2021).subtract(m5);
+      expect(span1.cut(t1).first.duration, m5);
+      expect(span1.cut(t1).last.duration, m5);
+
+      expect(span1.intersects(span2), true);
+      expect(span1.intersection(span2), Timespan(end: t1, duration: m5));
+
+      expect(Timespan.arround(t1, m5), span1);
+
+      expect(span1.weeks.length, 1);
+      expect(span3.weeks.length, 1);
+      expect(span3.month.length, 2);
+      expect(span3.years.length, 2);
     });
   });
 }

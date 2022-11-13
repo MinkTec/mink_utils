@@ -22,4 +22,3 @@ export 'conversion_utils.dart';
 export 'math_utils.dart';
 export 'future_utils.dart';
 export 'classes/timespan.dart';
-
