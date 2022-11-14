@@ -156,6 +156,7 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 extension NumIteratorExtensions<T extends num> on Iterable<T> {
   T get sum => (isNotEmpty) ? reduce((a, b) => a + b as T) : 0.0 as T;
   T get max => (isNotEmpty) ? reduce((a, b) => math.max(a, b)) : 0.0 as T;
+  T get min => (isNotEmpty) ? reduce((a, b) => math.min(a, b)) : 0.0 as T;
 
   double get average => sum / length;
 

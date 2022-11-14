@@ -8,7 +8,7 @@ import 'lookup/binomial.dart';
 double distance(num x1, num y1, num x2, num y2) =>
     sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
 
-// returns the binomial of n over k from the lookuptable
+// returns the binomial of n over k from the lookuptable (n_max = 23)
 int binomial(n, k) {
   return binomialLut[n][k];
 }

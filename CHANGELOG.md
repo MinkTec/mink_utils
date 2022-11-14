@@ -1,3 +1,6 @@
+## 0.0.5
+* add string utils
+
 ## 0.0.4
 * add bezier curve utils
 
