@@ -1,3 +1,6 @@
+## 0.0.4
+* add bezier curve utils
+
 ## 0.0.3
 * add functionality to timespan class
 
