@@ -123,7 +123,7 @@ class Timespan {
     while (DateTime(begin.year, begin.month + counter).isBefore(end)) {
       yield Timespan(
           begin: DateTime(i.year, i.month + counter),
-          end: DateTime(i.year, i.month + counter + 1));
+          end: DateTime(i.year, i.month + counter + 1).subtract(const Duration(hours: 1)));
       counter++;
     }
   }
@@ -135,7 +135,7 @@ class Timespan {
     do {
       yield Timespan(
           begin: DateTime(i.year + counter),
-          end: DateTime(i.year + counter + 1));
+          end: DateTime(i.year + counter + 1).subtract(const Duration(hours: 1)));
       counter++;
     } while (DateTime(begin.year + counter).isBefore(end));
   }
