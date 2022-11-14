@@ -15,5 +15,5 @@ extension StringCleaner on String {
 
   String clean() => trim().replaceUmlaute().replaceWhitespace();
 
-  String capitalizeFirst(String string) => this[0].toUpperCase() + substring(1).toLowerCase();
+  String capitalizeFirst() => this[0].toUpperCase() + substring(1).toLowerCase();
 }
