@@ -13,7 +13,7 @@ extension StringCleaner on String {
 
   List<String> get lines => split(RegExp(r"(\n|\r)+"));
 
-  String clean() => trim().replaceUmlaute().replaceWhitespace();
+  String clean({whitespaceReplace = "-"}) => trim().replaceUmlaute().replaceWhitespace(whitespaceReplace);
 
   String capitalizeFirst() => this[0].toUpperCase() + substring(1).toLowerCase();
 }

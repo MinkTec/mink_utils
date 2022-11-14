@@ -87,9 +87,11 @@ extension DateTimeListExtension on List<DateTime> {
   /// Every section of one or more blocks where the [Duration] between each
   /// element and its neighbours is less than [delta] is counted as a block
   Iterable<Timespan> findBlocks([Duration delta = const Duration(minutes: 2)]) {
-    return [0, ...diff().findIndices((e) => e > delta), length]
-        .lag
-        .map((e) => Timespan(begin: this[e.first], end: this[e.last - 1]));
+    return isEmpty
+        ? []
+        : [0, ...diff().findIndices((e) => e > delta), length]
+            .lag
+            .map((e) => Timespan(begin: this[e.first], end: this[e.last - 1]));
   }
 }
 
