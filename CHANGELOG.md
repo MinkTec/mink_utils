@@ -1,3 +1,6 @@
+## 0.0.6
+* minor fixes
+
 ## 0.0.5
 * add string utils
 
