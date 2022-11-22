@@ -48,7 +48,7 @@ double nthBezier(int n, num t, List<num> w) {
 // pairs of x and y coordinates to draw points on.
 // like [x1, y1, x2, y2, x3, y3, ..., xn, yn]
 Float32List nthBezierCurve(List<num> x, List<num> y, {int points = 100, double portion = 1}) {
-  final offsets = Float32List(points * 2 + 2);
+  final offsets = Float32List((portion * points).floor() * 2 + 2);
   for (int i = 0; i <= points * portion; i++) {
     offsets[2 * i] = nthBezier(x.length - 1, i / points, x);
     offsets[2 * i + 1] = nthBezier(x.length - 1, i / points, y);
