@@ -1,3 +1,7 @@
+## 0.0.7
+* minor fixes
+* add partially drawable bezier curves
+
 ## 0.0.6
 * minor fixes
 

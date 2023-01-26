@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:mink_utils/iterable_utils.dart';
 
@@ -68,4 +69,10 @@ extension Basics<T> on List<T> {
       yield this[(i + n) % length];
     }
   }
+}
+
+extension BasicsInt16List on Int16List {
+  List<int> pysublist(int firstIndex, int lastIndex) => sublist(
+      ((firstIndex < 0) ? length + firstIndex + 1 : firstIndex),
+      ((lastIndex < 0) ? length + lastIndex + 1 : lastIndex));
 }
