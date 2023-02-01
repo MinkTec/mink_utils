@@ -9,6 +9,7 @@ void main() {
     final l1 = [1, 2, 3];
     final l2 = [1, 2, 3, 4, 5, 6];
     final l3 = [1, -2, 3, -4, 5, -6];
+    final l4 = [1, 2, 3, 4, 5, 6, 7];
 
     test("rotate", () {
       expect(l1.rotate().toList(), [2, 3, 1]);
@@ -55,6 +56,43 @@ void main() {
       expect(l2.pysublist(-4, -1), [4, 5, 6]);
 
       expect(l2.at(-1), 6);
+    });
+
+    test("chunks", () {
+      expect(l1.chunks(3).flatten().toList(), l1);
+      expect(l1.chunks(1).flatten().toList(), l1);
+      expect(l2.chunks(2).deepList(), [
+        [1, 2],
+        [3, 4],
+        [5, 6]
+      ]);
+      expect(l2.chunks(3).deepList(), [
+        [1, 2, 3],
+        [4, 5, 6]
+      ]);
+      expect(l2.nchunks(3).deepList(), [
+        [1, 2],
+        [3, 4],
+        [5, 6]
+      ]);
+      expect(l2.nchunks(2).deepList(), [
+        [1, 2, 3],
+        [4, 5, 6]
+      ]);
+      expect(l4.nchunks(2).deepList(), [
+        [1, 2, 3, 4],
+        [5, 6, 7]
+      ]);
+      expect(l4.nchunks(3).deepList(), [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7]
+      ]);
+      expect(l4.chunks(3).deepList(), [
+        [1, 2, 3],
+        [4, 5, 6],
+        [7]
+      ]);
     });
   });
 }

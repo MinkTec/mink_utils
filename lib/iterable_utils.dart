@@ -44,6 +44,8 @@ extension Flatten<T> on Iterable<Iterable<T>> {
 
   /// returns the combined length of all elements in a nexted list
   int get flattlength => map((e) => e.length).reduce((a, b) => a + b);
+
+  List<List<T>> deepList() => map((e) => e.toList()).toList();
 }
 
 extension TypedZip2<T, S> on Tuple2<List<T>, List<S>> {
@@ -151,6 +153,30 @@ extension BasicIteratorMethods<T> on Iterable<T> {
       yield it.current;
     }
   }
+
+  /// split iterable into chunks of size n
+  Iterable<Iterable<T>> chunks(int n) sync* {
+    final count = length / n;
+
+    if (n == 0 || n.isNegative || n.isInfinite) {
+      throw ArgumentError("cant create chunks of size $n");
+    } else if (count.floor() == 0) {
+      throw ArgumentError(
+          "cant create chunks larger then the iterables length");
+    }
+    int i = 0;
+
+    for (i; i < count.floor(); i++) {
+      yield skip(i * n).take(n);
+    }
+    if (count.floor() != count) {
+      yield skip(i * n);
+    }
+  }
+
+  /// split iterable into n chuncks of as equal size and fille
+  /// the last chunk with the remaining elements
+  Iterable<Iterable<T>> nchunks(int n) => chunks((length / n).ceil());
 }
 
 extension NumIteratorExtensions<T extends num> on Iterable<T> {
