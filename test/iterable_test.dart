@@ -93,6 +93,7 @@ void main() {
         [4, 5, 6],
         [7]
       ]);
+      expect(() => l4.chunks(-1), throwsArgumentError);
     });
   });
 }
