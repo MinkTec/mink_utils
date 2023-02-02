@@ -58,6 +58,10 @@ extension TypedZip2<T, S> on Tuple2<List<T>, List<S>> {
   }
 }
 
+extension MoreFlatten<T> on Iterable<Iterable<Iterable<T>>> {
+  List<List<List<T>>> deepList() => map((e) => e.deepList()).toList();
+}
+
 extension TypedZip3<T, S, X> on Tuple3<List<T>, List<S>, List<X>> {
   List<Tuple3<T, S, X>> zip() {
     List<Tuple3<T, S, X>> l = [];

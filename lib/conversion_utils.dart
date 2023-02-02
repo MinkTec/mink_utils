@@ -20,12 +20,6 @@ extension TrigNum<T extends num> on T {
   }
 }
 
-extension DateTimeConversions on int {
-  DateTime toDateTime() {
-    return DateTime.fromMillisecondsSinceEpoch(this);
-  }
-}
-
 extension DurationToHHMMSS on Duration {
   String get hhmm => "$inHours:${twoDigits(inMinutes.remainder(60))}";
   String get hhmmss =>

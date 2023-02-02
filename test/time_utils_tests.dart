@@ -1,6 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/classes/timespan.dart';
 import 'package:mink_utils/time_utils.dart';
+import 'dart:io' show File;
+
+List<DateTime> readTestData() => File("./test/measurements.csv")
+    .readAsLinesSync()
+    .map((e) =>
+        DateTime.fromMillisecondsSinceEpoch(int.parse(e.split(",").last)))
+    .toList();
 
 void main() {
   group("Time", () {
@@ -54,10 +61,18 @@ void main() {
         DateTime(1986),
       ];
 
+      final t3 = readTestData();
+
       expect(t1.findBlocks(const Duration(minutes: 1)).toList().length, 100);
       expect(t1.findBlocks(const Duration(days: 1)).toList().length, 1);
       expect(t2.findBlocks(const Duration(days: 366)).map((e) => e.begin.year),
           [1910, 1970, 1975, 1980, 1985]);
+      expect(t3.findBlocks(const Duration(seconds: 6)).length, 14);
+      expect(
+          t3
+              .findBlocks(const Duration(seconds: 6))
+              .any((e) => e.duration == Duration.zero),
+          false);
     });
 
     test("DateTime from list of int", () {

@@ -1,3 +1,9 @@
+## 0.09
+* remove dublicate toDateTime extension
+
+## 0.0.8
+* add chunk function for iterables
+
 ## 0.0.7
 * minor fixes
 * add partially drawable bezier curves
