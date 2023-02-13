@@ -1,3 +1,6 @@
+## 0.0.10
+* more functions
+
 ## 0.0.9
 * remove dublicate toDateTime extension
 

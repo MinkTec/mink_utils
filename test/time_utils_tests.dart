@@ -83,7 +83,7 @@ void main() {
     });
 
     test("timespan", () {
-      final m5 = Duration(minutes: 5);
+      const m5 = Duration(minutes: 5);
       final span1 =
           Timespan(duration: const Duration(minutes: 10), end: DateTime(2021));
       final span2 = Timespan(
