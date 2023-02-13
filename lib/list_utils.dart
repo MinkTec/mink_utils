@@ -26,6 +26,7 @@ extension BasicsListMethods<T extends num> on List<T> {
 
   int get indexOfMax => indexOf(reduce(math.max));
   int get indexOfMin => indexOf(reduce(math.min));
+
 }
 
 extension BasicsDouble on List<double> {
@@ -69,6 +70,19 @@ extension Basics<T> on List<T> {
       yield this[(i + n) % length];
     }
   }
+
+  Iterable<T> takeRandom(int n) sync* {
+    Set<int> indices = {};
+    while (indices.length < n) {
+      indices.add(math.Random().nextInt(length));
+    }
+    for (var i in indices) {
+      yield this[i];
+    }
+  }
+
+  T? get lastOrNull => isNotEmpty ? last : null;
+  T? get firstOrNull => isNotEmpty ? last : null;
 }
 
 extension BasicsInt16List on Int16List {

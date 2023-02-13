@@ -5,6 +5,7 @@ import 'package:tuple/tuple.dart';
 import 'package:collection/collection.dart';
 
 import 'basic_utils.dart';
+import 'berzier_approximation.dart';
 
 /// creates a list of 2-element lists with pairs
 /// of a and be values.
@@ -249,6 +250,22 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
   double get avg => sum / length;
 
   Iterable<double> get middleAverages => lag.map((e) => e.sum / 2);
+
+  Iterable<double> bezier() {
+    final list = toList();
+    final degree = list.length - 1;
+    return list.mapIndexed((i, e) => nthBezier(degree, i / list.length, list));
+  }
+
+  Iterable<T> get realabsdiff sync* {
+    final it = iterator;
+    it.moveNext();
+    T last = it.current;
+    while (it.moveNext()) {
+      yield (last - it.current).abs() as T;
+      last = it.current;
+    }
+  }
 }
 
 extension IntListConversion on List<int> {

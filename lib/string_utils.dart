@@ -17,3 +17,7 @@ extension StringCleaner on String {
 
   String capitalizeFirst() => this[0].toUpperCase() + substring(1).toLowerCase();
 }
+
+extension Emptiness on String? {
+  bool get isEmptyOrNull => this == null || this!.isEmpty;
+}
