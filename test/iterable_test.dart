@@ -25,6 +25,12 @@ void main() {
       expect([].takeEveryNotNth(1).toList(), []);
     });
 
+    test("count", () {
+      expect(l1.countElements(), {1: 1, 2: 1, 3: 1});
+      expect(l2.countElementsMap((e) => e > 3), {true: 3, false: 3});
+      expect([].countElements(), {});
+    });
+
     test("other", () {
       expect(l1.lag, [
         [1, 2],

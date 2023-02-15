@@ -73,6 +73,9 @@ class Timespan {
               begin: begin.isAfter(other.begin) ? begin : other.begin,
               end: end.isBefore(other.end) ? end : other.end);
 
+  Timespan combine(Timespan other) => Timespan(
+      begin: begin.earlierDate(other.begin), end: end.laterDate(other.end));
+
   /// Returns a list of two [Timespan]s.
   /// If [time] is not in [this] it throws an error
   List<Timespan> cut(DateTime time) => (time.isIn(this))
@@ -123,7 +126,8 @@ class Timespan {
     while (DateTime(begin.year, begin.month + counter).isBefore(end)) {
       yield Timespan(
           begin: DateTime(i.year, i.month + counter),
-          end: DateTime(i.year, i.month + counter + 1).subtract(const Duration(hours: 1)));
+          end: DateTime(i.year, i.month + counter + 1)
+              .subtract(const Duration(hours: 1)));
       counter++;
     }
   }
@@ -135,7 +139,8 @@ class Timespan {
     do {
       yield Timespan(
           begin: DateTime(i.year + counter),
-          end: DateTime(i.year + counter + 1).subtract(const Duration(hours: 1)));
+          end: DateTime(i.year + counter + 1)
+              .subtract(const Duration(hours: 1)));
       counter++;
     } while (DateTime(begin.year + counter).isBefore(end));
   }

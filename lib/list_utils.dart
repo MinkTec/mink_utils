@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -26,7 +28,6 @@ extension BasicsListMethods<T extends num> on List<T> {
 
   int get indexOfMax => indexOf(reduce(math.max));
   int get indexOfMin => indexOf(reduce(math.min));
-
 }
 
 extension BasicsDouble on List<double> {
@@ -71,6 +72,8 @@ extension Basics<T> on List<T> {
     }
   }
 
+  List<List<T>> nTimes(int n) => [for (int i = 0; i < n; i++) this];
+
   Iterable<T> takeRandom(int n) sync* {
     Set<int> indices = {};
     while (indices.length < n) {
@@ -89,4 +92,30 @@ extension BasicsInt16List on Int16List {
   List<int> pysublist(int firstIndex, int lastIndex) => sublist(
       ((firstIndex < 0) ? length + firstIndex + 1 : firstIndex),
       ((lastIndex < 0) ? length + lastIndex + 1 : lastIndex));
+}
+
+extension LinearAlgebraUtils2D<T> on List<List<T>> {
+  // https://stackoverflow.com/questions/57754481/cartesian-product-in-dart-language/57757354#57757354
+  Iterable<List<T>> cartesian() sync* {
+    if (isEmpty) {
+      yield List<T>.filled(0, null as T);
+      return;
+    }
+    var indices = List<int>.filled(length, 0);
+    int cursor = length - 1;
+    outer:
+    do {
+      yield [for (int i = 0; i < indices.length; i++) this[i][indices[i]]];
+      do {
+        int next = indices[cursor] += 1;
+        if (next < this[cursor].length) {
+          cursor = length - 1;
+          break;
+        }
+        indices[cursor] = 0;
+        cursor--;
+        if (cursor < 0) break outer;
+      } while (true);
+    } while (true);
+  }
 }

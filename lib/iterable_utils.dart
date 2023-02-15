@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:tuple/tuple.dart';
-// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 import 'basic_utils.dart';
@@ -39,7 +38,7 @@ void shift<T>(List<T> l, T elem, [int? n]) {
   if (n != null && l.length > n) l.removeAt(0);
 }
 
-extension Flatten<T> on Iterable<Iterable<T>> {
+extension MiscIterableIterable<T> on Iterable<Iterable<T>> {
   /// returns a list of t from a list of list of t
   Iterable<T> flatten() => expand(id);
 
@@ -182,6 +181,29 @@ extension BasicIteratorMethods<T> on Iterable<T> {
   /// split iterable into n chuncks of as equal size and fille
   /// the last chunk with the remaining elements
   Iterable<Iterable<T>> nchunks(int n) => chunks((length / n).ceil());
+
+  Iterable<Iterable<T>> nTimes(int n) => [for (int i = 0; i < n; i++) this];
+
+  T? get lastOrNull => isNotEmpty ? last : null;
+  T? get firstOrNull => isNotEmpty ? last : null;
+
+  Map<T, int> countElements() {
+    final Map<T, int> m = {};
+    for (var i in this) {
+      m[i] = (m[i] ?? 0) + 1;
+    }
+    return m;
+  }
+
+  Map<S, int> countElementsMap<S>(S Function(T) f) {
+    final Map<S, int> m = {};
+    S temp;
+    for (var i in this) {
+      temp = f(i);
+      m[temp] = (m[temp] ?? 0) + 1;
+    }
+    return m;
+  }
 }
 
 extension NumIteratorExtensions<T extends num> on Iterable<T> {
