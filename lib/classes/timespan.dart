@@ -84,6 +84,11 @@ class Timespan {
 
   bool includes(DateTime time) => begin.isBefore(time) && end.isAfter(time);
 
+  DateTime lerp(double x) =>
+      DateTime.fromMillisecondsSinceEpoch((begin.millisecondsSinceEpoch +
+              x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
+          .toInt());
+
   Timespan({DateTime? begin, DateTime? end, Duration? duration}) {
     update(begin: begin, end: end, duration: duration);
   }

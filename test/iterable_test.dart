@@ -10,6 +10,7 @@ void main() {
     final l2 = [1, 2, 3, 4, 5, 6];
     final l3 = [1, -2, 3, -4, 5, -6];
     final l4 = [1, 2, 3, 4, 5, 6, 7];
+    final l5 = [1,1,1,1];
 
     test("rotate", () {
       expect(l1.rotate().toList(), [2, 3, 1]);
@@ -100,6 +101,19 @@ void main() {
         [7]
       ]);
       expect(() => l4.chunks(-1), throwsArgumentError);
+    });
+
+    test("largest", () {
+      expect(l1.topIndices(3), [2, 1, 0]);
+      expect(l1.topIndices(2), [2, 1]);
+      expect(l1.topIndices(1), [2]);
+      expect(l1.topIndices(0), []);
+
+      expect(l3.topIndices(3), [4, 2, 0]);
+
+      expect(l3.nLargest(3), [5,3,1]);
+      expect(l1.nLargest(3), [3,2,1]);
+      expect(l5.topIndices(4), [0,1,2,3]);
     });
   });
 }

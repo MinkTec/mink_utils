@@ -204,14 +204,42 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     }
     return m;
   }
+
+  int? findIndex(T target, {List<int> forbidden = const []}) {
+    int index = 0;
+    final it = iterator;
+    while (it.moveNext()) {
+      if (target == it.current && !forbidden.contains(index)) {
+        return index;
+      } else {
+        index++;
+      }
+    }
+    return null;
+  }
 }
 
 extension NumIteratorExtensions<T extends num> on Iterable<T> {
-  T get sum => (isNotEmpty) ? reduce((a, b) => a + b as T) : 0.0 as T;
-  T get max => (isNotEmpty) ? reduce((a, b) => math.max(a, b)) : 0.0 as T;
-  T get min => (isNotEmpty) ? reduce((a, b) => math.min(a, b)) : 0.0 as T;
+  T get sum => (isNotEmpty) ? reduce((a, b) => a + b as T) : 0 as T;
+  T get max => (isNotEmpty) ? reduce((a, b) => math.max(a, b)) : 0 as T;
+  T get min => (isNotEmpty) ? reduce((a, b) => math.min(a, b)) : 0 as T;
 
   double get average => sum / length;
+
+  List<T> get extrema {
+    T min = first;
+    T max = first;
+    for (var e in this) {
+      if (e.isNaN) {
+        continue;
+      } else if (e < min) {
+        min = e;
+      } else if (e > max) {
+        max = e;
+      }
+    }
+    return [min, max];
+  }
 
   Iterable<T> get absdiff sync* {
     final it = iterator;
@@ -221,6 +249,20 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
       yield (last.abs() - it.current.abs()).abs() as T;
       last = it.current;
     }
+  }
+
+  /// get an iterator of the n indices coresponding to the
+  /// n largest values in descending order
+  List<int> topIndices(int n) {
+    if (n > length) {
+      throw ArgumentError("n is larger than the number of elements in list");
+    }
+    final Iterable<T> s = sorted((a, b) => b.compareTo(a)).take(n);
+    final List<int> indices = [];
+    for (var e in s) {
+      indices.add(findIndex(e, forbidden: indices)!);
+    }
+    return indices;
   }
 
   /// returns a list with elements standarized

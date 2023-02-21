@@ -28,6 +28,10 @@ extension BasicsListMethods<T extends num> on List<T> {
 
   int get indexOfMax => indexOf(reduce(math.max));
   int get indexOfMin => indexOf(reduce(math.min));
+
+  Iterable<T> nLargest(int n) sync* {
+    for (var i in topIndices(n)) yield this[i];
+  }
 }
 
 extension BasicsDouble on List<double> {

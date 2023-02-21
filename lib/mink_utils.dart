@@ -1,4 +1,4 @@
-// Copyright 2022 Jonas Walkling <jonas.walkling@minktec.com>
+// Copyright 2023 Jonas Walkling <jonas.walkling@minktec.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
