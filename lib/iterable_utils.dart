@@ -184,9 +184,6 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<Iterable<T>> nTimes(int n) => [for (int i = 0; i < n; i++) this];
 
-  T? get lastOrNull => isNotEmpty ? last : null;
-  T? get firstOrNull => isNotEmpty ? last : null;
-
   Map<T, int> countElements() {
     final Map<T, int> m = {};
     for (var i in this) {

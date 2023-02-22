@@ -87,9 +87,6 @@ extension Basics<T> on List<T> {
       yield this[i];
     }
   }
-
-  T? get lastOrNull => isNotEmpty ? last : null;
-  T? get firstOrNull => isNotEmpty ? last : null;
 }
 
 extension BasicsInt16List on Int16List {

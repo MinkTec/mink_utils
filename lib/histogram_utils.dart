@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:collection/collection.dart' hide IterableNumberExtension;
+import 'package:collection/collection.dart'
+    hide IterableNumberExtension;
 import 'package:mink_utils/iterable_utils.dart';
 
 class ClusteredDataCell {
@@ -18,7 +19,7 @@ class ClusteredData {
   List<int> baskets = [];
   List<List<double>> borders = [];
 
-  int get n => borders.first.length - 1;
+  int get n => (borders.firstOrNull?.length ?? 1) - 1;
   int get dim => borders.length;
 
   // Coordinate system:
