@@ -82,20 +82,20 @@ void main() {
           [1970, 27, 1, 0, 1, 5].toDateTime(), DateTime(1970, 27, 1, 0, 1, 5));
     });
 
-    test("timespan", () {
-      const m5 = Duration(minutes: 5);
-      final span1 =
-          Timespan(duration: const Duration(minutes: 10), end: DateTime(2021));
-      final span2 = Timespan(
-          duration: const Duration(minutes: 10),
-          end: DateTime(2021).subtract(m5));
-      final span3 = Timespan.arround(DateTime(2021), m5);
+    const m5 = Duration(minutes: 5);
+    final span1 =
+        Timespan(duration: const Duration(minutes: 10), end: DateTime(2021));
+    final span2 = Timespan(
+        duration: const Duration(minutes: 10),
+        end: DateTime(2021).subtract(m5));
+    final span3 = Timespan.arround(DateTime(2021), m5);
 
-      final t1 = DateTime(2021).subtract(m5);
+    final t1 = DateTime(2021).subtract(m5);
+
+    test("timespan", () {
       expect(span1.cut(t1).first.duration, m5);
       expect(span1.cut(t1).last.duration, m5);
 
-      expect(span1.intersects(span2), true);
       expect(span1.intersection(span2), Timespan(end: t1, duration: m5));
 
       expect(Timespan.arround(t1, m5), span1);
@@ -104,6 +104,16 @@ void main() {
       expect(span3.weeks.length, 1);
       expect(span3.month.length, 2);
       expect(span3.years.length, 2);
+    });
+
+
+    final short = Timespan.arround(DateTime.now(), const Duration(milliseconds: 1));
+
+    test("timespan conditions", () {
+      expect(span1.intersects(span2), true);
+      expect(Timespan.today().isToday, true);
+      expect(Timespan.today().contains(short), true);
+      expect(short.isToday, true);
     });
   });
 }

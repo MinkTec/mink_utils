@@ -32,6 +32,8 @@ extension BasicsListMethods<T extends num> on List<T> {
   Iterable<T> nLargest(int n) sync* {
     for (var i in topIndices(n)) yield this[i];
   }
+
+  List<T> copy() => List<T>.generate(length, (i) => this[i]);
 }
 
 extension BasicsDouble on List<double> {
@@ -42,6 +44,8 @@ extension BasicsDouble on List<double> {
       this[i] = (this[i] == 0) ? 0.001 : this[i];
     }
   }
+
+  Float32List toFloat32List() => Float32List.fromList(this);
 }
 
 /// ads list methods that should have (mostly) been included in the

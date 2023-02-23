@@ -26,3 +26,4 @@ export 'string_utils.dart';
 export 'histogram_utils.dart';
 export 'map_utils.dart';
 export 'classes/timed_data.dart';
+export 'transforms.dart';

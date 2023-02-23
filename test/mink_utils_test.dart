@@ -2,10 +2,12 @@ import 'iterable_test.dart' as iterables;
 import 'time_utils_tests.dart' as time;
 import 'histogram.dart' as histogram;
 import 'map_tests.dart' as map;
+import 'transform_test.dart' as transform;
 
 void main() {
   iterables.main();
   time.main();
   histogram.main();
   map.main();
+  transform.main();
 }

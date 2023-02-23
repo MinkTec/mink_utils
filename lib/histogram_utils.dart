@@ -1,7 +1,7 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
-import 'package:collection/collection.dart'
-    hide IterableNumberExtension;
+import 'package:collection/collection.dart' hide IterableNumberExtension;
 import 'package:mink_utils/iterable_utils.dart';
 
 class ClusteredDataCell {
@@ -13,6 +13,10 @@ class ClusteredDataCell {
 
   @override
   String toString() => """$count: $borders""";
+
+  double _findMiddle(List<double> d) => lerpDouble(d.first, d.last, 0.5)!;
+
+  List<double> get center => borders.map(_findMiddle).toList();
 }
 
 class ClusteredData {
@@ -71,7 +75,7 @@ class ClusteredData {
 
     baskets = List<int>.filled(math.pow(n, data.length).toInt(), 0);
 
-    final deltas = borders.map((e) => (e.last + 0.001) - e.first).toList();
+    final deltas = borders.map((e) => e.last - e.first).toList();
     final coords = List<int>.filled(data.length, 0);
 
     for (int i = 0; i < data.first.length; i++) {
@@ -117,12 +121,13 @@ class ClusteredData {
     }
   }
 
+  ClusteredDataCell getCell(List<int> coords) =>
+      ClusteredDataCell(count: getBasket(coords), borders: getBorders(coords));
+
   int getBasket(List<int> coords) => baskets[coordsToSerializedIndex(coords)];
 
-  List<List<double>> getBorders(List<int> coords) {
-    final int i = coordsToSerializedIndex(coords);
-    return borders.map((b) => [b[i], b[i + 1]]).toList();
-  }
+  List<List<double>> getBorders(List<int> coords) =>
+      coords.mapIndexed((i, c) => [borders[i][c], borders[i][c + 1]]).toList();
 }
 
 // ignore: unused_element

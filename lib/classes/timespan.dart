@@ -84,10 +84,14 @@ class Timespan {
 
   bool includes(DateTime time) => begin.isBefore(time) && end.isAfter(time);
 
+  bool contains(Timespan timespan) => intersection(timespan) == timespan;
+
   DateTime lerp(double x) =>
       DateTime.fromMillisecondsSinceEpoch((begin.millisecondsSinceEpoch +
               x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
           .toInt());
+
+  bool get isToday => Timespan.today().contains(this);
 
   Timespan({DateTime? begin, DateTime? end, Duration? duration}) {
     update(begin: begin, end: end, duration: duration);
