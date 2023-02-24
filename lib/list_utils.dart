@@ -32,8 +32,6 @@ extension BasicsListMethods<T extends num> on List<T> {
   Iterable<T> nLargest(int n) sync* {
     for (var i in topIndices(n)) yield this[i];
   }
-
-  List<T> copy() => List<T>.generate(length, (i) => this[i]);
 }
 
 extension BasicsDouble on List<double> {
@@ -59,6 +57,10 @@ extension Basics<T> on List<T> {
     }
     this[length - 1] = elem;
   }
+
+  List<T> copy() => List<T>.generate(length, (i) => this[i]);
+
+  T lerp(double t) => this[(t * length).round()];
 
   /// adds the [elem] to the end of [this]
   /// if n is given the first element is popped,

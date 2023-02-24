@@ -112,6 +112,7 @@ void main() {
     test("timespan conditions", () {
       expect(span1.intersects(span2), true);
       expect(Timespan.today().isToday, true);
+      expect(span1.isToday, false);
       expect(Timespan.today().contains(short), true);
       expect(short.isToday, true);
     });
