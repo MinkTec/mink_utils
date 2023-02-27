@@ -82,7 +82,7 @@ class ClusteredData {
     for (int i = 0; i < data.first.length; i++) {
       for (int d = 0; d < data.length; d++) {
         coords[d] =
-            (((data[d][i] - borders[d].first) / deltas[d]) * (n - 1)).round();
+            (((data[d][i] - borders[d].first) / deltas[d]) * (n)).floor();
       }
       try {
         baskets[coordsToSerializedIndex(coords)]++;
@@ -131,12 +131,12 @@ class ClusteredData {
 }
 
 // ignore: unused_element
-List<double> _genHistogramBorders(min, max, n) => [
+List<double> _genHistogramBorders(num min, num max, int n) => [
       ...List<double>.generate(n, (i) => min + (max - min) / n * i),
       max.toDouble()
     ];
 
-List<double> _genHistogramBordersTuple(extrema, n) => [
+List<double> _genHistogramBordersTuple(List<num> extrema, int n) => [
       ...List<double>.generate(
           n, (i) => extrema.first + (extrema.last - extrema.first) / n * i),
       extrema.last.toDouble()
