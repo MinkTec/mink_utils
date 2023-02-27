@@ -75,14 +75,14 @@ class ClusteredData {
 
     baskets = List<int>.filled(math.pow(n, data.length).toInt(), 0);
 
-    final deltas = borders.map((e) => e.last - e.first).toList();
+    final deltas =
+        borders.map((e) => math.max(e.last - e.first, 0.000001)).toList();
     final coords = List<int>.filled(data.length, 0);
 
     for (int i = 0; i < data.first.length; i++) {
       for (int d = 0; d < data.length; d++) {
         coords[d] =
             (((data[d][i] - borders[d].first) / deltas[d]) * (n - 1)).round();
-        if (coords[d] >= n) break;
       }
       try {
         baskets[coordsToSerializedIndex(coords)]++;

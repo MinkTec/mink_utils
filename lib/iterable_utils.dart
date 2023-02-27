@@ -308,7 +308,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
     }
   }
 
-  double get avg => sum / length;
+  double get avg => isNotEmpty ? sum / length : 0;
 
   Iterable<double> get middleAverages => lag.map((e) => e.sum / 2);
 

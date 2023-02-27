@@ -1,5 +1,24 @@
 import 'package:mink_utils/time_utils.dart';
 
+enum TimespanPart {
+  begin,
+  end,
+  middle,
+}
+
+extension GetTimes on TimespanPart {
+  DateTime get(Timespan timespan) {
+    switch (this) {
+      case TimespanPart.begin:
+        return timespan.begin;
+      case TimespanPart.end:
+        return timespan.end;
+      case TimespanPart.middle:
+        return timespan.lerp(0.5);
+    }
+  }
+}
+
 class Timespan {
   late DateTime begin;
   late DateTime end;
@@ -91,7 +110,17 @@ class Timespan {
               x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
           .toInt());
 
-  bool get isToday => Timespan.today().contains(this);
+  bool get isToday {
+    final ts = Timespan.today();
+    return begin.isBetween(ts.begin, ts.end) && end.isBetween(ts.begin, ts.end);
+  }
+
+  int daysAgo({TimespanPart align = TimespanPart.end}) {
+    final mn = DateTime.now().midnight();
+    return mn.isBefore(align.get(this))
+        ? 0
+        : align.get(this).difference(mn).abs().inDays + 1;
+  }
 
   Timespan({DateTime? begin, DateTime? end, Duration? duration}) {
     update(begin: begin, end: end, duration: duration);
@@ -156,7 +185,7 @@ class Timespan {
 }
 
 extension TimespanIterableExtensions on Iterable<Timespan> {
-  totalDuration() => (isNotEmpty)
+  Duration totalDuration() => (isNotEmpty)
       ? map((e) => e.duration).reduce((a, b) => a + b)
       : Duration.zero;
 }

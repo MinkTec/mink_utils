@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mink_utils/basic_utils.dart';
 import 'package:mink_utils/classes/timespan.dart';
+import 'package:mink_utils/iterable_utils.dart';
 import 'package:mink_utils/time_utils.dart';
 import 'dart:io' show File;
 
@@ -106,8 +108,8 @@ void main() {
       expect(span3.years.length, 2);
     });
 
-
-    final short = Timespan.arround(DateTime.now(), const Duration(milliseconds: 1));
+    final short =
+        Timespan.arround(DateTime.now(), const Duration(milliseconds: 1));
 
     test("timespan conditions", () {
       expect(span1.intersects(span2), true);
@@ -115,6 +117,25 @@ void main() {
       expect(span1.isToday, false);
       expect(Timespan.today().contains(short), true);
       expect(short.isToday, true);
+    });
+
+    test("days ago", () {
+      expect(Timespan.today().daysAgo(), 0);
+      expect(Timespan.today(daysAgo: 1).daysAgo(), 1);
+
+      expect(
+          List<bool>.generate(
+              100, (i) => Timespan.today(daysAgo: i).daysAgo() == i).every(id),
+          true);
+
+      expect(
+          List<bool>.generate(
+              100,
+              (i) =>
+                  Timespan.today(daysAgo: i)
+                      .daysAgo(align: TimespanPart.middle) ==
+                  i).every(id),
+          true);
     });
   });
 }
