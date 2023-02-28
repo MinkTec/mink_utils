@@ -50,8 +50,8 @@ extension StringTimestamp on Duration {
 
 extension DateTimeToHumanReadable on DateTime {
   String get hhmm => "$hour:${twoDigits(minute.remainder(60))}";
-  String get hhmmss =>
-      "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}";
+  String get hhmmss => "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}";
+  String get hhmmssms => "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}.$millisecond";
   String humanReadable() => "$hour:${twoDigits(minute)}:${twoDigits(second)}";
 }
 

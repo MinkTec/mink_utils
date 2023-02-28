@@ -72,5 +72,21 @@ void main() {
               .boundingBox,
           const Rect.fromLTRB(-100, -20, 100, 100));
     });
+
+    final l3 = <double>[0, 0, 2, 0, 2, 2, 0, 2, 0, 0];
+    final c3 = RawCurve.fromList(l3);
+
+    test("length", () {
+      expect(curve.arcLength, math.sqrt2);
+      expect(c3.arcLength, 8);
+    });
+
+    test("extrapolation", () {
+      expect(c3.lexp(1), const Offset(0, -8));
+      expect(c3.lexp(0), const Offset(0, 0));
+      expect(c3.lexp(-1), const Offset(-8, 0));
+      expect(curve.lexp(1), const Offset(2, 2));
+      expect(curve.lexp(-1), const Offset(-1, -1));
+    });
   });
 }

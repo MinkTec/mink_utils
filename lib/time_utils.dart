@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:mink_utils/iterable_utils.dart';
 
 import 'classes/timespan.dart';
@@ -92,6 +93,48 @@ extension DateTimeListExtension on List<DateTime> {
     return [0, ...diff().findIndices((e) => e > delta), length]
         .lag
         .map((e) => Timespan(begin: this[e.first], end: this[e.last - 1]));
+  }
+
+  /// calculate the frequency of the give iterable
+  /// either n (number of elements) or duration can be set
+  /// setting both results in an ArgumentError.
+  /// If none is set, all values will be evaluated.
+  /// The function assumes that the list is sorted.
+  /// If it's not sorted calculations with [n] ore none specified
+  /// can return wrong results.
+  /// If realtime is the the functions assumes that the timer interval
+  /// ends [DateTime.now()] otherwise the lasts elements timestamp
+  /// will be used.
+  double frequency({int? n, Duration? duration, bool realTime = false}) {
+    if (n != null && duration != null) {
+      throw ArgumentError("exactly on arg needs to be set");
+    }
+    if (isEmpty) return 0;
+
+    final DateTime startTime;
+    final Iterable<DateTime> vals;
+
+    if (n != null) {
+      vals = reversed.take(n);
+      startTime = vals.last;
+    } else {
+      startTime = last.subtract(duration!);
+      vals = where((e) => e.isAfter(startTime));
+    }
+
+    final endTime = realTime ? DateTime.now() : last;
+
+    return (vals.length / endTime.difference(startTime).inMilliseconds) * 1000;
+  }
+
+  DateTime? getNearest(DateTime time, {Duration? maxDeviation}) {
+    if (isEmpty) return null;
+    final res = reduce(
+        (a, b) => a.difference(time).abs() > b.difference(time).abs() ? b : a);
+    return (maxDeviation == null ||
+            res.difference(time).abs() < maxDeviation.abs())
+        ? res
+        : null;
   }
 }
 

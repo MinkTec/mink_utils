@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
+import 'package:mink_utils/iterable_utils.dart';
 import 'package:mink_utils/list_utils.dart';
 
 class RawCurve {
@@ -87,6 +88,49 @@ class RawCurve {
     assert(rect[0] <= rect[2] && rect[1] <= rect[3]);
 
     return Rect.fromLTRB(rect[0], rect[1], rect[2], rect[3]);
+  }
+
+  double get arcLength {
+    if (points.length < 4) return 0;
+
+    final l = [points[0], points[1]];
+    double acc = 0;
+    double dx, dy;
+
+    for (int i = 2; i < points.length; i += 2) {
+      dx = points[i] - l[0];
+      dy = points[i + 1] - l[1];
+      l[0] = points[i];
+      l[1] = points[i + 1];
+      acc += math.sqrt(dx * dx + dy * dy);
+    }
+    return acc;
+  }
+
+  /// Extrapolate linear from either end of the curve.
+  /// This function gets the interpolation direction
+  /// from the direction of the second last to last element.
+  ///
+  /// The [t] t variable sets the length in relation to the
+  /// curves [arcLength];
+  /// A value of t = 0.1 would add 10 percent of the arc length
+  /// in the direction the last two elements are pointing.
+  /// Negativ values for [t] indicate exptrapolation from the
+  /// start of the curve rather than the end.
+  Offset lexp(double t) {
+    final l = arcLength;
+    List<double> d;
+    List<double> s;
+    if (t >= 0) {
+      d = [points.at(-2) - points.at(-4), points.at(-1) - points.at(-3)];
+      s = [points.at(-2), points.at(-1)];
+    } else {
+      d = [points.at(0) - points.at(2), points.at(1) - points.at(3)];
+      s = [points[0], points[1]];
+    }
+
+    final n = d.norm();
+    return Offset(s[0] + l * t.abs() * n[0], s[1] + l * t.abs() * n[1]);
   }
 
   Offset get center => boundingBox.center;

@@ -137,5 +137,17 @@ void main() {
                   i).every(id),
           true);
     });
+
+    test("nearest element", () {
+      final now = DateTime.now();
+      final times = List<DateTime>.generate(
+          20, (i) => now.subtract(Duration(minutes: i)));
+
+      expect(times.getNearest(now), now);
+      expect(
+          times.getNearest(now.subtract(const Duration(milliseconds: 500)),
+              maxDeviation: const Duration(milliseconds: 100)),
+          null);
+    });
   });
 }
