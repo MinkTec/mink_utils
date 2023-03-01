@@ -106,20 +106,20 @@ extension DateTimeListExtension on List<DateTime> {
   /// ends [DateTime.now()] otherwise the lasts elements timestamp
   /// will be used.
   double frequency({int? n, Duration? duration, bool realTime = false}) {
-    if (n != null && duration != null) {
-      throw ArgumentError("exactly on arg needs to be set");
-    }
     if (isEmpty) return 0;
 
     final DateTime startTime;
     final Iterable<DateTime> vals;
 
-    if (n != null) {
+    if (duration != null) {
+      startTime = last.subtract(duration);
+      vals = where((e) => e.isAfter(startTime));
+    } else if (n != null) {
       vals = reversed.take(n);
       startTime = vals.last;
     } else {
-      startTime = last.subtract(duration!);
-      vals = where((e) => e.isAfter(startTime));
+      vals = this;
+      startTime = first;
     }
 
     final endTime = realTime ? DateTime.now() : last;

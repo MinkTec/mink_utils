@@ -1,4 +1,7 @@
 import 'package:mink_utils/time_utils.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'timespan.g.dart';
 
 enum TimespanPart {
   begin,
@@ -19,10 +22,41 @@ extension GetTimes on TimespanPart {
   }
 }
 
+@JsonSerializable()
 class Timespan {
   late DateTime begin;
   late DateTime end;
   late Duration duration;
+
+  Timespan({DateTime? begin, DateTime? end, Duration? duration}) {
+    update(begin: begin, end: end, duration: duration);
+  }
+
+  /// Get Timespan of a day.
+  /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
+  factory Timespan.today({int daysAgo = 0}) => (daysAgo == 0)
+      ? Timespan(begin: DateTime.now().midnight())
+      : Timespan(
+          begin: DateTime.now().midnight(daysAgo: daysAgo),
+          duration: const Duration(days: 1));
+
+  /// Get a symmetric Timespan arround the given time with
+  /// [delta] as the difference of begin and end from [time]
+  /// thus the duration of the timespan is [2 * delta]
+  factory Timespan.arround(DateTime time, Duration delta) =>
+      Timespan(begin: time.subtract(delta), end: time.add(delta));
+
+  factory Timespan.empty() => Timespan(duration: Duration.zero);
+
+  factory Timespan.fromJson(Map<String, dynamic> json) =>
+      _$TimespanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TimespanToJson(this);
+
+  @override
+  String toString() {
+    return """Timespan from $begin - $end, lasting $duration""";
+  }
 
   /// The update function handles not only the updates to an existing
   /// [Timespan] but also acts as a quasi constructor.
@@ -89,8 +123,8 @@ class Timespan {
       end.isBefore(other.begin) || other.end.isBefore(begin)
           ? Timespan(duration: Duration.zero)
           : Timespan(
-              begin: begin.isAfter(other.begin) ? begin : other.begin,
-              end: end.isBefore(other.end) ? end : other.end);
+              begin: begin.laterDate(other.begin),
+              end: end.earlierDate(other.end));
 
   Timespan combine(Timespan other) => Timespan(
       begin: begin.earlierDate(other.begin), end: end.laterDate(other.end));
@@ -105,6 +139,7 @@ class Timespan {
 
   bool contains(Timespan timespan) => intersection(timespan) == timespan;
 
+  /// Interpolate linear within the timespan
   DateTime lerp(double x) =>
       DateTime.fromMillisecondsSinceEpoch((begin.millisecondsSinceEpoch +
               x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
@@ -115,36 +150,14 @@ class Timespan {
     return begin.isBetween(ts.begin, ts.end) && end.isBetween(ts.begin, ts.end);
   }
 
+  /// check how many days ago a timespan is.
+  /// The [align] parameter is used to set which part
+  /// of the timespan is used and defaults to [this.end]
   int daysAgo({TimespanPart align = TimespanPart.end}) {
     final mn = DateTime.now().midnight();
     return mn.isBefore(align.get(this))
         ? 0
         : align.get(this).difference(mn).abs().inDays + 1;
-  }
-
-  Timespan({DateTime? begin, DateTime? end, Duration? duration}) {
-    update(begin: begin, end: end, duration: duration);
-  }
-
-  /// Get Timespan of a day.
-  /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
-  factory Timespan.today({int daysAgo = 0}) => (daysAgo == 0)
-      ? Timespan(begin: DateTime.now().midnight())
-      : Timespan(
-          begin: DateTime.now().midnight(daysAgo: daysAgo),
-          duration: const Duration(days: 1));
-
-  /// Get a symmetric Timespan arround the given time with
-  /// [delta] as the difference of begin and end from [time]
-  /// thus the duration of the timespan is [2 * delta]
-  factory Timespan.arround(DateTime time, Duration delta) =>
-      Timespan(begin: time.subtract(delta), end: time.add(delta));
-
-  factory Timespan.empty() => Timespan(duration: Duration.zero);
-
-  @override
-  String toString() {
-    return """Timespan from $begin - $end, lasting $duration""";
   }
 
   /// get all weeks that overlap with a the [Timespan]

@@ -7,9 +7,9 @@ import 'curve_fitting_test.dart' as curves;
 
 void main() {
   curves.main();
-  //iterables.main();
-  //time.main();
-  //histogram.main();
-  //map.main();
-  //transform.main();
+  iterables.main();
+  time.main();
+  histogram.main();
+  map.main();
+  transform.main();
 }

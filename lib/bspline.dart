@@ -1,5 +1,7 @@
 import 'package:vector_math/vector_math.dart';
 
+// defunct
+@Deprecated("do not use")
 class BSpline {
   final List<double> _knots;
   final int _degree;
@@ -23,12 +25,7 @@ class BSpline {
 
   List<Vector2> evaluateRange(double start, double end, int segments) {
     final step = (end - start) / segments;
-    final points = <Vector2>[];
-    for (var i = 0; i <= segments; i++) {
-      final t = start + step * i;
-      points.add(evaluate(t));
-    }
-    return points;
+    return [for (var i = 0; i <= segments; i++) evaluate(start + step * i)];
   }
 
   List<Vector2> get controlPoints => List.unmodifiable(_controlPoints);
