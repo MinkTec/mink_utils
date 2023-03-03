@@ -46,7 +46,9 @@ void main() {
       expect(l2.firstHalf.toList(), [1, 2, 3]);
       expect(l2.secondHalf.toList(), [4, 5, 6]);
 
+      expect(l3.diff.toList(), [-3, 5, -7, 9, -11]);
       expect(l3.absdiff.toList(), [1, 1, 1, 1, 1]);
+      expect(l3.realabsdiff.toList(), [3, 5, 7, 9, 11]);
 
       expect([2, 0, 0].norm(), [1, 0, 0]);
       expect([0, 2, 0].norm(), [0, 1, 0]);

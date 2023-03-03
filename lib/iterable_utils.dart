@@ -285,7 +285,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
     final i2 = iterator;
     i2.moveNext();
     while (i1.moveNext() && i2.moveNext()) {
-      yield i1.current + i2.current as T;
+      yield (i2.current - i1.current) as T;
     }
   }
 
