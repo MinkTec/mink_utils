@@ -118,4 +118,15 @@ void main() {
       expect(l5.topIndices(4), [0, 1, 2, 3]);
     });
   });
+
+  group("List<List<T>>", () {
+    final l = [
+      [1, 2, 3],
+      [1, 2, 3]
+    ];
+
+    test("transpose", () {
+      expect(l.transposed, [[1,1],[2,2],[3,3]]);
+    });
+  });
 }

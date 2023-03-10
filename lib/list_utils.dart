@@ -102,6 +102,18 @@ extension BasicsInt16List on Int16List {
 }
 
 extension LinearAlgebraUtils2D<T> on List<List<T>> {
+  List<List<T>> get transposed {
+    if (isEmpty) return [];
+    if (first.isEmpty) return [[]];
+
+    assert(every((e) => e.length == first.length));
+
+    return [
+      for (int x = 0; x < first.length; x++)
+        [for (int y = 0; y < length; y++) this[y][x]]
+    ];
+  }
+
   // https://stackoverflow.com/questions/57754481/cartesian-product-in-dart-language/57757354#57757354
   Iterable<List<T>> cartesian() sync* {
     if (isEmpty) {
