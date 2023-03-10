@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+import 'package:flutter/painting.dart';
 import 'package:mink_utils/iterable_utils.dart';
 
 import 'classes/timespan.dart';
@@ -78,6 +78,10 @@ extension GeneralDurationUtils on Duration {
 
   Duration max(Duration d) => this > d ? this : d;
   Duration min(Duration d) => this < d ? this : d;
+
+  String toExplainerString() {
+    return """${inHours > 0 ? "$inHours Stunden und": ""} ${inMinutes % 60} Minuten""";
+  }
 }
 
 extension DateTimeListExtension on List<DateTime> {

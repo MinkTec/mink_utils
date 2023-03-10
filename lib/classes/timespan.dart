@@ -51,6 +51,24 @@ class Timespan {
   factory Timespan.fromJson(Map<String, dynamic> json) =>
       _$TimespanFromJson(json);
 
+  /// generates a timespan from the specfied hours
+  /// Example:
+  /// [Timespan.fromOClock(from: 9, to: 17)] -> 9:00 - 17:00 (Today)
+  /// If no [reference] is provieded the hours will be added to
+  /// [DateTime.midnight()].
+  factory Timespan.fromOClock(
+      {required int from, required int to, DateTime? reference}) {
+    assert(from <= to);
+    reference ??= DateTime.now().midnight();
+    return Timespan(
+        begin: reference.add(Duration(hours: from)),
+        end: reference.add(Duration(hours: to)));
+  }
+
+  Timespan get dreiviertelzwoelf => Timespan(
+      begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),
+      duration: const Duration(minutes: 15));
+
   Map<String, dynamic> toJson() => _$TimespanToJson(this);
 
   @override
