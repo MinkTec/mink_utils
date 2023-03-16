@@ -27,6 +27,5 @@ export 'histogram_utils.dart';
 export 'map_utils.dart';
 export 'classes/timed_data.dart';
 export 'transforms.dart';
-export 'bspline.dart';
 export 'mixins/time_bound.dart';
 export 'mixins/csv_mixin.dart';
