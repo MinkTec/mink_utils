@@ -214,6 +214,26 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     }
     return null;
   }
+
+  Iterable<T> lastN(int i) {
+    final l = length;
+    return skip(l - i);
+  }
+
+  Iterable<T> pysublist(int i1, int i2) {
+    if (i1 >= 0) {
+      if (i2 >= 0) {
+        assert(i1 < i2);
+        return skip(i1).take(i2 - i1);
+      } else {
+        return skip(i1).take(length - i2 + 1);
+      }
+    } else {
+      assert(i1 < i2 && i2 < 0);
+      final l = length;
+      return skip(l + i1 + 1).take(i2 - i1);
+    }
+  }
 }
 
 extension NumIteratorExtensions<T extends num> on Iterable<T> {

@@ -2,6 +2,7 @@ import 'package:flutter/painting.dart';
 import 'package:mink_utils/iterable_utils.dart';
 
 import 'classes/timespan.dart';
+import 'mixins/time_bound.dart';
 
 // DateTime ago(Duration d) => DateTime.now().subtract(d);
 
@@ -80,8 +81,12 @@ extension GeneralDurationUtils on Duration {
   Duration min(Duration d) => this < d ? this : d;
 
   String toExplainerString() {
-    return """${inHours > 0 ? "$inHours Stunden und": ""} ${inMinutes % 60} Minuten""";
+    return """${inHours > 0 ? "$inHours Stunden und" : ""} ${inMinutes % 60} Minuten""";
   }
+}
+
+extension DateTimeExtensionWrapper on List<TimeBound> {
+  List<DateTime> get time => [for (var tb in this) tb.time];
 }
 
 extension DateTimeListExtension on List<DateTime> {
