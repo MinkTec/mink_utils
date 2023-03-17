@@ -1,7 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/basic_utils.dart';
 import 'package:mink_utils/classes/timespan.dart';
-import 'package:mink_utils/iterable_utils.dart';
 import 'package:mink_utils/time_utils.dart';
 import 'dart:io' show File;
 
@@ -148,6 +148,22 @@ void main() {
           times.getNearest(now.subtract(const Duration(milliseconds: 500)),
               maxDeviation: const Duration(milliseconds: 100)),
           null);
+    });
+
+    test("lerp", () {
+      final now = DateTime.now();
+      const delta = Duration(minutes: 10);
+      final ts = Timespan.arround(now, delta);
+      const limit = Duration(milliseconds: 200);
+
+      expect(ts.lerp(0.5).difference(now) < limit, true);
+      expect(ts.lerp(0.0).difference(now.subtract(delta)) < limit, true);
+      expect(ts.lerp(1.0).difference(now.add(delta)) < limit, true);
+
+      expect(
+          [for (double i = 0; i <= 1; i++) ts.lerp(i)]
+              .isSorted((a, b) => a.compareTo(b)),
+          true);
     });
   });
 }

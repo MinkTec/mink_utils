@@ -85,8 +85,14 @@ extension GeneralDurationUtils on Duration {
   }
 }
 
-extension DateTimeExtensionWrapper on List<TimeBound> {
+extension DateTimeExtensionWrapper<T extends TimeBound> on List<TimeBound> {
   List<DateTime> get time => [for (var tb in this) tb.time];
+
+  TimeBound? getNearest(DateTime time, {Duration? maxDeviation}) {
+    final DateTime? foundTime =
+        this.time.getNearest(time, maxDeviation: maxDeviation);
+    return foundTime == null ? null : firstWhere((e) => e.time == foundTime);
+  }
 }
 
 extension DateTimeListExtension on List<DateTime> {
