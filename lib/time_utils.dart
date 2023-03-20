@@ -169,6 +169,7 @@ extension DateTimeListExtension on List<DateTime> {
   /// than [Duration delta].
   /// The check begins at the newest element, and works backwards.
   Iterable<DateTime> reduceToDelta(Duration delta) {
+    if (isEmpty) return [];
     sort((a, b) => b.compareTo(a));
     int i = 0;
     Queue<DateTime> reduced = Queue.from([first]);
