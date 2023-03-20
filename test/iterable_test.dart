@@ -22,6 +22,7 @@ void main() {
     test("take", () {
       expect(l2.takeEveryNth(2).toList(), [1, 3, 5]);
       expect(l2.takeEveryNotNth(2).toList(), [2, 4, 6]);
+      expect(l2.takeEveryNotNth(3).toList(), [2, 3, 5, 6]);
       expect([].takeEveryNth(1).toList(), []);
       expect([].takeEveryNotNth(1).toList(), []);
     });

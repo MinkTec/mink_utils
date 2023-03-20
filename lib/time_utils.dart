@@ -1,4 +1,7 @@
+import 'dart:collection';
+
 import 'package:flutter/painting.dart';
+import 'package:mink_utils/conversion_utils.dart';
 import 'package:mink_utils/iterable_utils.dart';
 
 import 'classes/timespan.dart';
@@ -95,6 +98,16 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<TimeBound> {
   }
 }
 
+extension DateTimeIterableExtensions on Iterable<DateTime> {
+  void prettyPrint({bool showDate = false}) {
+    if (showDate) {
+      print(join("\n"));
+    } else {
+      print(map((e) => e.hhmmssms).join("\n"));
+    }
+  }
+}
+
 extension DateTimeListExtension on List<DateTime> {
   /// get Duration between each elemnt of a [List] of [DateTime]s
   Iterable<Duration> diff() => lag.map((e) => e.last.difference(e.first));
@@ -150,6 +163,25 @@ extension DateTimeListExtension on List<DateTime> {
             res.difference(time).abs() < maxDeviation.abs())
         ? res
         : null;
+  }
+
+  /// removes all values in List<DateTime> that are closer together,
+  /// than [Duration delta].
+  /// The check begins at the newest element, and works backwards.
+  Iterable<DateTime> reduceToDelta(Duration delta) {
+    sort((a, b) => b.compareTo(a));
+    int i = 0;
+    Queue<DateTime> reduced = Queue.from([first]);
+
+    while (i < length) {
+      if (!(reduced.last.difference(this[i]) < delta &&
+          (i + 1 == length ||
+              reduced.last.difference(this[i + 1]) < delta * 1.2))) {
+        reduced.addLast(this[i]);
+      }
+      i++;
+    }
+    return reduced;
   }
 }
 

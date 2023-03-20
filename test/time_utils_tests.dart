@@ -2,8 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/basic_utils.dart';
 import 'package:mink_utils/classes/timespan.dart';
+import 'package:mink_utils/conversion_utils.dart';
 import 'package:mink_utils/time_utils.dart';
 import 'dart:io' show File;
+
+import 'package:quiver/iterables.dart';
 
 List<DateTime> readTestData() => File("./test/measurements.csv")
     .readAsLinesSync()
@@ -164,6 +167,20 @@ void main() {
           [for (double i = 0; i <= 1; i++) ts.lerp(i)]
               .isSorted((a, b) => a.compareTo(b)),
           true);
+    });
+
+    test("reduction", () {
+      final now = DateTime.now();
+
+      final data =
+          List<DateTime>.generate(13, (i) => now.add(Duration(seconds: i)));
+
+      final data2 = List<DateTime>.generate(
+          13 * 5, (i) => now.add(Duration(milliseconds: 200 * i)));
+
+      expect(data.reduceToDelta(const Duration(seconds: 3)).length, 5);
+      expect(data2.reduceToDelta(const Duration(seconds: 3)).length, 5);
+      expect([...data, ...data2].reduceToDelta(const Duration(seconds: 3)).length, 5);
     });
   });
 }
