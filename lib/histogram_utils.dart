@@ -26,6 +26,22 @@ class ClusteredData {
   int get n => (borders.firstOrNull?.length ?? 1) - 1;
   int get dim => borders.length;
 
+  @override
+  toString() {
+    int leftpad = 1;
+    try {
+      leftpad = 1 + top(1).first.count.toString().length;
+    } catch (e) {}
+    return "|${[
+      for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+          """${getCell([
+                j,
+                i
+              ]).count.toString().padLeft(leftpad)}  ${(j == n - 1) ? "|\n" : ""}"""
+    ].join("|")}";
+  }
+
   // Coordinate system:
   // Since darts support for ndim arrays is ass the coordinates for
   // the baskets are implemented using a map ℕⁿ -> ℕ.
