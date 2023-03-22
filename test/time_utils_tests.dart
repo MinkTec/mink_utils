@@ -175,17 +175,20 @@ void main() {
       final data =
           List<DateTime>.generate(13, (i) => now.add(Duration(seconds: i)));
 
-
       final data2 = List<DateTime>.generate(
           13 * 5, (i) => now.add(Duration(milliseconds: 200 * i)));
 
-      final data3 =
-          List<DateTime>.generate(13, (i) => now.add(Duration(seconds: i + 120)));
+      final data3 = List<DateTime>.generate(
+          13, (i) => now.add(Duration(seconds: i + 120)));
 
       expect(data.reduceToDelta(const Duration(seconds: 3)).length, 5);
       expect(data2.reduceToDelta(const Duration(seconds: 3)).length, 5);
-      expect([...data, ...data2].reduceToDelta(const Duration(seconds: 3)).length, 5);
-      expect([...data, ...data3].reduceToDelta(const Duration(seconds: 3)).length, 10);
+      expect(
+          [...data, ...data2].reduceToDelta(const Duration(seconds: 3)).length,
+          5);
+      expect(
+          [...data, ...data3].reduceToDelta(const Duration(seconds: 3)).length,
+          10);
     });
   });
 }
