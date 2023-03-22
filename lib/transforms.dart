@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -88,6 +90,12 @@ class RawCurve {
     assert(rect[0] <= rect[2] && rect[1] <= rect[3]);
 
     return Rect.fromLTRB(rect[0], rect[1], rect[2], rect[3]);
+  }
+
+  void mirror(Axis direction) {
+    for (int i = Axis.horizontal == direction ? 1 : 0;
+        i < points.length;
+        i += 2) points[i] *= -1;
   }
 
   double get arcLength {
