@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xdg_directories/xdg_directories.dart';
 
@@ -43,5 +44,16 @@ Future<File> writeToLocalFile(String name, String content) async {
   return await file.writeAsString(content);
 }
 
-Future<void> writeToDownloadFile(String name, String content) async =>
+Future<File> writeToDownloadFile(String name, String content) async =>
     getDownloadsFile(name).then((file) => file.writeAsString(content));
+
+Future<File> createArchive(String name, Iterable<File> files) async {
+  final encoder = ZipFileEncoder();
+  var archive = await getLocalFile(name.endsWith(".zip") ? name : "$name.zip");
+  encoder.create(archive.path);
+  for (var file in files) {
+    await encoder.addFile(file);
+  }
+  encoder.close();
+  return archive;
+}

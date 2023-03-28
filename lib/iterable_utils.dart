@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'package:tuple/tuple.dart';
@@ -232,6 +233,15 @@ extension BasicIteratorMethods<T> on Iterable<T> {
       assert(i1 < i2 && i2 < 0);
       final l = length;
       return skip(l + i1 + 1).take(i2 - i1);
+    }
+  }
+}
+
+extension QueueExtensions<T> on Queue<T> {
+  void pushn(T val, int n) {
+    addLast(val);
+    if (length > n) {
+      removeFirst();
     }
   }
 }
