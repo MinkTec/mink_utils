@@ -2,11 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/basic_utils.dart';
 import 'package:mink_utils/classes/timespan.dart';
-import 'package:mink_utils/conversion_utils.dart';
 import 'package:mink_utils/time_utils.dart';
 import 'dart:io' show File;
-
-import 'package:quiver/iterables.dart';
 
 List<DateTime> readTestData() => File("./test/measurements.csv")
     .readAsLinesSync()
@@ -120,6 +117,12 @@ void main() {
       expect(span1.isToday, false);
       expect(Timespan.today().contains(short), true);
       expect(short.isToday, true);
+      expect(
+          Timespan(
+              begin: DateTime(1993, 8, 16, 4, 0),
+              end: DateTime(1993, 8, 16, 17, 0)),
+          Timespan.fromOClock(
+              from: 4, to: 17, reference: DateTime(1993, 8, 16)));
     });
 
     test("days ago", () {
