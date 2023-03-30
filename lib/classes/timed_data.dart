@@ -1,5 +1,10 @@
-class TimedData<T> {
+
+import 'package:mink_utils/mink_utils.dart';
+
+class TimedData<T> with TimeBound {
   T value;
+
+  @override
   DateTime time;
 
   TimedData({required this.value, DateTime? time})

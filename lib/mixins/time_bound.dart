@@ -1,4 +1,8 @@
 import 'dart:collection';
+import 'dart:math';
+
+import 'package:collection/collection.dart';
+import 'package:mink_utils/mink_utils.dart';
 
 mixin TimeBound {
   abstract final DateTime time;
@@ -39,8 +43,36 @@ class TimeBoundMethods {
     return [for (var time in times) idMap[time]!];
   }
 
-  static List<S> takeEqualySpaced<S extends TimeBound>(
-          List<S> data, int n) =>
+  /// bruh
+  @Deprecated("bruh")
+  static List<S> takeSmart<S extends TimeBound>(List<S> vals) {
+    if (vals.isEmpty) return [];
+    if (!vals.time.isSorted((a, b) => a.compareTo(b))) {
+      vals.sort((a, b) => a.time.compareTo(b.time));
+    }
+    final ts = Timespan(begin: vals.first.time, end: vals.last.time);
+    final blocks =
+        vals.time.findBlocks(Duration(seconds: ts.duration.inSeconds ~/ 30));
+
+    final sparsestTimespan = blocks.elementAt([
+      for (var t in blocks)
+        vals
+            .where((e) => e.time.isIn(t))
+            .toList()
+            .time
+            .diff()
+            .map((e) => e.inMilliseconds.abs())
+            .average
+    ].indexOfMax);
+
+    return takeEqualySpaced(
+        vals,
+        (vals.where((e) => e.time.isIn(sparsestTimespan)).length *
+            blocks.totalDuration().inMilliseconds ~/
+            sparsestTimespan.duration.inMilliseconds));
+  }
+
+  static List<S> takeEqualySpaced<S extends TimeBound>(List<S> data, int n) =>
       selectValues(
           data,
           reduceToDelta(

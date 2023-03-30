@@ -82,8 +82,28 @@ extension GeneralDurationUtils on Duration {
   Duration max(Duration d) => this > d ? this : d;
   Duration min(Duration d) => this < d ? this : d;
 
-  String toExplainerString() {
-    return """${inHours > 0 ? "$inHours Stunden und" : ""} ${inMinutes % 60} Minuten""";
+  String toExplainerString(
+      {bool forceMinutes = false, bool forceHours = false}) {
+    String hours = "";
+    String minutes = "";
+
+    if (inHours != 0 || forceHours) {
+      hours = inHours == 1 ? "$inHours Stunde" : "$inHours Stunden";
+    }
+
+    if ((inMinutes % 60) != 0 || forceMinutes) {
+      minutes = inMinutes % 60 == 1 ? "1 Minute" : "${inMinutes % 60} Minuten";
+    }
+
+    if (hours.isNotEmpty && minutes.isNotEmpty) {
+      return "$hours und $minutes";
+    } else if (hours.isNotEmpty) {
+      return hours;
+    } else if (minutes.isNotEmpty) {
+      return minutes;
+    } else {
+      return toExplainerString(forceMinutes: true);
+    }
   }
 }
 
