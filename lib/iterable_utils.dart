@@ -95,6 +95,9 @@ extension BasicIteratorMethods<T> on Iterable<T> {
   /// keep n equaly spaced elements of an array
   Iterable<T> decimate(int n) => takeEveryNth(math.max(1, length ~/ n));
 
+
+  Iterable<T> skipLast(int n) => take(length - n);
+
   Iterable<T> rotate([int n = 1]) sync* {
     var it = iterator;
     final int l = length;
