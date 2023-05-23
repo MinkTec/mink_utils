@@ -131,7 +131,11 @@ void main() {
 
       expect(
           List<bool>.generate(
-              100, (i) => Timespan.today(daysAgo: i).daysAgo() == i).every(id),
+              100,
+              (i) =>
+                  Timespan.today(daysAgo: i)
+                      .daysAgo(align: TimespanPart.middle) ==
+                  i).every(id),
           true);
 
       expect(
