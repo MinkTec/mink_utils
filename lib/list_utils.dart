@@ -18,6 +18,9 @@ extension BasicsListMethods<T extends num> on List<T> {
     }
   }
 
+  List<double> makeDivisible() =>
+      [for (var e in this) e == 0 ? 0.00001 : e.toDouble()];
+
   double takesmooth([int n = 4]) {
     try {
       return (pysublist(-n - 1, -1)).sum / n;
@@ -37,11 +40,11 @@ extension BasicsListMethods<T extends num> on List<T> {
 extension BasicsDouble on List<double> {
   /// replace all zeros with a value close to
   /// zero to allow safe elementwise division
-  void makeDivisible() {
-    for (int i = 0; i < length; i++) {
-      this[i] = (this[i] == 0) ? 0.001 : this[i];
-    }
-  }
+  //void makeDivisible() {
+  //  for (int i = 0; i < length; i++) {
+  //    this[i] = (this[i] == 0) ? 0.001 : this[i];
+  //  }
+  //}
 
   Float32List toFloat32List() => Float32List.fromList(this);
 }
