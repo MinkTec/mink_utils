@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 import 'dart:typed_data';
+import 'package:mink_utils/fmath.dart';
 import 'package:tuple/tuple.dart';
 import 'package:collection/collection.dart';
 
@@ -95,8 +96,10 @@ extension BasicIteratorMethods<T> on Iterable<T> {
   /// keep n equaly spaced elements of an array
   Iterable<T> decimate(int n) => takeEveryNth(math.max(1, length ~/ n));
 
-
   Iterable<T> skipLast(int n) => take(length - n);
+
+  T mostCommon() =>
+      countElements().entries.reduce((a, b) => a.value > b.value ? a : b).key;
 
   Iterable<T> rotate([int n = 1]) sync* {
     var it = iterator;
@@ -271,6 +274,17 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
     return [min, max];
   }
 
+  bool isMonotonic({bool strict = false, bool increasing = true}) {
+    final f = FMath.matchComp(strict: strict, increasing: increasing).func;
+    return lag.every((val) => f(val[1], val[0]));
+  }
+
+  bool isIncreasing({bool strict = false}) =>
+      isMonotonic(increasing: true, strict: strict);
+
+  bool isDecreasing({bool strict = false}) =>
+      isMonotonic(increasing: false, strict: strict);
+
   Iterable<T> get absdiff sync* {
     final it = iterator;
     it.moveNext();
@@ -360,6 +374,20 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
       last = it.current;
     }
   }
+}
+
+extension IntIterableMethods on Iterable<int> {
+  bool isMonotonicMod(int mod, {bool strict = false, bool increasing = true}) {
+    final fcomp = FMath.matchComp(strict: strict, increasing: increasing);
+    return lag.every((v) => FComp.eq.func(v[0], v[1])) ||
+        lag.every((v) => FMath.cycliccomp(v[1], v[0], mod, fcomp));
+  }
+
+  bool isIncreasingMod(int mod, {bool strict = false}) =>
+      isMonotonicMod(mod, strict: strict, increasing: true);
+
+  bool isDecreasingMod(int mod, {bool strict = false}) =>
+      isMonotonicMod(mod, strict: strict, increasing: false);
 }
 
 extension IntListConversion on List<int> {

@@ -127,7 +127,36 @@ void main() {
     ];
 
     test("transpose", () {
-      expect(l.transposed, [[1,1],[2,2],[3,3]]);
+      expect(l.transposed, [
+        [1, 1],
+        [2, 2],
+        [3, 3]
+      ]);
+    });
+  });
+
+  group("monotonic", () {
+    final l1 = [0, 1, 2, 3, 4, 5, 5, 6];
+    final l2 = [58, 59, 0, 1, 2];
+    final l3 = [23,23,23];
+
+    test("basic", () {
+      expect(l1.isMonotonic(), true);
+      expect(l1.isMonotonic(strict: true), false);
+      expect(l1.isMonotonic(increasing: false), false);
+      expect(l1.reversed.isMonotonic(increasing: false), true);
+      expect(l1.reversed.isMonotonic(strict: true, increasing: false), false);
+      expect(l3.isIncreasing(), true);
+      //expect(l3.isDecreasing(), true);
+    });
+
+    test("mod", () {
+      expect(l2.isMonotonicMod(60), true);
+      expect(l2.isMonotonicMod(60, increasing: false), false);
+      expect(l2.reversed.isMonotonicMod(60, increasing: false), true);
+      expect(l2.isMonotonicMod(40), false);
+      expect(l3.isIncreasingMod(40), true);
+      expect(l3.isDecreasingMod(40), true);
     });
   });
 }

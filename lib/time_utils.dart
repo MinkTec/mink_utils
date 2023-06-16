@@ -2,11 +2,51 @@ import 'dart:collection';
 
 import 'package:mink_utils/conversion_utils.dart';
 import 'package:mink_utils/iterable_utils.dart';
+import 'package:quiver/time.dart';
 
 import 'classes/timespan.dart';
 import 'mixins/time_bound.dart';
 
 // DateTime ago(Duration d) => DateTime.now().subtract(d);
+
+enum TimeUnit {
+  year,
+  month,
+  day,
+  hour,
+  minute,
+  second,
+  millisecond,
+  microsecond,
+  nanosecond
+}
+
+extension TimeUnitInfo on TimeUnit {
+  int mod({DateTime? at}) {
+    switch (this) {
+      case TimeUnit.year:
+        return 100;
+      case TimeUnit.month:
+        return 12;
+      case TimeUnit.day:
+        if (at != null) {
+          return daysInMonth(at.year, at.month);
+        } else {
+          return 30;
+        }
+      case TimeUnit.hour:
+      case TimeUnit.minute:
+      case TimeUnit.second:
+        return 60;
+      case TimeUnit.millisecond:
+        return 1000;
+      case TimeUnit.microsecond:
+        return 1000000;
+      case TimeUnit.nanosecond:
+        return 1000000000;
+    }
+  }
+}
 
 extension ToDateTime on int {
   DateTime toDateTime() => DateTime.fromMillisecondsSinceEpoch(this);
