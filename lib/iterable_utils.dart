@@ -98,6 +98,29 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<T> skipLast(int n) => take(length - n);
 
+  List<S> eagerMap<S>(S Function(T e) f) => [for (var s in this) f(s)];
+
+  Iterable<(T, S)> zip<S>(Iterable<S> s) sync* {
+    final i1 = iterator;
+    final i2 = s.iterator;
+
+    while (i1.moveNext() && i2.moveNext()) {
+      yield (i1.current, i2.current);
+    }
+  }
+
+  Iterable<(int, (T, S))> zipIndexed<S>(Iterable<S> s) sync* {
+    final i1 = iterator;
+    final i2 = s.iterator;
+
+    int c = 0;
+
+    while (i1.moveNext() && i2.moveNext()) {
+      yield (c, (i1.current, i2.current));
+      c++;
+    }
+  }
+
   T mostCommon() =>
       countElements().entries.reduce((a, b) => a.value > b.value ? a : b).key;
 

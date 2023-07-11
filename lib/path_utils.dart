@@ -3,13 +3,9 @@ import 'package:archive/archive_io.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xdg_directories/xdg_directories.dart';
 
-Future<String> get getLocalPath async {
-  if (!Platform.isLinux) {
-    return await getApplicationDocumentsDirectory().then((e) => e.path);
-  } else {
-    return "${dataHome.path}/de.minktec.rectify/";
-  }
-}
+Future<String> get getLocalPath async => !Platform.isLinux
+    ? await getApplicationDocumentsDirectory().then((e) => e.path)
+    : "${dataHome.path}/de.minktec.rectify/";
 
 Future<String> get getDownloadsPath async =>
     (await getDownloadsDirectory())?.path ?? await getLocalPath;
