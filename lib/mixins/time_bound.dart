@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:mink_utils/mink_utils.dart';
@@ -40,7 +39,7 @@ class TimeBoundMethods {
       List<S> data, Iterable<DateTime> times) {
     final Map<DateTime, S> idMap =
         Map.fromEntries(data.map((e) => MapEntry(e.time, e)));
-    return [for (var time in times) idMap[time]!];
+    return times.eagerMap((e) => idMap[e]!);
   }
 
   /// bruh
@@ -57,8 +56,7 @@ class TimeBoundMethods {
     final sparsestTimespan = blocks.elementAt([
       for (var t in blocks)
         vals
-            .where((e) => e.time.isIn(t))
-            .toList()
+            .eagerWhere((e) => e.time.isIn(t))
             .time
             .diff()
             .map((e) => e.inMilliseconds.abs())
@@ -72,16 +70,20 @@ class TimeBoundMethods {
             sparsestTimespan.duration.inMilliseconds));
   }
 
-  static List<S> takeEqualySpaced<S extends TimeBound>(List<S> data, int n) =>
-      selectValues(
-          data,
-          reduceToDelta(
-                  data,
-                  Duration(
-                      milliseconds: (data.last.time
-                                  .difference(data.first.time)
-                                  .inMilliseconds /
-                              n)
-                          .ceil()))
-              .map((e) => e.time));
+  /// this function has an edgecase where -- if verey timestamp is exactly equaly
+  /// spaced it selects n + 1 values
+  static List<S> takeEqualySpaced<S extends TimeBound>(List<S> data, int n) {
+    data.sort((a, b) => a.time.compareTo(b.time));
+    return selectValues(
+        data,
+        reduceToDelta(
+                data,
+                Duration(
+                    milliseconds: (data.last.time
+                                .difference(data.first.time)
+                                .inMilliseconds /
+                            n)
+                        .ceil()))
+            .map((e) => e.time));
+  }
 }

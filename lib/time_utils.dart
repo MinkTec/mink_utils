@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:mink_utils/conversion_utils.dart';
 import 'package:mink_utils/iterable_utils.dart';
 import 'package:quiver/time.dart';
@@ -182,12 +183,15 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<TimeBound> {
     return [for (var time in times) idMap[time]!];
   }
 
-  Iterable<S> takeEqualySpaced<S extends TimeBound>(int n) =>
-      selectValues(reduceToDelta(Duration(
-              milliseconds:
-                  (last.time.difference(first.time).inMilliseconds / n).ceil()))
-          .toList()
-          .time);
+  Iterable<S> takeEqualySpaced<S extends TimeBound>(int n) {
+    sort((a, b) => a.time.compareTo(b.time));
+
+    return selectValues(reduceToDelta(Duration(
+            milliseconds:
+                (last.time.difference(first.time).inMilliseconds / n).ceil()))
+        .toList()
+        .time);
+  }
 }
 
 extension DateTimeIterableExtensions on Iterable<DateTime> {
@@ -214,6 +218,12 @@ extension DateTimeListExtension on List<DateTime> {
         .lag
         .map((e) => Timespan(begin: this[e.first], end: this[e.last - 1]));
   }
+
+  void sortNormal({bool ascending = true}) =>
+      sort(ascending ? (a, b) => a.compareTo(b) : (b, a) => a.compareTo(b));
+
+  List<DateTime> sortedNormal({bool ascending = true}) =>
+      sorted(ascending ? (a, b) => a.compareTo(b) : (b, a) => a.compareTo(b));
 
   /// calculate the frequency of the give iterable
   /// either n (number of elements) or duration can be set

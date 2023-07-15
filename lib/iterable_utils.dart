@@ -100,6 +100,20 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   List<S> eagerMap<S>(S Function(T e) f) => [for (var s in this) f(s)];
 
+  List<T> eagerWhere(bool Function(T e) f) => [
+        for (var s in this)
+          if (f(s)) s
+      ];
+
+  List<S> eagerMapWhere<S>(
+          {required bool Function(T e) where, required S Function(T e) map}) =>
+      [
+        for (var s in this)
+          if (where(s)) map(s)
+      ];
+
+  Iterable<(int, T)> enumerate() => List<int>.generate(length, id).zip(this);
+
   Iterable<(T, S)> zip<S>(Iterable<S> s) sync* {
     final i1 = iterator;
     final i2 = s.iterator;
