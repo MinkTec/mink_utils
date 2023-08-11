@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'dart:collection';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -278,6 +280,16 @@ extension BasicIteratorMethods<T> on Iterable<T> {
       return skip(l + i1 + 1).take(i2 - i1);
     }
   }
+
+  T at(int i) {
+    if (i < 0) {
+      return at(length - i);
+    } else {
+      final it = iterator;
+      for (int j = 0; j <= i; j++) it.moveNext();
+      return it.current;
+    }
+  }
 }
 
 extension QueueExtensions<T> on Queue<T> {
@@ -287,6 +299,15 @@ extension QueueExtensions<T> on Queue<T> {
       removeFirst();
     }
   }
+
+  void shift(T val) {
+    if (isNotEmpty) {
+      removeFirst();
+    }
+    addLast(val);
+  }
+
+  void shiftn(T val, int n) => pushn(val, n);
 }
 
 extension NumIteratorExtensions<T extends num> on Iterable<T> {
@@ -409,6 +430,14 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
     while (it.moveNext()) {
       yield (last - it.current).abs() as T;
       last = it.current;
+    }
+  }
+
+  double takesmooth([int n = 4]) {
+    try {
+      return (pysublist(-n - 1, -1)).sum / n;
+    } catch (e) {
+      return 0;
     }
   }
 }
