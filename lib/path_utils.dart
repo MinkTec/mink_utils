@@ -53,3 +53,20 @@ Future<File> createArchive(String name, Iterable<File> files) async {
   encoder.close();
   return archive;
 }
+
+class PathBuf {
+  static final splitChar = Platform.isWindows ? "\\" : "/";
+
+  String path;
+  PathBuf(this.path);
+
+  Iterable<T> _allButLast<T>(List<T> l) => l.take(l.length - 1);
+
+  Iterable<String> get _splits => path.split(splitChar);
+
+  String get basepath => _allButLast(path.split(splitChar)).join(splitChar);
+
+  String get end => _splits.last;
+
+  String? get extension => path.split(".").last;
+}
