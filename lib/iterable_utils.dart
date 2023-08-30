@@ -100,6 +100,8 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<T> skipLast(int n) => take(length - n);
 
+  Iterable<T> takeLast(int n) => skip(length - n).take(1000000);
+
   List<S> eagerMap<S>(S Function(T e) f) => [for (var s in this) f(s)];
 
   List<T> eagerWhere(bool Function(T e) f) => [
