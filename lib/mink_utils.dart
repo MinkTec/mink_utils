@@ -30,3 +30,4 @@ export 'transforms.dart';
 export 'mixins/time_bound.dart';
 export 'mixins/csv_mixin.dart';
 export 'path_utils.dart';
+export 'classes/byte_size.dart';

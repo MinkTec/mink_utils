@@ -70,3 +70,16 @@ class PathBuf {
 
   String? get extension => path.split(".").last;
 }
+
+extension MinkUtilsDirExtensions on Directory {
+  Stream<FileStat> get fileStats => list().map((e) => e.statSync());
+
+  /// size of all top level files in bytes
+  Future<int> get size async {
+    int sizeInByte = 0;
+    await fileStats.forEach((stat) {
+      sizeInByte += stat.size;
+    });
+    return sizeInByte;
+  }
+}
