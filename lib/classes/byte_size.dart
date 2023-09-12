@@ -9,5 +9,7 @@ enum ByteSize {
 
   int toByte(int x) => x * math.pow(1024, index).toInt();
 
-  int fromByte(int x) => x ~/ math.pow(1024, index);
+  double fromByte(int x) => x / math.pow(1024, index);
+
+  String toByteString(int x) => fromByte(x).toStringAsFixed(2) + name;
 }

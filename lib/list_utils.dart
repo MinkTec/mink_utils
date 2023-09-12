@@ -85,6 +85,11 @@ extension Basics<T> on List<T> {
     }
   }
 
+  List<T> get shuffled {
+    shuffle();
+    return this;
+  }
+
   List<List<T>> nTimes(int n) => [for (int i = 0; i < n; i++) this];
 
   Iterable<T> takeRandom(int n) sync* {
