@@ -25,6 +25,8 @@ extension DurationToHHMMSS on Duration {
   String get hhmmss =>
       "$inHours:${twoDigits(inMinutes.remainder(60))}:${twoDigits(inSeconds.remainder(60))}";
 
+  String get mmss => "${inMinutes.remainder(60)}:${twoDigits(inSeconds.remainder(60))}";
+
   String humanReadable() =>
       "$inHours:${twoDigits(inMinutes.remainder(60))}:${twoDigits(inSeconds.remainder(60))}";
   String plotAxisLabel() {

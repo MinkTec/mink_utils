@@ -100,7 +100,7 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<T> skipLast(int n) => take(length - n);
 
-  Iterable<T> takeLast(int n) => skip(length - n).take(1000000);
+  Iterable<T> takeLast(int n) => skip(math.max(0, length - n)).take(1000000);
 
   List<S> eagerMap<S>(S Function(T e) f) => [for (var s in this) f(s)];
 
@@ -139,8 +139,9 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     }
   }
 
-  T mostCommon() =>
-      countElements().entries.reduce((a, b) => a.value > b.value ? a : b).key;
+  T? mostCommon() => isNotEmpty
+      ? countElements().entries.reduce((a, b) => a.value > b.value ? a : b).key
+      : null;
 
   Iterable<T> rotate([int n = 1]) sync* {
     var it = iterator;
