@@ -52,14 +52,18 @@ extension MiscIterableIterable<T> on Iterable<Iterable<T>> {
   List<List<T>> deepList() => map((e) => e.toList()).toList();
 }
 
+extension RecordZip2<T, S> on (List<T>, List<S>) {
+  List<(T, S)> zip() => [for (int i = 0; i < $1.length; i++) ($1[i], $2[i])];
+}
+
+extension RecordZip3<T, S, X> on (List<T>, List<S>, List<X>) {
+  List<(T, S, X)> zip() =>
+      [for (int i = 0; i < $1.length; i++) ($1[i], $2[i], $3[i])];
+}
+
 extension TypedZip2<T, S> on Tuple2<List<T>, List<S>> {
-  List<Tuple2<T, S>> zip() {
-    List<Tuple2<T, S>> l = [];
-    for (int i = 0; i < item1.length; i++) {
-      l.add(Tuple2(item1[i], item2[i]));
-    }
-    return l;
-  }
+  List<Tuple2<T, S>> zip() =>
+      [for (int i = 0; i < item1.length; i++) Tuple2(item1[i], item2[i])];
 }
 
 extension MoreFlatten<T> on Iterable<Iterable<Iterable<T>>> {
