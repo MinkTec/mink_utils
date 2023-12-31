@@ -5,11 +5,8 @@ homepage: https://github.com/minktec/mink_utils
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
-  flutter: ">=1.17.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   tuple: ^2.0.1
   collection: ^1.17.0
   quiver: ^3.2.1
@@ -21,8 +18,5 @@ dependencies:
   archive: any
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
-
-flutter:
+  lints: ^2.0.0
+  test: ^1.24.9

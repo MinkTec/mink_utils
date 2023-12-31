@@ -1,9 +1,10 @@
 import 'package:collection/collection.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/basic_utils.dart';
 import 'package:mink_utils/classes/timespan.dart';
 import 'package:mink_utils/time_utils.dart';
 import 'dart:io' show File;
+
+import 'package:test/test.dart';
 
 List<DateTime> readTestData() => File("./test/measurements.csv")
     .readAsLinesSync()

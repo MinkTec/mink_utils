@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'classes/timespan.dart';
 
@@ -83,8 +82,4 @@ String twoDigits(int n) => n.toString().padLeft(2, "0");
 
 extension ReplacementExtension on String {
   String removeBrackets() => replaceAll(RegExp(r'(\[|\])'), "");
-}
-
-extension ColorConversion on Color {
-  List<int> toColorCode() => [alpha, red, green, blue];
 }

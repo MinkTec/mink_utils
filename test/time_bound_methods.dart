@@ -1,7 +1,6 @@
 import 'dart:math' as math;
-import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/mink_utils.dart';
+import 'package:test/test.dart';
 
 class TB with TimeBound {
   @override

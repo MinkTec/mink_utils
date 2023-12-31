@@ -1,6 +1,5 @@
-import 'dart:math' as math;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/mink_utils.dart';
+import 'package:test/test.dart';
 
 void main() {
   final linear = List<int>.generate(10, (i) => i);

@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:mink_utils/iterable_utils.dart';
 import 'package:mink_utils/list_utils.dart';
+import 'package:test/test.dart';
 
 void main() {
   group("iterables", () {
