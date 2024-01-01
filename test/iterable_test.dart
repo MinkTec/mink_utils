@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:mink_utils/iterable_utils.dart';
-import 'package:mink_utils/list_utils.dart';
+import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -138,7 +137,7 @@ void main() {
   group("monotonic", () {
     final l1 = [0, 1, 2, 3, 4, 5, 5, 6];
     final l2 = [58, 59, 0, 1, 2];
-    final l3 = [23,23,23];
+    final l3 = [23, 23, 23];
 
     test("basic", () {
       expect(l1.isMonotonic(), true);

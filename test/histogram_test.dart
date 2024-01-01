@@ -1,6 +1,5 @@
 import 'dart:math' as math;
-import 'package:mink_utils/basic_utils.dart';
-import 'package:mink_utils/histogram_utils.dart';
+import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'package:test/test.dart';
 
 void main() {

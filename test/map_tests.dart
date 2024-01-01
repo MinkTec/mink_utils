@@ -1,3 +1,4 @@
+import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'package:mink_utils/mink_utils.dart';
 import 'package:test/test.dart';
 
@@ -8,7 +9,7 @@ void main() {
     test("base", () {
       final map = {1: 0};
 
-      expect(map.addIfNew([2], 0), {1:0,2:0});
+      expect(map.addIfNew([2], 0), {1: 0, 2: 0});
     });
   });
 }

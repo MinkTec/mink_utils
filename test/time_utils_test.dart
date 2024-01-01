@@ -1,7 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:mink_utils/basic_utils.dart';
-import 'package:mink_utils/classes/timespan.dart';
-import 'package:mink_utils/time_utils.dart';
+import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'dart:io' show File;
 
 import 'package:test/test.dart';

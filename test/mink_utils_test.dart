@@ -7,11 +7,11 @@ import 'curve_fitting_test.dart' as curves;
 import 'time_bound_methods.dart' as timebound;
 
 void main() {
-  //curves.main();
-  //iterables.main();
-  //time.main();
-  //histogram.main();
-  //map.main();
-  //transform.main();
+  curves.main();
+  iterables.main();
+  time.main();
+  histogram.main();
+  map.main();
+  transform.main();
   timebound.main();
 }

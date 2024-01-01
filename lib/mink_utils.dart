@@ -14,19 +14,5 @@
 
 library mink_utils;
 
-export 'time_utils.dart';
-export 'iterable_utils.dart';
-export 'list_utils.dart';
-export 'basic_utils.dart';
-export 'conversion_utils.dart';
-export 'math_utils.dart';
-export 'future_utils.dart';
-export 'classes/timespan.dart';
-export 'string_utils.dart';
-export 'histogram_utils.dart';
-export 'map_utils.dart';
-export 'classes/timed_data.dart';
-export 'transforms.dart';
-export 'mixins/mixins.dart';
-export 'path_utils.dart';
-export 'classes/byte_size.dart';
+export 'package:mink_dart_utils/mink_dart_utils.dart';
+export 'package:mink_flutter_utils/mink_flutter_utils.dart';

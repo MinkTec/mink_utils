@@ -1,0 +1,25 @@
+name: mink_utils
+repository: https://github.com/MinkTec/mink_utils.git
+
+packages:
+  - ../mink_utils
+  - ./packages/**
+
+command:
+  environment:
+    sdk: ">=3.0.0 <4.0.0"
+    flutter: ">=3.0.0 <4.0.0"
+  bootstrap:
+    runPubGetInParallel: true
+    usePubspecOverrides: true
+    dependencies:
+      mink_dart_utils:
+        git:
+          url: git@github.com:MinkTec/mink_utils.git
+          path: packages/mink_dart_utils
+          ref: HEAD
+      mink_flutter_utils:
+        git:
+          url: git@github.com:MinkTec/mink_utils.git
+          path: packages/mink_flutter_utils
+          ref: HEAD
