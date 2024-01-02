@@ -16,4 +16,3 @@ library mink_utils;
 
 export 'package:mink_dart_utils/mink_dart_utils.dart';
 export 'package:mink_flutter_utils/mink_flutter_utils.dart';
-export 'package:collection/collection.dart';
