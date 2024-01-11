@@ -40,6 +40,8 @@ extension BasicIteratorMethods<T> on Iterable<T> {
           if (where(s)) map(s)
       ];
 
+  //List<T> sorted(Comparator<T> compare) => [...this]..sort(compare);
+
   Iterable<(int, T)> enumerate() => List<int>.generate(length, id).zip(this);
 
   Iterable<(T, S)> zip<S>(Iterable<S> s) sync* {
