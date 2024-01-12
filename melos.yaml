@@ -17,9 +17,7 @@ command:
         git:
           url: git@github.com:MinkTec/mink_utils.git
           path: packages/mink_dart_utils
-          ref: HEAD
       mink_flutter_utils:
         git:
           url: git@github.com:MinkTec/mink_utils.git
           path: packages/mink_flutter_utils
-          ref: HEAD
