@@ -66,7 +66,11 @@ class Timespan {
 
   @override
   String toString() {
-    return """Timespan from $begin - $end, lasting $duration""";
+    return """Timespan {
+    begin:    $begin
+    end:      $end
+    duration: $duration
+}""";
   }
 
   /// The update function handles not only the updates to an existing

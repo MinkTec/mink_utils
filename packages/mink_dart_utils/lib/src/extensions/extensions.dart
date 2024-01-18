@@ -11,3 +11,5 @@ export 'num_iterable_extensions.dart';
 export 'record_zip.dart';
 export 'string_extensions.dart';
 export 'time_bound_list_extensions.dart';
+export 'timespanning_list_extensions.dart';
+export 'timespan_iterable_extensions.dart';
