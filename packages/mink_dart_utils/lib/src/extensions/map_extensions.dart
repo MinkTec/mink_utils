@@ -14,4 +14,11 @@ extension BigIfTrue<T, S> on Map<T, S> {
     }
     return map;
   }
+
+  /// createds a copy of [this]
+  Map<T, S> combined(Map<T, S> other) {
+    final newDict = copy();
+    newDict.addAll(other);
+    return newDict;
+  }
 }
