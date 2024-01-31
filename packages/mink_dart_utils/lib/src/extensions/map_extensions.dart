@@ -21,4 +21,10 @@ extension BigIfTrue<T, S> on Map<T, S> {
     newDict.addAll(other);
     return newDict;
   }
+
+  void addIfNotNull(T key, S? val) {
+    if (val != null) {
+      this[key] = val;
+    }
+  }
 }
