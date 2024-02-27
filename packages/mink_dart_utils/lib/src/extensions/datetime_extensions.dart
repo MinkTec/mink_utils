@@ -62,6 +62,9 @@ extension Comparisons on DateTime {
   DateTime beginOfYear() => DateTime(year);
   DateTime endOfYear() => DateTime(year + 1);
 
+  String get yymmdd =>
+      "$year-${month.toString().padLeft(2, "0")}-${day.toString().padLeft(2, "0")}";
+
   String get hhmm => "$hour:${twoDigits(minute.remainder(60))}";
   String get hhmmss =>
       "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}";
