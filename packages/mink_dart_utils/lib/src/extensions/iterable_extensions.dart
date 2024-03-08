@@ -26,7 +26,7 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<T> takeLast(int n) => skip(math.max(0, length - n)).take(1000000);
 
-  List<S> eagerMap<S>(S Function(T) f) =>
+  List<S> eagerMap<S>(S Function(T x) f) =>
       [for (var element in this) f(element)];
 
   List<T> eagerWhere(bool Function(T) f) => [
