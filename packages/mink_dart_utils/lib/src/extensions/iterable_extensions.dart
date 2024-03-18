@@ -45,6 +45,12 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<(int, T)> enumerate() => List<int>.generate(length, id).zip(this);
 
+  /// enumerates the list but inverses (just) the indices
+  Iterable<(int, T)> enumerateReverse() {
+    final len = length;
+    return List<int>.generate(len, (x) => len - x - 1).zip(this);
+  }
+
   Iterable<(T, S)> zip<S>(Iterable<S> s) sync* {
     final i1 = iterator;
     final i2 = s.iterator;
