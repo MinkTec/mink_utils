@@ -109,6 +109,12 @@ class ClusteredData {
 
     for (int i = 0; i < data.first.length; i++) {
       for (int d = 0; d < data.length; d++) {
+        var a = data[d][i];
+        var b = borders[d].first;
+        var c = deltas[d];
+        var cc = ((data[d][i] - borders[d].first) / deltas[d]);
+        var ccc = (((data[d][i] - borders[d].first) / deltas[d]) * (n)).floor();
+
         coords[d] =
             (((data[d][i] - borders[d].first) / deltas[d]) * (n)).floor();
       }
