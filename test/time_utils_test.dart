@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'dart:io' show File;
 
@@ -149,10 +148,12 @@ void main() {
 
     test("nearest element", () {
       final now = DateTime.now();
-      final times = List<DateTime>.generate(
-          20, (i) => now.subtract(Duration(minutes: i)));
+      final times =
+          List<DateTime>.generate(20, (i) => now.subtract(Duration(minutes: i)))
+              .sorted((a, b) => a.compareTo(b));
 
       expect(times.getNearest(now), now);
+      expect(times.getNearestFromSorted(now), now);
       expect(
           times.getNearest(now.subtract(const Duration(milliseconds: 500)),
               maxDeviation: const Duration(milliseconds: 100)),

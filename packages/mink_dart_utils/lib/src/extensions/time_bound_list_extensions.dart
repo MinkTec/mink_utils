@@ -1,15 +1,54 @@
 import 'dart:collection';
 
+import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_list_extensions.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 
-extension DateTimeExtensionWrapper<T extends TimeBound> on List<TimeBound> {
+extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
   List<DateTime> get time => [for (var tb in this) tb.time];
 
   TimeBound? getNearest(DateTime time, {Duration? maxDeviation}) {
     final DateTime? foundTime =
         this.time.getNearest(time, maxDeviation: maxDeviation);
     return foundTime == null ? null : firstWhere((e) => e.time == foundTime);
+  }
+
+  T? getNearestFromSorted(DateTime time, {Duration? maxDeviation}) {
+    if (isEmpty) return null;
+
+    T getClosest(DateTime time, T a, T b) =>
+        time.firstIsClosest(a.time, b.time) ? a : b;
+
+    int low = 0;
+    int high = length - 1;
+    int mid;
+
+    while (low <= high) {
+      mid = (low + high) ~/ 2;
+
+      if (this[mid] == time) {
+        return this[mid];
+      }
+
+      if (time.isBefore(this[mid].time)) {
+        high = mid - 1;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    final T result = low == 0
+        ? getClosest(time, this[0], this[1])
+        : high == length - 1
+            ? getClosest(time, this[high], this[high - 1])
+            : getClosest(time, this[low], this[high]);
+
+    if (maxDeviation == null ||
+        result.time.difference(time).abs() < maxDeviation) {
+      return result;
+    } else {
+      return null;
+    }
   }
 
   /// removes all values in List<DateTime> that are closer together,

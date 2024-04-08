@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 import 'package:mink_dart_utils/src/models/timespan.dart';
 
@@ -60,13 +61,46 @@ extension DateTimeListExtension on List<DateTime> {
   }
 
   DateTime? getNearest(DateTime time, {Duration? maxDeviation}) {
-    if (isEmpty) return null;
     final res = reduce(
         (a, b) => a.difference(time).abs() > b.difference(time).abs() ? b : a);
     return (maxDeviation == null ||
             res.difference(time).abs() < maxDeviation.abs())
         ? res
         : null;
+  }
+
+  DateTime? getNearestFromSorted(DateTime time, {Duration? maxDeviation}) {
+    if (isEmpty) return null;
+
+    int low = 0;
+    int high = length - 1;
+    int mid;
+
+    while (low <= high) {
+      mid = (low + high) ~/ 2;
+
+      if (this[mid] == time) {
+        return this[mid];
+      }
+
+      if (time.isBefore(this[mid])) {
+        high = mid - 1;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    final result = low == 0
+        ? time.getClosest(this[0], this[1])
+        : high == length - 1
+            ? time.getClosest(this[high], this[high - 1])
+            : time.getClosest(this[low], this[high]);
+
+    if (maxDeviation == null || result.difference(time).abs() < maxDeviation) {
+      return result;
+    } else {
+      return null;
+    }
   }
 
   /// removes all values in List<DateTime> that are closer together,
