@@ -175,6 +175,15 @@ class Timespan {
         : align.get(this).difference(mn).abs().inDays + 1;
   }
 
+  Iterable<Timespan> split(Duration duration) sync* {
+    DateTime tempTime = begin;
+    while (tempTime.isBefore(end)) {
+      yield Timespan(begin: tempTime, duration: duration);
+      tempTime = tempTime.add(duration);
+    }
+
+  }
+
   /// get all weeks that overlap with a the [Timespan]
   Iterable<Timespan> get weeks sync* {
     DateTime tempTime = begin.beginOfWeek();
