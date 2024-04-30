@@ -5,3 +5,4 @@ export 'timed_data.dart';
 export 'timespan.dart';
 export 'time_unit.dart';
 export 'lock.dart';
+export 'fraction_counter.dart';
