@@ -6,6 +6,7 @@ import 'transform_test.dart' as transform;
 import 'curve_fitting_test.dart' as curves;
 import 'time_bound_methods.dart' as timebound;
 import 'lock_test.dart' as lock;
+import 'semver.dart' as semver;
 
 void main() {
   curves.main();
@@ -16,4 +17,5 @@ void main() {
   transform.main();
   timebound.main();
   lock.main();
+  semver.main();
 }

@@ -48,9 +48,6 @@ void main() {
 
       final other = tb.takeEqualySpaced(n).toList().time.sortedNormal();
 
-      print(selected);
-      print(other);
-
       for (var (a, b) in selected.zip(other)) {
         expect(a, b);
       }
