@@ -18,8 +18,8 @@ class SemVer implements Comparable<SemVer> {
 
   factory SemVer.fromList(List<int> semver, {String? label}) => SemVer(
         major: semver[0],
-        minor: semver[1],
-        patch: semver[2],
+        minor: semver.length >= 2 ? semver[1] : 0,
+        patch: semver.length >= 3 ? semver[2] : 0,
         label: label,
       );
 
@@ -33,6 +33,8 @@ class SemVer implements Comparable<SemVer> {
       label: label,
     );
   }
+
+  List<int> toList() => [major, minor, patch];
 
   SemVer copyWith({
     int? major,
@@ -69,25 +71,13 @@ class SemVer implements Comparable<SemVer> {
     return string;
   }
 
-  bool operator <(SemVer other) {
-    final comp = compareTo(other);
-    return comp == -1;
-  }
+  bool operator <(SemVer other) => compareTo(other) == -1;
 
-  bool operator <=(SemVer other) {
-    final comp = compareTo(other);
-    return comp != 1;
-  }
+  bool operator <=(SemVer other) => compareTo(other) != 1;
 
-  bool operator >(SemVer other) {
-    final comp = compareTo(other);
-    return comp == 1;
-  }
+  bool operator >(SemVer other) => compareTo(other) == 1;
 
-  bool operator >=(SemVer other) {
-    final comp = compareTo(other);
-    return comp != -1;
-  }
+  bool operator >=(SemVer other) => compareTo(other) != -1;
 
   @override
   int compareTo(SemVer other) {
