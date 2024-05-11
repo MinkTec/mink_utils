@@ -8,10 +8,13 @@ abstract class FractionCounter {
 }
 
 class ProgressFractionCounter extends FractionCounter {
-  ProgressFractionCounter({required this.denominator});
+  ProgressFractionCounter({
+    required this.denominator,
+    this.numerator = 0,
+  });
 
   @override
-  int numerator = 0;
+  int numerator;
 
   @override
   final int denominator;
