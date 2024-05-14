@@ -23,6 +23,26 @@ class SemVer implements Comparable<SemVer> {
         label: label,
       );
 
+  Map<String, dynamic>? toJson() => {
+        "major": major,
+        "minor": minor,
+        "path": patch,
+        "label": label,
+      };
+
+  static Map<String, dynamic>? toJsonStatic(SemVer? semver) => semver?.toJson();
+
+  static SemVer? fromJson(Map<String, dynamic> json) {
+    return json.containsKey("major")
+        ? SemVer(
+            major: json["major"],
+            minor: json["minor"],
+            patch: json["path"],
+            label: json["label"],
+          )
+        : null;
+  }
+
   factory SemVer.parse(String semver) {
     final parts = semver.split(RegExp(r"(\.|\+)"));
     final label = parts.length == 4 ? parts.last : null;

@@ -5,6 +5,13 @@ abstract class FractionCounter {
   double get value => numerator / denominator;
 
   void reset();
+
+  @override
+  operator ==(Object other) =>
+      (other is FormatException && hashCode == other.hashCode);
+
+  @override
+  int get hashCode => numerator ^ denominator;
 }
 
 class ProgressFractionCounter extends FractionCounter {
@@ -21,6 +28,12 @@ class ProgressFractionCounter extends FractionCounter {
 
   void increment() {
     numerator++;
+  }
+
+  void decrement() {
+    if (numerator > 0) {
+      numerator--;
+    }
   }
 
   @override
