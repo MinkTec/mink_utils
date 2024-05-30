@@ -7,8 +7,10 @@ import 'curve_fitting_test.dart' as curves;
 import 'time_bound_methods.dart' as timebound;
 import 'lock_test.dart' as lock;
 import 'semver.dart' as semver;
+import 'timeout_buffer.dart' as timeout_buffer;
 
 void main() {
+  timeout_buffer.main();
   curves.main();
   iterables.main();
   time.main();
