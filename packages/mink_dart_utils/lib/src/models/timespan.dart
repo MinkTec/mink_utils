@@ -116,8 +116,8 @@ class Timespan {
 
   @override
   int get hashCode =>
-      begin.microsecondsSinceEpoch +
-      duration.inMicroseconds +
+      begin.microsecondsSinceEpoch ^
+      duration.inMicroseconds ^
       end.microsecondsSinceEpoch;
 
   @override
@@ -181,7 +181,6 @@ class Timespan {
       yield Timespan(begin: tempTime, duration: duration);
       tempTime = tempTime.add(duration);
     }
-
   }
 
   /// get all weeks that overlap with a the [Timespan]
