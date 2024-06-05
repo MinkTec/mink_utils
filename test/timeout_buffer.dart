@@ -1,9 +1,44 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:test/test.dart';
 import 'package:mink_utils/mink_utils.dart';
 
 main() async {
+  group("timeout value", () {
+    int counter = 0;
+
+    final value = TimeoutValue<int>(
+        value: 0,
+        timeout: Duration(milliseconds: 100),
+        onTimeout: (x) {
+          counter = x;
+        });
+
+    test("baseline", () {
+      expect(value.value, 0);
+      expect(counter, 0);
+    });
+
+    test("set value", () async {
+      int counter = 0;
+      final value = TimeoutValue<int>(
+          value: 0,
+          timeout: Duration(milliseconds: 100),
+          onTimeout: (x) {
+            counter = x;
+          });
+
+      value.value = 1;
+      expect(value.value, 1);
+      expect(counter, 0);
+
+      await sleepms(110);
+      expect(value.value, 1);
+      counter = 1;
+    });
+  });
+
   group("timeout buffer", () {
     final List<int> callbackCounter = [];
     final buffer = TimeoutBuffer<int>(

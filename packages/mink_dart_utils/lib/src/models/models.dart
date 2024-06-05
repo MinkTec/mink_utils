@@ -8,4 +8,5 @@ export 'lock.dart';
 export 'fraction_counter.dart';
 export 'semver.dart';
 export 'string_format.dart';
+export 'timeout_value.dart';
 export 'timeout_buffer.dart';
