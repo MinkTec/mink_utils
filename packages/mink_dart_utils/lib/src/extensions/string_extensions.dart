@@ -38,6 +38,9 @@ extension DurationConversion on String {
   }
 
   String removeBrackets() => replaceAll(RegExp(r'(\[|\])'), "");
+
+  String toSnakeCase() => replaceAllMapped(
+      RegExp(r'([A-Z])'), (Match match) => "_${match.group(0)!.toLowerCase()}");
 }
 
 extension Emptiness on String? {
