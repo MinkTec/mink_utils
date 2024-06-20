@@ -13,6 +13,33 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
     return foundTime == null ? null : firstWhere((e) => e.time == foundTime);
   }
 
+  int? getNearestIndexFromSorted(DateTime time, {Duration? maxDeviation}) {
+    if (isEmpty) return null;
+
+    T getClosest(DateTime time, T a, T b) =>
+        time.firstIsClosest(a.time, b.time) ? a : b;
+
+    int low = 0;
+    int high = length - 1;
+    int mid;
+
+    while (low <= high) {
+      mid = (low + high) ~/ 2;
+
+      if (this[mid] == time) {
+        return mid;
+      }
+
+      if (time.isBefore(this[mid].time)) {
+        high = mid - 1;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    return time.firstIsClosest(this[low].time, this[high].time) ? low : high;
+  }
+
   T? getNearestFromSorted(DateTime time, {Duration? maxDeviation}) {
     if (isEmpty) return null;
 

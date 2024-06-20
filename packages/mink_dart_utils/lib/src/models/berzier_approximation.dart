@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:flutter/painting.dart';
 import 'package:mink_dart_utils/mink_dart_utils.dart';
 
 _distance(num x1, num y1, num x2, num y2) =>
@@ -18,19 +17,21 @@ List<num> normalizedPathLength(List<num> x, List<num> y) {
   return l;
 }
 
+/*
 Offset quadraticBezier(Offset p0, Offset p1, Offset p2, num t) => Offset(
     pow(1 - t, 2) * ((1 - t) * p0.dx + t * p1.dx) +
         t * ((1 - t) * p1.dx + t * p2.dx),
     pow(1 - t, 2) * ((1 - t) * p0.dy + t * p1.dy) +
         t * ((1 - t) * p1.dy + t * p2.dy));
 
-List<Offset> bezierOffsets(Offset p0, Offset p1, Offset p2) {
+List<Offset> _bezierOffsets(Offset p0, Offset p1, Offset p2) {
   final List<Offset> offsets = [];
   for (int i = 0; i < 100; i++) {
     offsets.add(quadraticBezier(p0, p1, p2, i));
   }
   return offsets;
 }
+*/
 
 // generates the bezier curve for a point with Bernstein polynomials.
 // n : degree

@@ -16,3 +16,15 @@ class MaybeTimedData<T> {
 
   MaybeTimedData({required this.value, this.time});
 }
+
+class TimespanningData<T> with Timespanning {
+  @override
+  final Timespan timespan;
+
+  final T value;
+
+  TimespanningData({
+    required this.timespan,
+    required this.value,
+  });
+}
