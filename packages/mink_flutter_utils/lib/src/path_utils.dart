@@ -4,7 +4,7 @@ import 'package:xdg_directories/xdg_directories.dart';
 
 Future<String> get getLocalPath async => !Platform.isLinux
     ? await getApplicationDocumentsDirectory().then((e) => e.path)
-    : "${dataHome.path}/de.minktec.rectify/";
+    : "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify${PathBuf.splitChar}";
 
 Future<String> get getDownloadsPath async =>
     (await getDownloadsDirectory())?.path ?? await getLocalPath;
@@ -12,9 +12,10 @@ Future<String> get getDownloadsPath async =>
 Future<Directory> getLocalDir(String name) async {
   if (!Platform.isLinux) {
     return Directory(
-        "${await getApplicationDocumentsDirectory().then((e) => e.path)}/$name");
+        "${await getApplicationDocumentsDirectory().then((e) => e.path)}${PathBuf.splitChar}$name");
   } else {
-    final dir = Directory("${dataHome.path}/de.minktec.rectify/$name");
+    final dir = Directory(
+        "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify${PathBuf.splitChar}$name");
     return await _createIfNeeded(dir);
   }
 }
@@ -23,14 +24,14 @@ Future<Directory> _createIfNeeded(Directory dir) async =>
     (!await dir.exists()) ? await dir.create(recursive: true) : dir;
 
 Future<File> getLocalFile(String name) async =>
-    File('${await getLocalPath}/$name');
+    File('${await getLocalPath}${PathBuf.splitChar}$name');
 
 Future<File> getDownloadsFile(String name) async =>
-    File('${await getDownloadsPath}/$name');
+    File('${await getDownloadsPath}${PathBuf.splitChar}$name');
 
 Future<File> writeToExternalFile(String name, String content) async {
   final dir = await getExternalStorageDirectory();
-  final file = File("${dir!.path}/$name");
+  final file = File("${dir!.path}${PathBuf.splitChar}$name");
   return file.writeAsString(content);
 }
 
