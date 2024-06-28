@@ -25,6 +25,9 @@ extension DurationConversion on String {
 
   List<String> get lines => split(RegExp(r"(\n|\r)+"));
 
+  Iterable<String> get notEmptyLines =>
+      split(RegExp(r"(\n|\r)+")).where((x) => x.trim().isNotEmpty);
+
   String clean({whitespaceReplace = "-"}) =>
       trim().replaceUmlaute().replaceWhitespace(whitespaceReplace);
 

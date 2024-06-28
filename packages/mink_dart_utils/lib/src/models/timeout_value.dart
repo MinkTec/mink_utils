@@ -25,3 +25,4 @@ class TimeoutValue<T> {
     _triggerTimer = Timer(timeout, () => onTimeout(_value));
   }
 }
+
