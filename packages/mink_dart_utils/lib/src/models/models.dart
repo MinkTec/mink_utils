@@ -12,3 +12,4 @@ export 'timed_data.dart';
 export 'timeout_buffer.dart';
 export 'timeout_value.dart';
 export 'timespan.dart';
+export 'predicates.dart';
