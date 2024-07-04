@@ -4,7 +4,10 @@ typedef BinaryCompFunc = bool Function(num a, num b);
 
 typedef TernaryCompFunc = bool Function(num a, num b, num c);
 
-sealed class ComparisonEnum {}
+sealed class ComparisonEnum {
+  String get label;
+  String get description;
+}
 
 enum BinaryComparison implements ComparisonEnum {
   gt,
@@ -27,9 +30,29 @@ enum BinaryComparison implements ComparisonEnum {
   Predicate<num> predicate(num reference) {
     return (num value) => func(value, reference);
   }
+
+  @override
+  String get label => switch (this) {
+        BinaryComparison.gt => ">",
+        BinaryComparison.geq => ">=",
+        BinaryComparison.le => "<",
+        BinaryComparison.leq => "<=",
+        BinaryComparison.eq => "==",
+        BinaryComparison.neq => "!=",
+      };
+
+  @override
+  String get description => switch (this) {
+        BinaryComparison.gt => "greater",
+        BinaryComparison.geq => "greater or equal",
+        BinaryComparison.le => "less",
+        BinaryComparison.leq => "less or equal",
+        BinaryComparison.eq => "equal",
+        BinaryComparison.neq => "not equal",
+      };
 }
 
-enum TernaryComparison {
+enum TernaryComparison implements ComparisonEnum {
   inside,
   insideEq,
   outside,
@@ -64,6 +87,22 @@ enum TernaryComparison {
             num c,
           ) =>
               a <= b || a >= c,
+      };
+
+  @override
+  String get label => switch (this) {
+        TernaryComparison.inside => "< x <",
+        TernaryComparison.insideEq => "<= x <=",
+        TernaryComparison.outside => "> x <",
+        TernaryComparison.outsideEq => ">= x =<"
+      };
+
+  @override
+  String get description => switch (this) {
+        TernaryComparison.inside => "between",
+        TernaryComparison.insideEq => "between or equal",
+        TernaryComparison.outside => "outside",
+        TernaryComparison.outsideEq => "outside or equal"
       };
 }
 

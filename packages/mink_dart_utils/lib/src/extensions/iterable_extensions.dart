@@ -3,6 +3,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 import 'package:collection/collection.dart';
+import 'package:mink_dart_utils/src/models/predicates.dart';
 import 'package:mink_dart_utils/src/utils/base.dart';
 import 'package:mink_dart_utils/src/utils/fmath.dart';
 
@@ -40,6 +41,20 @@ extension BasicIteratorMethods<T> on Iterable<T> {
         for (var s in this)
           if (where(s)) map(s)
       ];
+
+  (Iterable<T>, Iterable<T>) splitOnPredicate(Predicate<T> predicate) {
+    final isTrue = Queue<T>();
+    final isFalse = Queue<T>();
+
+    for (var element in this) {
+      if (predicate(element)) {
+        isTrue.add(element);
+      } else {
+        isFalse.add(element);
+      }
+    }
+    return (isTrue, isFalse);
+  }
 
   //List<T> sorted(Comparator<T> compare) => [...this]..sort(compare);
 
