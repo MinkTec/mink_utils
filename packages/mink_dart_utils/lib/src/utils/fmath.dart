@@ -4,11 +4,6 @@ typedef BinaryCompFunc = bool Function(num a, num b);
 
 typedef TernaryCompFunc = bool Function(num a, num b, num c);
 
-sealed class ComparisonEnum {
-  String get label;
-  String get description;
-}
-
 enum BinaryComparison implements ComparisonEnum {
   gt,
   geq,
@@ -18,6 +13,19 @@ enum BinaryComparison implements ComparisonEnum {
   neq,
   ;
 
+  @override
+  String get description => switch (this) {
+        BinaryComparison.gt => "greater",
+        BinaryComparison.geq => "greater or equal",
+        BinaryComparison.le => "less",
+        BinaryComparison.leq => "less or equal",
+        BinaryComparison.eq => "equal",
+        BinaryComparison.neq => "not equal",
+      };
+
+  @override
+  String get enumName => name;
+
   BinaryCompFunc get func => switch (this) {
         BinaryComparison.gt => (num a, num b) => a > b,
         BinaryComparison.geq => (num a, num b) => a >= b,
@@ -26,10 +34,6 @@ enum BinaryComparison implements ComparisonEnum {
         BinaryComparison.eq => (num a, num b) => a == b,
         BinaryComparison.neq => (num a, num b) => a != b
       };
-
-  Predicate<num> predicate(num reference) {
-    return (num value) => func(value, reference);
-  }
 
   @override
   String get label => switch (this) {
@@ -41,15 +45,37 @@ enum BinaryComparison implements ComparisonEnum {
         BinaryComparison.neq => "!=",
       };
 
-  @override
-  String get description => switch (this) {
-        BinaryComparison.gt => "greater",
-        BinaryComparison.geq => "greater or equal",
-        BinaryComparison.le => "less",
-        BinaryComparison.leq => "less or equal",
-        BinaryComparison.eq => "equal",
-        BinaryComparison.neq => "not equal",
-      };
+  Predicate<num> predicate(num reference) {
+    return (num value) => func(value, reference);
+  }
+}
+
+sealed class ComparisonEnum {
+  String get description;
+  String get enumName;
+  String get label;
+}
+
+class FMath {
+  /// https://stackoverflow.com/questions/47832475/check-if-cyclic-modulo-16-number-is-larger-than-another
+  static bool cycliccomp(int a, int b, int mod, BinaryComparison comp,
+          {int? maxStep}) =>
+      comp.func((b + mod - a) % mod, (maxStep ?? mod ~/ 2));
+
+  static BinaryComparison matchComp(
+          {bool strict = false, bool increasing = true}) =>
+      increasing
+          ? strict
+              ? BinaryComparison.gt
+              : BinaryComparison.geq
+          : strict
+              ? BinaryComparison.le
+              : BinaryComparison.leq;
+
+  static int mod(int a, int mod) => a % mod;
+
+  static bool modeq(int a, int b, int mod, BinaryComparison comp) =>
+      comp.func(a % mod, b % mod);
 }
 
 enum TernaryComparison implements ComparisonEnum {
@@ -59,8 +85,16 @@ enum TernaryComparison implements ComparisonEnum {
   outsideEq,
   ;
 
-  Predicate<num> predicate(num lower, num upper) =>
-      (num value) => func(value, lower, upper);
+  @override
+  String get description => switch (this) {
+        TernaryComparison.inside => "between",
+        TernaryComparison.insideEq => "between or equal",
+        TernaryComparison.outside => "outside",
+        TernaryComparison.outsideEq => "outside or equal"
+      };
+
+  @override
+  String get enumName => name;
 
   TernaryCompFunc get func => switch (this) {
         TernaryComparison.inside => (
@@ -97,33 +131,6 @@ enum TernaryComparison implements ComparisonEnum {
         TernaryComparison.outsideEq => ">= x =<"
       };
 
-  @override
-  String get description => switch (this) {
-        TernaryComparison.inside => "between",
-        TernaryComparison.insideEq => "between or equal",
-        TernaryComparison.outside => "outside",
-        TernaryComparison.outsideEq => "outside or equal"
-      };
-}
-
-class FMath {
-  static BinaryComparison matchComp(
-          {bool strict = false, bool increasing = true}) =>
-      increasing
-          ? strict
-              ? BinaryComparison.gt
-              : BinaryComparison.geq
-          : strict
-              ? BinaryComparison.le
-              : BinaryComparison.leq;
-
-  static int mod(int a, int mod) => a % mod;
-
-  /// https://stackoverflow.com/questions/47832475/check-if-cyclic-modulo-16-number-is-larger-than-another
-  static bool cycliccomp(int a, int b, int mod, BinaryComparison comp,
-          {int? maxStep}) =>
-      comp.func((b + mod - a) % mod, (maxStep ?? mod ~/ 2));
-
-  static bool modeq(int a, int b, int mod, BinaryComparison comp) =>
-      comp.func(a % mod, b % mod);
+  Predicate<num> predicate(num lower, num upper) =>
+      (num value) => func(value, lower, upper);
 }
