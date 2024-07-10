@@ -27,7 +27,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
 
   bool isMonotonic({bool strict = false, bool increasing = true}) {
     final f = FMath.matchComp(strict: strict, increasing: increasing).func;
-    return lag.every((val) => f(val[1], val[0]));
+    return lag.every((val) => f<T, T, num>()(val[1], val[0]));
   }
 
   bool isIncreasing({bool strict = false}) =>

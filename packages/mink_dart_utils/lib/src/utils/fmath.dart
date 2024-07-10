@@ -1,8 +1,11 @@
 import 'package:mink_dart_utils/src/models/predicates.dart';
 
-typedef BinaryCompFunc = bool Function(num a, num b);
+typedef BinaryCompFunc<R extends S, T extends S, S extends Comparable<S>> = bool
+    Function(R a, T b);
 
-typedef TernaryCompFunc = bool Function(num a, num b, num c);
+typedef TernaryCompFunc<Q extends T, R extends T, S extends T,
+        T extends Comparable<T>>
+    = bool Function(Q a, R b, S c);
 
 enum BinaryComparison implements ComparisonEnum {
   gt,
@@ -26,14 +29,16 @@ enum BinaryComparison implements ComparisonEnum {
   @override
   String get enumName => name;
 
-  BinaryCompFunc get func => switch (this) {
-        BinaryComparison.gt => (num a, num b) => a > b,
-        BinaryComparison.geq => (num a, num b) => a >= b,
-        BinaryComparison.le => (num a, num b) => a < b,
-        BinaryComparison.leq => (num a, num b) => a <= b,
-        BinaryComparison.eq => (num a, num b) => a == b,
-        BinaryComparison.neq => (num a, num b) => a != b
-      };
+  BinaryCompFunc<R, T, S>
+      func<R extends S, T extends S, S extends Comparable<S>>() =>
+          switch (this) {
+            BinaryComparison.gt => (R a, T b) => a.compareTo(b) > 0,
+            BinaryComparison.geq => (R a, T b) => a.compareTo(b) >= 0,
+            BinaryComparison.le => (R a, T b) => a.compareTo(b) < 0,
+            BinaryComparison.leq => (R a, T b) => a.compareTo(b) <= 0,
+            BinaryComparison.eq => (R a, T b) => a.compareTo(b) == 0,
+            BinaryComparison.neq => (R a, T b) => a.compareTo(b) != 0,
+          };
 
   @override
   String get label => switch (this) {
@@ -45,8 +50,9 @@ enum BinaryComparison implements ComparisonEnum {
         BinaryComparison.neq => "!=",
       };
 
-  Predicate<num> predicate(num reference) {
-    return (num value) => func(value, reference);
+  Predicate<R> predicate<R extends S, T extends S, S extends Comparable<S>>(
+      T reference) {
+    return (R value) => func<R, T, S>()(value, reference);
   }
 }
 
@@ -60,7 +66,7 @@ class FMath {
   /// https://stackoverflow.com/questions/47832475/check-if-cyclic-modulo-16-number-is-larger-than-another
   static bool cycliccomp(int a, int b, int mod, BinaryComparison comp,
           {int? maxStep}) =>
-      comp.func((b + mod - a) % mod, (maxStep ?? mod ~/ 2));
+      comp.func<int, int, num>()((b + mod - a) % mod, (maxStep ?? mod ~/ 2));
 
   static BinaryComparison matchComp(
           {bool strict = false, bool increasing = true}) =>
@@ -75,7 +81,7 @@ class FMath {
   static int mod(int a, int mod) => a % mod;
 
   static bool modeq(int a, int b, int mod, BinaryComparison comp) =>
-      comp.func(a % mod, b % mod);
+      comp.func<int, int, num>()(a % mod, b % mod);
 }
 
 enum TernaryComparison implements ComparisonEnum {
@@ -96,32 +102,18 @@ enum TernaryComparison implements ComparisonEnum {
   @override
   String get enumName => name;
 
-  TernaryCompFunc get func => switch (this) {
-        TernaryComparison.inside => (
-            num a,
-            num b,
-            num c,
-          ) =>
-              b < a && a < c,
-        TernaryComparison.insideEq => (
-            num a,
-            num b,
-            num c,
-          ) =>
-              b <= a && a <= c,
-        TernaryComparison.outside => (
-            num a,
-            num b,
-            num c,
-          ) =>
-              a < b || a > c,
-        TernaryComparison.outsideEq => (
-            num a,
-            num b,
-            num c,
-          ) =>
-              a <= b || a >= c,
-      };
+  TernaryCompFunc<Q, R, T, S>
+      func<Q extends S, R extends S, T extends S, S extends Comparable<S>>() =>
+          switch (this) {
+            TernaryComparison.inside => (Q a, R b, T c) =>
+                a.compareTo(b) > 0 && a.compareTo(c) < 0,
+            TernaryComparison.insideEq => (Q a, R b, T c) =>
+                a.compareTo(b) >= 0 && a.compareTo(c) <= 0,
+            TernaryComparison.outside => (Q a, R b, T c) =>
+                a.compareTo(b) < 0 || a.compareTo(c) > 0,
+            TernaryComparison.outsideEq => (Q a, R b, T c) =>
+                a.compareTo(b) <= 0 || a.compareTo(c) >= 0,
+          };
 
   @override
   String get label => switch (this) {
@@ -131,6 +123,8 @@ enum TernaryComparison implements ComparisonEnum {
         TernaryComparison.outsideEq => ">= x =<"
       };
 
-  Predicate<num> predicate(num lower, num upper) =>
-      (num value) => func(value, lower, upper);
+  Predicate<Q>
+      predicate<Q extends S, R extends S, T extends S, S extends Comparable<S>>(
+              R lower, T upper) =>
+          (Q value) => func<Q, R, T, S>()(value, lower, upper);
 }

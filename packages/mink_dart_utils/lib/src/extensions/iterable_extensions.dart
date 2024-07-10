@@ -264,7 +264,8 @@ extension QueueExtensions<T> on Queue<T> {
 extension IntIterableMethods on Iterable<int> {
   bool isMonotonicMod(int mod, {bool strict = false, bool increasing = true}) {
     final fcomp = FMath.matchComp(strict: strict, increasing: increasing);
-    return lag.every((v) => BinaryComparison.eq.func(v[0], v[1])) ||
+    return lag.every(
+            (v) => BinaryComparison.eq.func<int, int, num>()(v[0], v[1])) ||
         lag.every((v) => FMath.cycliccomp(v[1], v[0], mod, fcomp));
   }
 
