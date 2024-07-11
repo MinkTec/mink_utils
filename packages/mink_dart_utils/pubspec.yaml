@@ -10,4 +10,5 @@ dev_dependencies:
 
 dependencies:
   collection: ^1.18.0
-  filterinio: any
+  filterinio:
+    git: git@github.com:MinkTec/filterinio
