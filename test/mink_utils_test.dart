@@ -8,10 +8,8 @@ import 'time_bound_methods.dart' as timebound;
 import 'lock_test.dart' as lock;
 import 'semver.dart' as semver;
 import 'timeout_buffer.dart' as timeout_buffer;
-import 'logic.dart' as logic;
 
 void main() {
-  logic.main();
   timeout_buffer.main();
   curves.main();
   iterables.main();

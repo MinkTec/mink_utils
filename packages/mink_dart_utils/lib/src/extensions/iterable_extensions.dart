@@ -3,7 +3,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 import 'package:collection/collection.dart';
-import 'package:mink_dart_utils/src/models/predicates.dart';
+import 'package:filterinio/filterinio.dart';
 import 'package:mink_dart_utils/src/utils/base.dart';
 import 'package:mink_dart_utils/src/utils/fmath.dart';
 
