@@ -40,6 +40,7 @@ void main() {
       expect([].lag, []);
 
       expect(l2.decimate(1), [1]);
+      expect(l3.decimate(3).length, 3);
 
       expect(l1.firstHalf.toList(), [1, 2]);
       expect(l1.secondHalf.toList(), [3]);

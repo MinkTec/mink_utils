@@ -34,6 +34,10 @@ extension BasicsListMethods<T extends num> on List<T> {
   Iterable<T> nLargest(int n) sync* {
     for (var i in topIndices(n)) yield this[i];
   }
+
+  List<T> takeEveryNth(int n) => [for (int i = 0; i < length; i += n) this[i]];
+
+  List<T> decimate(int n) => takeEveryNth(math.max(1, length ~/ n));
 }
 
 extension BasicsDouble on List<double> {
