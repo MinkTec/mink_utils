@@ -23,7 +23,7 @@ class TimespanningData<T> with Timespanning {
 
   final T value;
 
-  TimespanningData({
+  const TimespanningData({
     required this.timespan,
     required this.value,
   });

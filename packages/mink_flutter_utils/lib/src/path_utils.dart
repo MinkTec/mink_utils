@@ -58,6 +58,8 @@ class PathBuf {
   String get end => _splits.last;
 
   String? get extension => path.split(".").last;
+
+  void add(String level) => path = path + splitChar + level;
 }
 
 extension MinkUtilsDirExtensions on Directory {
