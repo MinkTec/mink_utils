@@ -27,6 +27,18 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<T> takeLast(int n) => skip(math.max(0, length - n)).take(1000000);
 
+  Iterable<T> intersperse(T value) sync* {
+    final it = iterator;
+    if (isNotEmpty) {
+      it.moveNext();
+      yield it.current;
+      while (it.moveNext()) {
+        yield value;
+        yield it.current;
+      }
+    }
+  }
+
   List<S> eagerMap<S>(S Function(T x) f) =>
       [for (var element in this) f(element)];
 

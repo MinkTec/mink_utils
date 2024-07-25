@@ -1,11 +1,50 @@
+import 'dart:math' as math;
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_list_extensions.dart';
+import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 
-extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
+import '../models/timed_data.dart';
+
+extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
   List<DateTime> get time => [for (var tb in this) tb.time];
+}
+
+extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
+  Iterable<TimedData<T?>> bolster({double? maxFrequency}) sync* {
+    maxFrequency ??= nchunks(100).map((x) => x.toList().time.frequency()).max;
+
+    if (time.frequency(n: length) < maxFrequency * 0.95) {
+      final int x = math.max(10, 1000 ~/ maxFrequency);
+
+      assert(x > 0);
+
+      int dtacc = first.time.millisecondsSinceEpoch;
+
+      yield TimedData(time: first.time, value: first);
+
+      int iterableIndex = 1;
+
+      while (
+          iterableIndex < length && dtacc < last.time.millisecondsSinceEpoch) {
+        final val = this[iterableIndex];
+        if ((val.time.millisecondsSinceEpoch - dtacc - x).abs() < x * 5) {
+          yield TimedData(time: val.time, value: val);
+          dtacc = val.time.millisecondsSinceEpoch;
+          iterableIndex++;
+        } else {
+          yield TimedData(
+            time: DateTime.fromMillisecondsSinceEpoch(dtacc),
+            value: null,
+          );
+          dtacc += x;
+        }
+      }
+    }
+  }
 
   TimeBound? getNearest(DateTime time, {Duration? maxDeviation}) {
     final DateTime? foundTime =
@@ -15,9 +54,6 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
 
   int? getNearestIndexFromSorted(DateTime time, {Duration? maxDeviation}) {
     if (isEmpty) return null;
-
-    T getClosest(DateTime time, T a, T b) =>
-        time.firstIsClosest(a.time, b.time) ? a : b;
 
     int low = 0;
     int high = length - 1;
@@ -37,7 +73,11 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
       }
     }
 
-    return time.firstIsClosest(this[low].time, this[high].time) ? low : high;
+    return (time.firstIsClosest(this[low.clamp(0, length - 1)].time,
+                this[high.clamp(0, length - 1)].time)
+            ? low
+            : high)
+        .clamp(0, length - 1);
   }
 
   T? getNearestFromSorted(DateTime time, {Duration? maxDeviation}) {
