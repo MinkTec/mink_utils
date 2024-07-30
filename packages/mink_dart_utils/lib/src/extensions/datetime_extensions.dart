@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:mink_dart_utils/src/models/timespan.dart';
 import 'package:mink_dart_utils/src/utils/base.dart';
 
@@ -71,4 +73,15 @@ extension Comparisons on DateTime {
   String get hhmmssms =>
       "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}.$millisecond";
   String humanReadable() => "$hour:${twoDigits(minute)}:${twoDigits(second)}";
+
+  Uint8List toUint8List() => Uint8List(8)
+    ..buffer.asByteData().setUint64(0, microsecondsSinceEpoch, Endian.big);
+
+  static DateTime fromUint8List(Uint8List list) {
+    return DateTime.fromMicrosecondsSinceEpoch(
+        list.buffer.asByteData().getInt64(0));
+  }
 }
+
+DateTime dateTimeFromUint8List(Uint8List list) =>
+    DateTime.fromMicrosecondsSinceEpoch(list.buffer.asByteData().getUint64(0));

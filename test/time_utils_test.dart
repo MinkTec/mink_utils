@@ -198,4 +198,13 @@ void main() {
           10);
     });
   });
+
+  test("byte conversion", () {
+    final now = DateTime.now();
+    final bytes = now.toUint8List();
+    expect(dateTimeFromUint8List(bytes), now);
+
+    final x = Timespan.today();
+    expect(Timespan.fromBytes(x.toBytes()), x);
+  });
 }

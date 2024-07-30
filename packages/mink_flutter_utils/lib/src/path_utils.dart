@@ -4,7 +4,7 @@ import 'package:xdg_directories/xdg_directories.dart';
 
 Future<String> get getLocalPath async => !Platform.isLinux
     ? await getApplicationDocumentsDirectory().then((e) => e.path)
-    : "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify${PathBuf.splitChar}";
+    : "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify";
 
 Future<String> get getDownloadsPath async =>
     (await getDownloadsDirectory())?.path ?? await getLocalPath;

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 
 part 'timespan.g.dart';
@@ -62,7 +64,10 @@ class Timespan {
       begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),
       duration: const Duration(minutes: 15));
 
-  Map<String, dynamic> toJson() => _$TimespanToJson(this);
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'begin': begin.toIso8601String(),
+        'end': end.toIso8601String(),
+      };
 
   @override
   String toString() {
@@ -71,6 +76,17 @@ class Timespan {
     end:      $end
     duration: $duration
 }""";
+  }
+
+  Uint8List toBytes() => (BytesBuilder(copy: false)
+        ..add(begin.toUint8List())
+        ..add(end.toUint8List()))
+      .takeBytes();
+
+  factory Timespan.fromBytes(Uint8List bytes) {
+    return Timespan(
+        begin: dateTimeFromUint8List(bytes.sublist(0, 8)),
+        end: dateTimeFromUint8List(bytes.sublist(8)));
   }
 
   /// The update function handles not only the updates to an existing

@@ -12,7 +12,7 @@ class TimeoutBuffer<T> {
   final int size;
   final Function(List<T> data) onFilled;
 
-  final Queue<T> _data = Queue();
+  final Queue<T> data = Queue();
 
   TimeoutBuffer({
     required this.size,
@@ -22,10 +22,18 @@ class TimeoutBuffer<T> {
 
   Timer? _triggerTimer;
 
-  add(T elem) {
-    _data.add(elem);
+  void add(T elem) {
+    data.add(elem);
+    _checkOnFilledExecution();
+  }
 
-    if (_data.length >= size) {
+  void addAll(Iterable<T> elements) {
+    data.addAll(elements);
+    _checkOnFilledExecution();
+  }
+
+  _checkOnFilledExecution() {
+    if (data.length >= size) {
       _runAndClear();
     } else {
       _updateTimer();
@@ -38,7 +46,7 @@ class TimeoutBuffer<T> {
   }
 
   _runAndClear() {
-    onFilled([..._data]);
-    _data.clear();
+    onFilled([...data]);
+    data.clear();
   }
 }
