@@ -23,7 +23,7 @@ extension BasicIteratorMethods<T> on Iterable<T> {
   /// keep n equaly spaced elements of an array
   Iterable<T> decimate(int n) => takeEveryNth(math.max(1, length ~/ n));
 
-  Iterable<T> skipLast(int n) => take(length - n);
+  Iterable<T> skipLast(int n) => take(math.max(0, length - n));
 
   Iterable<T> takeLast(int n) => skip(math.max(0, length - n)).take(1000000);
 
