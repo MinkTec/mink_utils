@@ -43,6 +43,10 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
           dtacc += x;
         }
       }
+    } else {
+      for (var m in this) {
+        yield TimedData(value: m, time: m.time);
+      }
     }
   }
 
