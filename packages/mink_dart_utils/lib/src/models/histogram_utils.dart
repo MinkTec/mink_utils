@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:collection/collection.dart' hide IterableNumberExtension;
-import 'package:mink_dart_utils/src/extensions/num_iterable_extensions.dart';
+import 'package:mink_dart_utils/mink_dart_utils.dart';
 
 // from dart:ui
 double? _lerpDouble(num? a, num? b, double t) {
@@ -80,28 +79,35 @@ class ClusteredData {
   //
   // TODO: Find mathematical expression for the backtransform
 
-  factory ClusteredData.dummy() => ClusteredData(data: [], n: 1);
+  factory ClusteredData.dummy() => ClusteredData.calc(data: [], n: 1);
 
-  ClusteredData(
-      {required List<List<num>> data,
-      required int n,
-      List<List<double>?>? limits}) {
+  ClusteredData({
+    required this.baskets,
+    required this.borders,
+  });
+
+  factory ClusteredData.calc({
+    required List<List<num>> data,
+    required int n,
+    List<List<double>?>? limits,
+  }) {
     if (data.isEmpty || data.first.isEmpty) {
-      baskets = [];
-      borders = [];
-      return;
+      return ClusteredData(
+        baskets: [],
+        borders: [],
+      );
     }
 
     assert(data.every((d) => d.length == data.first.length) &&
         (limits == null || data.length == limits.length));
 
-    borders = ((limits != null)
+    final borders = ((limits != null)
             ? data.mapIndexed(
                 (i, l) => _genHistogramBordersTuple(limits[i] ?? l.extrema, n))
             : data.map((l) => _genHistogramBordersTuple(l.extrema, n)))
         .toList();
 
-    baskets = List<int>.filled(math.pow(n, data.length).toInt(), 0);
+    final baskets = List<int>.filled(math.pow(n, data.length).toInt(), 0);
 
     final deltas =
         borders.map((e) => math.max(e.last - e.first, 0.000001)).toList();
@@ -118,14 +124,49 @@ class ClusteredData {
         }
       }
       try {
-        baskets[coordsToSerializedIndex(coords)]++;
-      } catch (e) {
+        baskets[coordsToSerializedIndex(coords, n)]++;
+      } catch (_) {
         // if limits are given the values can exceed the maximum index
       }
     }
+
+    return ClusteredData(borders: borders, baskets: baskets);
   }
 
-  int coordsToSerializedIndex(List<int> coords) =>
+  factory ClusteredData.oneDimensionalCustomLimitsWithOutliers({
+    required Iterable<double> data,
+    required List<double> limits,
+  }) {
+    final baskets = List<int>.filled(limits.length + 1, 0);
+
+    int i;
+
+    for (var x in data) {
+      if (x >= limits.last) {
+        baskets.last++;
+        continue;
+      }
+      if (x <= limits.first) {
+        baskets.first++;
+        continue;
+      }
+      for (i = 0; i < limits.length; i++) {
+        if (x < limits[i]) {
+          baskets[i]++;
+          break;
+        }
+      }
+    }
+
+    return ClusteredData(
+      borders: [
+        [double.negativeInfinity, ...limits, double.infinity]
+      ],
+      baskets: baskets,
+    );
+  }
+
+  static int coordsToSerializedIndex(List<int> coords, int n) =>
       coords.reversed.mapIndexed((i, c) => c * math.pow(n, i).toInt()).sum;
 
   List<int> serializedIndexToCoords(int i) {
@@ -157,10 +198,18 @@ class ClusteredData {
   ClusteredDataCell getCell(List<int> coords) =>
       ClusteredDataCell(count: getBasket(coords), borders: getBorders(coords));
 
-  int getBasket(List<int> coords) => baskets[coordsToSerializedIndex(coords)];
+  int getBasket(List<int> coords) =>
+      baskets[coordsToSerializedIndex(coords, n)];
 
-  List<List<double>> getBorders(List<int> coords) =>
-      coords.mapIndexed((i, c) => [borders[i][c], borders[i][c + 1]]).toList();
+  List<List<double>> getBorders(List<int> coords) {
+    if (n < 5) {
+      print(StackTrace.current);
+      print("--- coords ${coords} | borders: ${borders}");
+    }
+    return coords
+        .mapIndexed((i, c) => [borders[i][c], borders[i][c + 1]])
+        .toList();
+  }
 }
 
 // ignore: unused_element
@@ -176,12 +225,12 @@ List<double> _genHistogramBordersTuple(List<num> extrema, int n) => [
     ];
 
 extension StatsticsExtensions<T extends num> on Iterable<T> {
-  ClusteredData cluster(int n) => ClusteredData(data: [toList()], n: n);
+  ClusteredData cluster(int n) => ClusteredData.calc(data: [toList()], n: n);
 
   @Deprecated("use cluster")
   ClusteredData histogram(int n) => cluster(n);
 }
 
 extension HistogramND<T extends num> on List<List<T>> {
-  ClusteredData cluster(int n) => ClusteredData(data: this, n: n);
+  ClusteredData cluster(int n) => ClusteredData.calc(data: this, n: n);
 }
