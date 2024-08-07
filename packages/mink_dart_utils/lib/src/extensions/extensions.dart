@@ -14,3 +14,4 @@ export 'string_extensions.dart';
 export 'time_bound_list_extensions.dart';
 export 'timespan_iterable_extensions.dart';
 export 'timespanning_list_extensions.dart';
+export 'stream_extensions.dart';
