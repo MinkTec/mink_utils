@@ -51,6 +51,9 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
   }
 
   TimeBound? getNearest(DateTime time, {Duration? maxDeviation}) {
+    if (isEmpty) {
+      return null;
+    }
     final DateTime? foundTime =
         this.time.getNearest(time, maxDeviation: maxDeviation);
     return foundTime == null ? null : firstWhere((e) => e.time == foundTime);
