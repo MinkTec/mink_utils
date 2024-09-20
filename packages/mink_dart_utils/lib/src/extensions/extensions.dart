@@ -9,6 +9,7 @@ export 'map_extensions.dart';
 export 'nested_iterable_extensions.dart';
 export 'num_extensions.dart';
 export 'num_iterable_extensions.dart';
+export 'parallel_utils.dart';
 export 'record_zip.dart';
 export 'stream_extensions.dart';
 export 'string_extensions.dart';
