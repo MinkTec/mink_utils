@@ -28,3 +28,14 @@ extension BigIfTrue<T, S> on Map<T, S> {
     }
   }
 }
+
+extension NumericMapExtensions<T> on Map<T, int> {
+  void increment(T key) => add(key, 1);
+
+  void decrement(T key) => add(key, -1);
+
+  void add(T key, int value) {
+    this[key] ??= 0;
+    this[key] = this[key]! + value;
+  }
+}

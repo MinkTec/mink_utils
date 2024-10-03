@@ -39,6 +39,17 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     }
   }
 
+  Iterable<T> padRight(int n, T element) sync* {
+    final it = iterator;
+    for (int i = 0; i < n; i++) {
+      yield it.moveNext() ? it.current : element;
+    }
+  }
+
+  List<T> padLeft(int n, T element) {
+    return [...List<T>.filled(n - length, element), ...this];
+  }
+
   List<S> eagerMap<S>(S Function(T x) f) =>
       [for (var element in this) f(element)];
 
