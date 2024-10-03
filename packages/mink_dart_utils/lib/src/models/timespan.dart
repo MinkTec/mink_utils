@@ -29,11 +29,12 @@ class Timespan {
 
   /// Get Timespan of a day.
   /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
-  factory Timespan.today({int daysAgo = 0}) => (daysAgo == 0)
-      ? Timespan(begin: DateTime.now().midnight())
-      : Timespan(
-          begin: DateTime.now().midnight(daysAgo: daysAgo),
-          duration: const Duration(days: 1));
+  factory Timespan.today({int daysAgo = 0, bool fullday = false}) =>
+      daysAgo != 0 || fullday
+          ? Timespan(
+              begin: DateTime.now().midnight(daysAgo: daysAgo),
+              duration: const Duration(days: 1))
+          : Timespan(begin: DateTime.now().midnight());
 
   /// Get a symmetric Timespan arround the given time with
   /// [delta] as the difference of begin and end from [time]
