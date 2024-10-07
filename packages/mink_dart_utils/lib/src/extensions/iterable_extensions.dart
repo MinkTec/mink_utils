@@ -311,3 +311,7 @@ extension IntIterableMethods on Iterable<int> {
     }
   }
 }
+
+extension Denumerate<T> on Iterable<(int, T)> {
+  Iterable<T> denumerate() => map((x) => x.$2);
+}

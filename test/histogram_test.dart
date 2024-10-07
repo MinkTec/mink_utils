@@ -21,7 +21,7 @@ void main() {
 
       final cd = linear.cluster(5);
 
-      final cd3 = ClusteredData(data: [random(10000)], n: 20);
+      final cd3 = ClusteredData.calc(data: [random(10000)], n: 20);
     });
     test("basic", () {
       int edgeLength = 3;
