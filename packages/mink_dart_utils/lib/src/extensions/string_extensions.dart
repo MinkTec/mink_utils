@@ -44,6 +44,9 @@ extension DurationConversion on String {
 
   String toSnakeCase() => replaceAllMapped(
       RegExp(r'([A-Z])'), (Match match) => "_${match.group(0)!.toLowerCase()}");
+
+  String elipsify(int maxLength) =>
+      length > maxLength ? "${split("").take(maxLength).join()}..." : this;
 }
 
 extension Emptiness on String? {
