@@ -10,12 +10,28 @@ import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 import '../models/timed_data.dart';
 import '../models/timespan.dart';
 
-typedef Reducer<T> = T Function(T a, T b);
+typedef Reduce<T> = T Function(T a, T b);
+
+typedef TimespanGroupedList<T> = List<TimespanningData<List<T>>>;
+typedef TimespanGroupedValue<T> = List<TimespanningData<T>>;
+
+extension TimespanGroupedListReducer<T> on TimespanGroupedList<T> {
+  TimespanGroupedValue<T> reduceGroups(Reduce<T> combine) => eagerMap((x) =>
+      TimespanningData(timespan: x.timespan, value: x.value.reduce(combine)));
+
+  TimespanGroupedValue<S> mapReduce<S>({
+    required S Function(T value) map,
+    required Reduce<S> reduce,
+    T? initialElement,
+  }) =>
+      eagerMap((x) => TimespanningData(
+          timespan: x.timespan, value: x.value.map(map).reduce(reduce)));
+}
 
 extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
   List<DateTime> get time => [for (var tb in this) tb.time];
 
-  List<TimespanningData<List<T>>> groupBy({
+  TimespanGroupedList<T> groupBy({
     required SplitType group,
 
     /// if timespan is null, the difference between the earliest and latest element is used
@@ -26,9 +42,11 @@ extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
       return [];
     }
 
-    int _sort(TimeBound a, TimeBound b) => a.time.compareTo(b.time);
+    int sortCallback(TimeBound a, TimeBound b) => a.time.compareTo(b.time);
 
-    final sorted = isSorted || this.isSorted(_sort) ? this : this.sorted(_sort);
+    final sorted = isSorted || this.isSorted(sortCallback)
+        ? this
+        : this.sorted(sortCallback);
 
     final timespans = group.split(timespan ??
         Timespan(

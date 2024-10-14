@@ -22,6 +22,17 @@ main() {
 
     test("day", () {
       final res = data.groupBy(group: SplitType.day);
+
+      for (var [a, b] in res
+          .mapReduce(
+            map: (x) => x.value,
+            reduce: (a, b) => a + b,
+          )
+          .skipLast(1)
+          .lag) {
+        expect(a.value < b.value, true);
+      }
+
       expect(res.length, (n / 24).ceil());
       expect(res.skipLast(1).every((x) => x.value.length == 144), true);
     });
