@@ -9,8 +9,10 @@ import 'lock_test.dart' as lock;
 import 'semver.dart' as semver;
 import 'timeout_buffer.dart' as timeout_buffer;
 import 'element_reduction.dart' as element_reduction;
+import 'timebound_extensions.dart' as timebound_extensions;
 
 void main() {
+  timebound_extensions.main();
   element_reduction.main();
   timeout_buffer.main();
   curves.main();

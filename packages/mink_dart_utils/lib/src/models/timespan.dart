@@ -4,18 +4,57 @@ import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 
 part 'timespan.g.dart';
 
-enum TimespanPart {
-  begin,
-  end,
-  middle,
-}
+enum SplitType {
+  hour,
+  day,
+  week,
+  month,
+  year,
+  total,
+  ;
 
-extension GetTimes on TimespanPart {
-  DateTime get(Timespan timespan) => switch (this) {
-        TimespanPart.begin => timespan.begin,
-        TimespanPart.end => timespan.end,
-        TimespanPart.middle => timespan.lerp(0.5)
+  Duration delta(DateTime time) => switch (this) {
+        SplitType.hour => Duration(hours: 1),
+        SplitType.day => Duration(days: 1),
+        SplitType.week => Duration(days: 7),
+        SplitType.month => time.endOfMonth().difference(time.beginOfMonth()),
+        SplitType.year => time.endOfYear().difference(time.beginOfYear()),
+        SplitType.total => Duration(days: 1000000000)
       };
+
+  DateTime findBegin(DateTime referenceTime) => switch (this) {
+        SplitType.hour => referenceTime.copyWith(
+            minute: 0, second: 0, millisecond: 0, microsecond: 0),
+        SplitType.day => referenceTime.copyWith(
+            hour: 0, minute: 0, second: 0, millisecond: 0, microsecond: 0),
+        SplitType.week => referenceTime.beginOfWeek(),
+        SplitType.month => referenceTime.beginOfMonth(),
+        SplitType.year => referenceTime.beginOfYear(),
+        SplitType.total => DateTime(1970)
+      };
+
+  List<Timespan> split(Timespan timespan) {
+    switch (this) {
+      case SplitType.hour:
+      case SplitType.day:
+      case SplitType.week:
+        return Timespan(
+                begin: findBegin(timespan.begin),
+                end: findBegin(timespan.end).add(delta(timespan.end)))
+            .split(delta(timespan.begin))
+            .toList();
+
+      case SplitType.month:
+        return timespan.month.toList();
+      case SplitType.year:
+        return timespan.years.toList();
+      case SplitType.total:
+        return [timespan];
+    }
+  }
+
+  Timespan timespan(DateTime time) =>
+      Timespan(begin: findBegin(time), duration: delta(time));
 }
 
 class Timespan {
@@ -27,15 +66,6 @@ class Timespan {
     update(begin: begin, end: end, duration: duration);
   }
 
-  /// Get Timespan of a day.
-  /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
-  factory Timespan.today({int daysAgo = 0, bool fullday = false}) =>
-      daysAgo != 0 || fullday
-          ? Timespan(
-              begin: DateTime.now().midnight(daysAgo: daysAgo),
-              duration: const Duration(days: 1))
-          : Timespan(begin: DateTime.now().midnight());
-
   /// Get a symmetric Timespan arround the given time with
   /// [delta] as the difference of begin and end from [time]
   /// thus the duration of the timespan is [2 * delta]
@@ -43,6 +73,12 @@ class Timespan {
       Timespan(begin: time.subtract(delta), end: time.add(delta));
 
   factory Timespan.empty() => Timespan(duration: Duration.zero);
+
+  factory Timespan.fromBytes(Uint8List bytes) {
+    return Timespan(
+        begin: dateTimeFromUint8List(bytes.sublist(0, 8)),
+        end: dateTimeFromUint8List(bytes.sublist(8)));
+  }
 
   factory Timespan.fromJson(Map<String, dynamic> json) =>
       _$TimespanFromJson(json);
@@ -61,9 +97,130 @@ class Timespan {
         end: reference.add(Duration(hours: to)));
   }
 
+  /// Get Timespan of a day.
+  /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
+  factory Timespan.today({int daysAgo = 0, bool fullday = false}) =>
+      daysAgo != 0 || fullday
+          ? Timespan(
+              begin: DateTime.now().midnight(daysAgo: daysAgo),
+              duration: const Duration(days: 1))
+          : Timespan(begin: DateTime.now().midnight());
+
   Timespan get dreiviertelzwoelf => Timespan(
       begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),
       duration: const Duration(minutes: 15));
+
+  @override
+  int get hashCode =>
+      begin.microsecondsSinceEpoch ^
+      duration.inMicroseconds ^
+      end.microsecondsSinceEpoch;
+
+  bool get isToday {
+    final ts = Timespan.today();
+    return begin.isBetween(ts.begin, ts.end) && end.isBetween(ts.begin, ts.end);
+  }
+
+  /// get all month that overlap with a the [Timespan]
+  Iterable<Timespan> get month sync* {
+    DateTime i = begin.beginOfMonth();
+    int counter = 0;
+    while (DateTime(begin.year, begin.month + counter).isBefore(end)) {
+      yield Timespan(
+          begin: DateTime(i.year, i.month + counter),
+          end: DateTime(i.year, i.month + counter + 1)
+              .subtract(const Duration(hours: 1)));
+      counter++;
+    }
+  }
+
+  /// get all weeks that overlap with a the [Timespan]
+  Iterable<Timespan> get weeks sync* {
+    DateTime tempTime = begin.beginOfWeek();
+    final week = const Duration(days: 7) - const Duration(hours: 1);
+    while (tempTime.isBefore(end)) {
+      yield Timespan(begin: tempTime, duration: week);
+      tempTime = tempTime.add(week);
+    }
+  }
+
+  /// get all years that overlap with a the [Timespan]
+  Iterable<Timespan> get years sync* {
+    DateTime i = begin.beginOfYear();
+    int counter = 0;
+    do {
+      yield Timespan(
+          begin: DateTime(i.year + counter),
+          end: DateTime(i.year + counter + 1)
+              .subtract(const Duration(hours: 1)));
+      counter++;
+    } while (DateTime(begin.year + counter).isBefore(end));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    } else if (runtimeType != other.runtimeType) {
+      return false;
+    } else {
+      return other.hashCode == hashCode;
+    }
+  }
+
+  Timespan combine(Timespan other) => Timespan(
+      begin: begin.earlierDate(other.begin), end: end.laterDate(other.end));
+
+  bool contains(Timespan timespan) => intersection(timespan) == timespan;
+
+  /// Returns a list of two [Timespan]s.
+  /// If [time] is not in [this] it throws an error
+  List<Timespan> cut(DateTime time) => (time.isIn(this))
+      ? [Timespan(begin: begin, end: time), Timespan(begin: time, end: end)]
+      : throw ArgumentError("Given time is not inside timespan");
+
+  /// check how many days ago a timespan is.
+  /// The [align] parameter is used to set which part
+  /// of the timespan is used and defaults to [this.end]
+  int daysAgo({TimespanPart align = TimespanPart.end}) {
+    final mn = DateTime.now().midnight();
+    return mn.isBefore(align.get(this))
+        ? 0
+        : align.get(this).difference(mn).abs().inDays + 1;
+  }
+
+  bool includes(DateTime time) => begin.isBefore(time) && end.isAfter(time);
+
+  Timespan intersection(Timespan other) =>
+      end.isBefore(other.begin) || other.end.isBefore(begin)
+          ? Timespan(duration: Duration.zero)
+          : Timespan(
+              begin: begin.laterDate(other.begin),
+              end: end.earlierDate(other.end));
+
+  bool intersects(Timespan other) =>
+      intersection(other).duration.inMilliseconds != 0;
+
+  /// Interpolate linear within the timespan
+  DateTime lerp(double x) =>
+      DateTime.fromMillisecondsSinceEpoch((begin.millisecondsSinceEpoch +
+              x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
+          .toInt());
+
+  Iterable<Timespan> split(Duration duration) sync* {
+    DateTime tempTime = begin;
+    while (tempTime.isBefore(end)) {
+      yield Timespan(begin: tempTime, duration: duration);
+      tempTime = tempTime.add(duration);
+    }
+  }
+
+  List<Timespan> splitBy(SplitType type) => type.split(this);
+
+  Uint8List toBytes() => (BytesBuilder(copy: false)
+        ..add(begin.toUint8List())
+        ..add(end.toUint8List()))
+      .takeBytes();
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'begin': begin.toIso8601String(),
@@ -77,17 +234,6 @@ class Timespan {
     end:      $end
     duration: $duration
 }""";
-  }
-
-  Uint8List toBytes() => (BytesBuilder(copy: false)
-        ..add(begin.toUint8List())
-        ..add(end.toUint8List()))
-      .takeBytes();
-
-  factory Timespan.fromBytes(Uint8List bytes) {
-    return Timespan(
-        begin: dateTimeFromUint8List(bytes.sublist(0, 8)),
-        end: dateTimeFromUint8List(bytes.sublist(8)));
   }
 
   /// The update function handles not only the updates to an existing
@@ -130,111 +276,20 @@ class Timespan {
       this.duration = duration;
     }
   }
+}
 
-  @override
-  int get hashCode =>
-      begin.microsecondsSinceEpoch ^
-      duration.inMicroseconds ^
-      end.microsecondsSinceEpoch;
+enum TimespanPart {
+  begin,
+  end,
+  middle,
+}
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) {
-      return true;
-    } else if (runtimeType != other.runtimeType) {
-      return false;
-    } else {
-      return other.hashCode == hashCode;
-    }
-  }
-
-  bool intersects(Timespan other) =>
-      intersection(other).duration.inMilliseconds != 0;
-
-  Timespan intersection(Timespan other) =>
-      end.isBefore(other.begin) || other.end.isBefore(begin)
-          ? Timespan(duration: Duration.zero)
-          : Timespan(
-              begin: begin.laterDate(other.begin),
-              end: end.earlierDate(other.end));
-
-  Timespan combine(Timespan other) => Timespan(
-      begin: begin.earlierDate(other.begin), end: end.laterDate(other.end));
-
-  /// Returns a list of two [Timespan]s.
-  /// If [time] is not in [this] it throws an error
-  List<Timespan> cut(DateTime time) => (time.isIn(this))
-      ? [Timespan(begin: begin, end: time), Timespan(begin: time, end: end)]
-      : throw ArgumentError("Given time is not inside timespan");
-
-  bool includes(DateTime time) => begin.isBefore(time) && end.isAfter(time);
-
-  bool contains(Timespan timespan) => intersection(timespan) == timespan;
-
-  /// Interpolate linear within the timespan
-  DateTime lerp(double x) =>
-      DateTime.fromMillisecondsSinceEpoch((begin.millisecondsSinceEpoch +
-              x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
-          .toInt());
-
-  bool get isToday {
-    final ts = Timespan.today();
-    return begin.isBetween(ts.begin, ts.end) && end.isBetween(ts.begin, ts.end);
-  }
-
-  /// check how many days ago a timespan is.
-  /// The [align] parameter is used to set which part
-  /// of the timespan is used and defaults to [this.end]
-  int daysAgo({TimespanPart align = TimespanPart.end}) {
-    final mn = DateTime.now().midnight();
-    return mn.isBefore(align.get(this))
-        ? 0
-        : align.get(this).difference(mn).abs().inDays + 1;
-  }
-
-  Iterable<Timespan> split(Duration duration) sync* {
-    DateTime tempTime = begin;
-    while (tempTime.isBefore(end)) {
-      yield Timespan(begin: tempTime, duration: duration);
-      tempTime = tempTime.add(duration);
-    }
-  }
-
-  /// get all weeks that overlap with a the [Timespan]
-  Iterable<Timespan> get weeks sync* {
-    DateTime tempTime = begin.beginOfWeek();
-    final week = const Duration(days: 7) - const Duration(hours: 1);
-    while (tempTime.isBefore(end)) {
-      yield Timespan(begin: tempTime, duration: week);
-      tempTime = tempTime.add(week);
-    }
-  }
-
-  /// get all month that overlap with a the [Timespan]
-  Iterable<Timespan> get month sync* {
-    DateTime i = begin.beginOfMonth();
-    int counter = 0;
-    while (DateTime(begin.year, begin.month + counter).isBefore(end)) {
-      yield Timespan(
-          begin: DateTime(i.year, i.month + counter),
-          end: DateTime(i.year, i.month + counter + 1)
-              .subtract(const Duration(hours: 1)));
-      counter++;
-    }
-  }
-
-  /// get all years that overlap with a the [Timespan]
-  Iterable<Timespan> get years sync* {
-    DateTime i = begin.beginOfYear();
-    int counter = 0;
-    do {
-      yield Timespan(
-          begin: DateTime(i.year + counter),
-          end: DateTime(i.year + counter + 1)
-              .subtract(const Duration(hours: 1)));
-      counter++;
-    } while (DateTime(begin.year + counter).isBefore(end));
-  }
+extension GetTimes on TimespanPart {
+  DateTime get(Timespan timespan) => switch (this) {
+        TimespanPart.begin => timespan.begin,
+        TimespanPart.end => timespan.end,
+        TimespanPart.middle => timespan.lerp(0.5)
+      };
 }
 
 extension TimespanIterableExtensions on Iterable<Timespan> {

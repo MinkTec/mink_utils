@@ -8,9 +8,61 @@ import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 
 import '../models/timed_data.dart';
+import '../models/timespan.dart';
+
+typedef Reducer<T> = T Function(T a, T b);
 
 extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
   List<DateTime> get time => [for (var tb in this) tb.time];
+
+  List<TimespanningData<List<T>>> groupBy({
+    required SplitType group,
+
+    /// if timespan is null, the difference between the earliest and latest element is used
+    Timespan? timespan,
+    bool isSorted = false,
+  }) {
+    if (isEmpty) {
+      return [];
+    }
+
+    int _sort(TimeBound a, TimeBound b) => a.time.compareTo(b.time);
+
+    final sorted = isSorted || this.isSorted(_sort) ? this : this.sorted(_sort);
+
+    final timespans = group.split(timespan ??
+        Timespan(
+          begin: sorted.first.time,
+          end: sorted.last.time,
+        ));
+
+    if (group == SplitType.total) {
+      return [
+        TimespanningData(
+          timespan: timespans.first,
+          value: sorted.toList(),
+        ),
+      ];
+    }
+
+    final queue = Queue<TimespanningData<List<T>>>();
+    final innerQueue = Queue<T>();
+
+    final it = iterator;
+    for (final ts in timespans) {
+      while (it.moveNext() && it.current.time.isBefore(ts.end)) {
+        innerQueue.add(it.current);
+      }
+      queue.add(TimespanningData(timespan: ts, value: innerQueue.toList()));
+      innerQueue.clear();
+      try {
+        innerQueue.add(it.current);
+      } catch (_) {
+        break;
+      }
+    }
+    return queue.toList();
+  }
 }
 
 extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
@@ -160,4 +212,10 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
         .toList()
         .time);
   }
+
+  List<T> sortedByTime({bool ascending = true}) => sorted(
+        ascending
+            ? (a, b) => a.time.compareTo(b.time)
+            : (a, b) => b.time.compareTo(a.time),
+      );
 }
