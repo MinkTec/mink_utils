@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_list_extensions.dart';
+import 'package:mink_dart_utils/src/extensions/duration_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 
@@ -30,7 +31,9 @@ extension TimespanGroupedListReducer<T> on TimespanGroupedList<T> {
 
 extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
   List<DateTime> get time => [for (var tb in this) tb.time];
+}
 
+extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
   TimespanGroupedList<T> groupBy({
     required SplitType group,
 
@@ -48,11 +51,13 @@ extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
         ? this
         : this.sorted(sortCallback);
 
-    final timespans = group.split(timespan ??
+    final totalTs = timespan ??
         Timespan(
           begin: sorted.first.time,
           end: sorted.last.time,
-        ));
+        );
+
+    final List<Timespan> timespans = totalTs.splitBy(group);
 
     if (group == SplitType.total) {
       return [
@@ -66,24 +71,19 @@ extension TimeBoundIterableExtensions<T extends TimeBound> on Iterable<T> {
     final queue = Queue<TimespanningData<List<T>>>();
     final innerQueue = Queue<T>();
 
-    final it = iterator;
+    int index = 0;
+
     for (final ts in timespans) {
-      while (it.moveNext() && it.current.time.isBefore(ts.end)) {
-        innerQueue.add(it.current);
+      while (index < length && sorted[index].time.isBefore(ts.end)) {
+        innerQueue.add(sorted[index]);
+        index++;
       }
       queue.add(TimespanningData(timespan: ts, value: innerQueue.toList()));
       innerQueue.clear();
-      try {
-        innerQueue.add(it.current);
-      } catch (_) {
-        break;
-      }
     }
     return queue.toList();
   }
-}
 
-extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
   Iterable<TimedData<T?>> bolster({double? maxFrequency}) sync* {
     maxFrequency ??= nchunks(100).map((x) => x.toList().time.frequency()).max;
 
