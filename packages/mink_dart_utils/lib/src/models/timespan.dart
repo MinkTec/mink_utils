@@ -231,8 +231,10 @@ class Timespan {
   String toString() {
     if (duration >= Duration(days: 3)) {
       return """Timespan(${begin.yymmdd} - ${end.yymmdd}})""";
+    } else if (duration >= Duration(hours: 3)) {
+      return """Timespan(begin: ${begin.yymmdd} ${begin.hhmm} duration: ${begin.yymmdd} ${begin.hhmm})""";
     } else {
-      return """Timespan(begin: $begin duration: $duration)""";
+      return "Timespan(begin: $begin, end: $end)";
     }
   }
 
