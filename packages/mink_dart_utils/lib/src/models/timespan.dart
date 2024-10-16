@@ -229,11 +229,11 @@ class Timespan {
 
   @override
   String toString() {
-    return """Timespan {
-    begin:    $begin
-    end:      $end
-    duration: $duration
-}""";
+    if (duration >= Duration(days: 3)) {
+      return """Timespan(${begin.yymmdd} - ${end.yymmdd}})""";
+    } else {
+      return """Timespan(begin: $begin duration: $duration)""";
+    }
   }
 
   /// The update function handles not only the updates to an existing
