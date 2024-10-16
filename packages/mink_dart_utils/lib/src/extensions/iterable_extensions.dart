@@ -25,7 +25,7 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   Iterable<T> skipLast(int n) => take(math.max(0, length - n));
 
-  Iterable<T> takeLast(int n) => skip(math.max(0, length - n)).take(1000000);
+  Iterable<T> takeLast(int n) => skip(math.max(0, length - n)).take(length);
 
   Iterable<T> intersperse(T value) sync* {
     final it = iterator;
@@ -37,6 +37,11 @@ extension BasicIteratorMethods<T> on Iterable<T> {
         yield it.current;
       }
     }
+  }
+
+  Iterable<T> repeat(int n) sync* {
+    assert(n >= 0);
+    for (int i = 0; i < n; i++) for (var x in this) yield x;
   }
 
   Iterable<T> padRight(int n, T element) sync* {

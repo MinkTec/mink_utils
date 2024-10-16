@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:mink_dart_utils/mink_dart_utils.dart';
@@ -30,6 +31,12 @@ void main() {
       expect(l1.countElements(), {1: 1, 2: 1, 3: 1});
       expect(l2.countElementsMap((e) => e > 3), {true: 3, false: 3});
       expect([].countElements(), {});
+    });
+
+    test("repeat", () {
+      expect(l1.repeat(0).length, 0);
+      expect(l1.repeat(1), l1);
+      expect(l1.repeat(2), [...l1, ...l1]);
     });
 
     test("other", () {
