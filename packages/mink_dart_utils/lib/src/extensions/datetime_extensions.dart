@@ -53,6 +53,9 @@ extension Comparisons on DateTime {
     }
   }
 
+  DateTime addCalendarDay(int days) => DateTime(
+      year, month, day + days, minute, second, millisecond, microsecond);
+
   DateTime mostRecentWeekday(int weekday) =>
       DateTime(year, month, day - (this.weekday - weekday) % 7);
 

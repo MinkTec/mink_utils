@@ -51,11 +51,16 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
         ? this
         : this.sorted(sortCallback);
 
-    final totalTs = timespan ??
+    var totalTs = timespan ??
         Timespan(
           begin: sorted.first.time,
           end: sorted.last.time,
         );
+    if (totalTs.duration == Duration.zero) {
+      totalTs = Timespan(
+          begin: group.findBegin(sorted.first.time),
+          duration: group.delta(sorted.first.time));
+    }
 
     final List<Timespan> timespans = totalTs.splitBy(group);
 

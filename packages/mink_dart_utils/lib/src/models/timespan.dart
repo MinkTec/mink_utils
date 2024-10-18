@@ -36,14 +36,16 @@ enum SplitType {
   List<Timespan> split(Timespan timespan) {
     switch (this) {
       case SplitType.hour:
-      case SplitType.day:
-      case SplitType.week:
-        return Timespan(
-                begin: findBegin(timespan.begin),
-                end: findBegin(timespan.end).add(delta(timespan.end)))
-            .split(delta(timespan.begin))
-            .toList();
+        final ts = Timespan(
+            begin: findBegin(timespan.begin),
+            end: findBegin(timespan.end).add(delta(timespan.end)));
 
+        return ts.split(delta(timespan.begin)).toList();
+      case SplitType.day:
+        return timespan.days.toList();
+
+      case SplitType.week:
+        return timespan.weeks.toList();
       case SplitType.month:
         return timespan.month.toList();
       case SplitType.year:
@@ -119,6 +121,17 @@ class Timespan {
   bool get isToday {
     final ts = Timespan.today();
     return begin.isBetween(ts.begin, ts.end) && end.isBetween(ts.begin, ts.end);
+  }
+
+  /// get all weeks that overlap with a the [Timespan]
+  Iterable<Timespan> get days sync* {
+    DateTime tempTime = DateTime(begin.year, begin.month, begin.day);
+    DateTime newTempTime;
+    while (tempTime.isBefore(end)) {
+      newTempTime = tempTime.addCalendarDay(1);
+      yield Timespan(begin: tempTime, end: newTempTime);
+      tempTime = newTempTime;
+    }
   }
 
   /// get all month that overlap with a the [Timespan]
@@ -232,7 +245,7 @@ class Timespan {
     if (duration >= Duration(days: 3)) {
       return """Timespan(${begin.yymmdd} - ${end.yymmdd}})""";
     } else if (duration >= Duration(hours: 3)) {
-      return """Timespan(begin: ${begin.yymmdd} ${begin.hhmm} duration: ${begin.yymmdd} ${begin.hhmm})""";
+      return """Timespan(begin: ${begin.yymmdd} ${begin.hhmm} end: ${end.yymmdd} ${end.hhmm})""";
     } else {
       return "Timespan(begin: $begin, end: $end)";
     }
