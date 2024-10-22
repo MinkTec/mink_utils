@@ -150,9 +150,10 @@ class Timespan {
   /// get all weeks that overlap with a the [Timespan]
   Iterable<Timespan> get weeks sync* {
     DateTime tempTime = begin.beginOfWeek();
-    final week = const Duration(days: 7) - const Duration(hours: 1);
+    final week = const Duration(days: 7);
     while (tempTime.isBefore(end)) {
-      yield Timespan(begin: tempTime, duration: week);
+      yield Timespan(
+          begin: tempTime, duration: week - Duration(microseconds: 1));
       tempTime = tempTime.add(week);
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'dart:io' show File;
 
@@ -206,5 +208,21 @@ void main() {
 
     final x = Timespan.today();
     expect(Timespan.fromBytes(x.toBytes()), x);
+  });
+
+  test("week", () {
+    final now = DateTime.now();
+
+    final weekday = now.mostRecentWeekday(DateTime.monday);
+
+    expect(weekday.toShortWeekday(), "Mo");
+
+    final x = Timespan(begin: DateTime(2024), end: DateTime(2025));
+
+    final weeks = x.weeks;
+
+    expect(weeks.length, 53);
+
+    expect(weeks.map((x) => x.begin.weekday).every((x) => x == 1), true);
   });
 }
