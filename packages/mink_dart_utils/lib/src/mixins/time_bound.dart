@@ -8,8 +8,19 @@ import 'package:mink_dart_utils/src/extensions/list_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/time_bound_list_extensions.dart';
 import 'package:mink_dart_utils/src/models/timespan.dart';
 
-mixin TimeBound {
+mixin TimeBound implements Comparable {
   abstract final DateTime time;
+
+  @override
+  int compareTo(other) {
+    if (other is TimeBound) {
+      return time.compareTo(other.time);
+    } else if (other is DateTime) {
+      return time.compareTo(other);
+    } else {
+      throw ArgumentError("$runtimeType is not comparable to TimeBound");
+    }
+  }
 }
 
 /// This class only exists becuase it isn't possible to

@@ -39,6 +39,10 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     }
   }
 
+  (T, T) firstAndLast() => (first, last);
+
+  (T?, T?) firstAndLastOrNull() => (firstOrNull, lastOrNull);
+
   Iterable<T> repeat(int n) sync* {
     assert(n >= 0);
     for (int i = 0; i < n; i++) for (var x in this) yield x;
@@ -319,4 +323,16 @@ extension IntIterableMethods on Iterable<int> {
 
 extension Denumerate<T> on Iterable<(int, T)> {
   Iterable<T> denumerate() => map((x) => x.$2);
+}
+
+extension ComparableIterableExtension<T extends Comparable> on Iterable<T> {
+  (T, T) extrema() {
+    T min = first;
+    T max = first;
+    for (var x in this) {
+      if (x.compareTo(min) == -1) min = x;
+      if (x.compareTo(max) == 1) max = x;
+    }
+    return (min, max);
+  }
 }

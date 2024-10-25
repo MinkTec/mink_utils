@@ -236,6 +236,11 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
         .time);
   }
 
+  Timespan timespan() {
+    final (begin, end) = extrema();
+    return Timespan(begin: begin.time, end: end.time);
+  }
+
   List<T> sortedByTime({bool ascending = true}) => sorted(
         ascending
             ? (a, b) => a.time.compareTo(b.time)
