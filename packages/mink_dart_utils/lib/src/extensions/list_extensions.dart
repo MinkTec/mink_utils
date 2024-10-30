@@ -87,6 +87,8 @@ extension Basics<T> on List<T> {
 
   List<List<T>> nTimes(int n) => [for (int i = 0; i < n; i++) this];
 
+  T randomElement() => this[math.Random().nextInt(length)];
+
   Iterable<T> takeRandom(int n) sync* {
     Set<int> indices = {};
     while (indices.length < n) {

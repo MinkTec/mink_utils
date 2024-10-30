@@ -8,4 +8,6 @@ final class PlatformInfo {
   static bool get isDesktop => !isMobile;
 
   static String get locale => html.document.body!.localName;
+
+  static String get pathSeperator => "/";
 }

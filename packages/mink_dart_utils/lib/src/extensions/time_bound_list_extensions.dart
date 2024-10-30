@@ -203,11 +203,11 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
   /// removes all values in List<DateTime> that are closer together,
   /// than [Duration delta].
   /// The check begins at the newest element, and works backwards.
-  Iterable<TimeBound> reduceToDelta(Duration delta) {
+  Iterable<T> reduceToDelta(Duration delta) {
     if (isEmpty) return [];
     sort((a, b) => b.time.compareTo(a.time));
     int i = 0;
-    Queue<TimeBound> reduced = Queue.from([first]);
+    Queue<T> reduced = Queue.from([first]);
 
     while (i < length) {
       if (!(reduced.last.time.difference(this[i].time) < delta &&
