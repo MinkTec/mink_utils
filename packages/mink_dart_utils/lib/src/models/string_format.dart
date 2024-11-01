@@ -7,7 +7,7 @@ enum ValueType {
   percent,
   ;
 
-  format(Object value, {int fixed = 0}) => switch (this) {
+  void format(Object value, {int fixed = 0}) => switch (this) {
         ValueType.numeric => (value as num).toStringAsFixed(fixed),
         ValueType.percent =>
           "${((value as num) * 100).toStringAsFixed(fixed)}%",
@@ -25,4 +25,3 @@ class StringFormat {
 
   format(Object value) => type.format(value, fixed: fixed);
 }
-
