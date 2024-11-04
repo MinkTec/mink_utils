@@ -8,6 +8,7 @@ export 'histogram_utils.dart';
 export 'lock.dart';
 export 'predicates.dart';
 export 'semver.dart';
+export 'sorted_timed_data_list.dart';
 export 'string_format.dart';
 export 'time_unit.dart';
 export 'timed_data.dart';

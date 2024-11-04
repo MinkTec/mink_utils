@@ -21,7 +21,7 @@ class TimedComparable<T extends Comparable<T>>
     implements Comparable, TimedData<T> {
   @override
   int compareTo(other) {
-    if (other is TimedComparable<T>) {
+    if (other is TimedData<T>) {
       return value.compareTo(other.value);
     } else if (other is T) {
       return this.value.compareTo(other);
