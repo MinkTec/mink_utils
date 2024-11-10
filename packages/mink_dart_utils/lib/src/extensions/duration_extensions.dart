@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:collection/collection.dart';
-import 'package:mink_dart_utils/src/extensions/timespan_iterable_extensions.dart';
+import 'package:mink_dart_utils/src/clock.dart';
 import 'package:mink_dart_utils/src/utils/base.dart';
 
 enum TimeWords {
@@ -98,7 +97,7 @@ extension DurationToHHMMSS on Duration {
     return "$h:$m:$s";
   }
 
-  DateTime get ago => DateTime.now().subtract(this);
+  DateTime get ago => dartClock.now().subtract(this);
 
   Duration get zeroOrAbove => max(Duration.zero);
 

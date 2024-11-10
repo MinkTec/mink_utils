@@ -1,4 +1,5 @@
 import 'package:mink_dart_utils/mink_dart_utils.dart';
+import 'package:mink_dart_utils/src/clock.dart';
 
 class TimedData<T> with TimeBound {
   T value;
@@ -7,7 +8,7 @@ class TimedData<T> with TimeBound {
   DateTime time;
 
   TimedData({required this.value, DateTime? time})
-      : time = time ?? DateTime.now();
+      : time = time ?? dartClock.now();
 }
 
 class MaybeTimedData<T> {

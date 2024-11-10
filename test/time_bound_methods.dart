@@ -13,7 +13,7 @@ class TB with TimeBound {
 }
 
 void main() {
-  final now = DateTime.now();
+  final now = clock.now();
 
   final linear =
       range(last: 100).eagerMap((i) => TB(now.add(Duration(seconds: i))));

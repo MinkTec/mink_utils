@@ -109,7 +109,7 @@ void main() {
     });
 
     final short =
-        Timespan.arround(DateTime.now(), const Duration(milliseconds: 1));
+        Timespan.arround(clock.now(), const Duration(milliseconds: 1));
 
     test("timespan conditions", () {
       expect(span1.intersects(span2), true);
@@ -149,7 +149,7 @@ void main() {
     });
 
     test("nearest element", () {
-      final now = DateTime.now();
+      final now = clock.now();
       final times =
           List<DateTime>.generate(20, (i) => now.subtract(Duration(minutes: i)))
               .sorted((a, b) => a.compareTo(b));
@@ -163,7 +163,7 @@ void main() {
     });
 
     test("lerp", () {
-      final now = DateTime.now();
+      final now = clock.now();
       const delta = Duration(minutes: 10);
       final ts = Timespan.arround(now, delta);
       const limit = Duration(milliseconds: 200);
@@ -179,7 +179,7 @@ void main() {
     });
 
     test("reduction", () {
-      final now = DateTime.now();
+      final now = clock.now();
 
       final data =
           List<DateTime>.generate(13, (i) => now.add(Duration(seconds: i)));
@@ -202,7 +202,7 @@ void main() {
   });
 
   test("byte conversion", () {
-    final now = DateTime.now();
+    final now = clock.now();
     final bytes = now.toUint8List();
     expect(dateTimeFromUint8List(bytes), now);
 
@@ -211,7 +211,7 @@ void main() {
   });
 
   test("week", () {
-    final now = DateTime.now();
+    final now = clock.now();
 
     final weekday = now.mostRecentWeekday(DateTime.monday);
 

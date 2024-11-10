@@ -6,3 +6,4 @@ export 'src/extensions/extensions.dart';
 export 'src/mixins/mixins.dart';
 export 'src/models/models.dart';
 export 'src/utils/utils.dart';
+export 'src/clock.dart';

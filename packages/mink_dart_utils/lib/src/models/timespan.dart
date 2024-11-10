@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 
+import '../clock.dart';
+
 part 'timespan.g.dart';
 
 enum SplitType {
@@ -93,20 +95,20 @@ class Timespan {
   factory Timespan.fromOClock(
       {required int from, required int to, DateTime? reference}) {
     assert(from <= to);
-    reference ??= DateTime.now().midnight();
+    reference ??= dartClock.now().midnight();
     return Timespan(
-        begin: reference.add(Duration(hours: from)),
+        begin: reference!.add(Duration(hours: from)),
         end: reference.add(Duration(hours: to)));
   }
 
   /// Get Timespan of a day.
-  /// if daysAgo is zero, the end of the timespan is [DateTime.now()]
+  /// if daysAgo is zero, the end of the timespan is [clock.now()]
   factory Timespan.today({int daysAgo = 0, bool fullday = false}) =>
       daysAgo != 0 || fullday
           ? Timespan(
-              begin: DateTime.now().midnight(daysAgo: daysAgo),
+              begin: dartClock.now().midnight(daysAgo: daysAgo),
               duration: const Duration(days: 1))
-          : Timespan(begin: DateTime.now().midnight());
+          : Timespan(begin: dartClock.now().midnight());
 
   Timespan get dreiviertelzwoelf => Timespan(
       begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),
@@ -197,7 +199,7 @@ class Timespan {
   /// The [align] parameter is used to set which part
   /// of the timespan is used and defaults to [this.end]
   int daysAgo({TimespanPart align = TimespanPart.end}) {
-    final mn = DateTime.now().midnight();
+    final mn = dartClock.now().midnight();
     return mn.isBefore(align.get(this))
         ? 0
         : align.get(this).difference(mn).abs().inDays + 1;
@@ -262,7 +264,7 @@ class Timespan {
       this.begin = begin ?? DateTime(1970);
 
       /// use the supplied end or now
-      this.end = end ?? DateTime.now();
+      this.end = end ?? dartClock.now();
 
       /// calc resulting duration
       this.duration = this.end.difference(this.begin);
@@ -287,7 +289,7 @@ class Timespan {
       /// if only end and duration are given,
       /// calc the begin time from end - duration
     } else {
-      this.end = end ?? DateTime.now();
+      this.end = end ?? dartClock.now();
       this.begin = this.end.subtract(duration);
       this.duration = duration;
     }

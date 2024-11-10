@@ -1,3 +1,4 @@
+import 'package:mink_dart_utils/src/clock.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 
 extension MinkUtilsStreamExtension<T> on Stream<T> {
@@ -8,12 +9,12 @@ extension MinkUtilsStreamExtension<T> on Stream<T> {
   }) {
     DateTime? last;
 
-    DateTime current = DateTime.now();
+    DateTime current = dartClock.now();
 
     final toleratedDuration = duration * (1 - tolerance);
 
     return where((x) {
-      current = DateTime.now();
+      current = dartClock.now();
       if (last == null || current.difference(last!) > toleratedDuration) {
         last = current;
         return true;

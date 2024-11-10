@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:mink_dart_utils/src/clock.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 import 'package:mink_dart_utils/src/models/timespan.dart';
@@ -36,7 +37,7 @@ extension DateTimeListExtension on List<DateTime> {
   /// If it's not sorted calculations with [n] ore none specified
   /// can return wrong results.
   /// If realtime is the the functions assumes that the timer interval
-  /// ends [DateTime.now()] otherwise the lasts elements timestamp
+  /// ends [clock.now()] otherwise the lasts elements timestamp
   /// will be used.
   double frequency({int? n, Duration? duration, bool realTime = false}) {
     if (isEmpty) return 0;
@@ -55,7 +56,7 @@ extension DateTimeListExtension on List<DateTime> {
       startTime = first;
     }
 
-    final endTime = realTime ? DateTime.now() : last;
+    final endTime = realTime ? dartClock.now() : last;
 
     return (vals.length / endTime.difference(startTime).inMilliseconds) * 1000;
   }

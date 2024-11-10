@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:mink_dart_utils/src/clock.dart';
 import 'package:mink_dart_utils/src/models/timespan.dart';
 import 'package:mink_dart_utils/src/utils/base.dart';
 
@@ -22,7 +23,7 @@ extension Comparisons on DateTime {
       difference(t1).abs() < difference(t2).abs();
 
   bool isOlder(Duration duration) =>
-      isBefore(DateTime.now().subtract(duration));
+      isBefore(dartClock.now().subtract(duration));
 
   DateTime laterDate(DateTime other) => isBefore(other) ? other : this;
   DateTime earlierDate(DateTime other) => isAfter(other) ? other : this;
@@ -30,7 +31,7 @@ extension Comparisons on DateTime {
   /// get the current day with all small time units equal to zero
   DateTime midnight({int daysAgo = 0}) => DateTime(year, month, day - daysAgo);
 
-  Duration get ago => DateTime.now().difference(this);
+  Duration get ago => dartClock.now().difference(this);
 
   String toShortWeekday() {
     switch (weekday) {

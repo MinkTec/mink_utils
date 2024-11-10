@@ -1,4 +1,4 @@
-// DateTime ago(Duration d) => DateTime.now().subtract(d);
+// DateTime ago(Duration d) => clock.now().subtract(d);
 
 extension ToDateTime on int {
   DateTime toDateTime() => DateTime.fromMillisecondsSinceEpoch(this);
