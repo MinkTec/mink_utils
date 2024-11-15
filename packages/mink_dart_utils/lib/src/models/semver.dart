@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// semantic versioning
 class SemVer implements Comparable<SemVer> {
   final int major;
@@ -52,6 +54,22 @@ class SemVer implements Comparable<SemVer> {
       patch: int.parse(parts[2]),
       label: label,
     );
+  }
+
+  static SemVer? tryParse(Object semver) {
+    try {
+      return SemVer.parse(semver as String);
+    } catch (_) {}
+
+    try {
+      return SemVer.fromJson(jsonDecode(semver as String));
+    } catch (_) {}
+
+    try {
+      return SemVer.fromJson(semver as Map<String, dynamic>);
+    } catch (_) {}
+
+    return null;
   }
 
   List<int> toList() => [major, minor, patch];

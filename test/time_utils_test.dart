@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:mink_dart_utils/mink_dart_utils.dart';
 import 'dart:io' show File;
 
@@ -109,7 +107,7 @@ void main() {
     });
 
     final short =
-        Timespan.arround(clock.now(), const Duration(milliseconds: 1));
+        Timespan.arround(DateTime.now(), const Duration(milliseconds: 1));
 
     test("timespan conditions", () {
       expect(span1.intersects(span2), true);
@@ -149,7 +147,7 @@ void main() {
     });
 
     test("nearest element", () {
-      final now = clock.now();
+      final now = DateTime.now();
       final times =
           List<DateTime>.generate(20, (i) => now.subtract(Duration(minutes: i)))
               .sorted((a, b) => a.compareTo(b));
@@ -163,7 +161,7 @@ void main() {
     });
 
     test("lerp", () {
-      final now = clock.now();
+      final now = DateTime.now();
       const delta = Duration(minutes: 10);
       final ts = Timespan.arround(now, delta);
       const limit = Duration(milliseconds: 200);
@@ -179,7 +177,7 @@ void main() {
     });
 
     test("reduction", () {
-      final now = clock.now();
+      final now = DateTime.now();
 
       final data =
           List<DateTime>.generate(13, (i) => now.add(Duration(seconds: i)));
@@ -202,7 +200,7 @@ void main() {
   });
 
   test("byte conversion", () {
-    final now = clock.now();
+    final now = DateTime.now();
     final bytes = now.toUint8List();
     expect(dateTimeFromUint8List(bytes), now);
 
@@ -211,7 +209,7 @@ void main() {
   });
 
   test("week", () {
-    final now = clock.now();
+    final now = DateTime.now();
 
     final weekday = now.mostRecentWeekday(DateTime.monday);
 

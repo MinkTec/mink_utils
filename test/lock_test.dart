@@ -11,7 +11,7 @@ Future<void> main() async {
     lock.lock();
     expect(lock.isLocked, true);
 
-    final now = clock.now();
+    final now = DateTime.now();
     final lockDuration = Duration(milliseconds: 50);
 
     Timer(lockDuration, lock.unlock);
@@ -20,7 +20,7 @@ Future<void> main() async {
 
     expect(await lock.wait.then((_) => lock.isLocked), false);
     expect(
-        await lock.wait.then((_) => clock.now().difference(now)) >=
+        await lock.wait.then((_) => DateTime.now().difference(now)) >=
             lockDuration,
         true);
   });

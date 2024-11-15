@@ -4,7 +4,6 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/datetime_list_extensions.dart';
-import 'package:mink_dart_utils/src/extensions/duration_extensions.dart';
 import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 

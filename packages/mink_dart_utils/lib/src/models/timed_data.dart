@@ -1,5 +1,4 @@
 import 'package:mink_dart_utils/mink_dart_utils.dart';
-import 'package:mink_dart_utils/src/clock.dart';
 
 class TimedData<T> with TimeBound {
   T value;

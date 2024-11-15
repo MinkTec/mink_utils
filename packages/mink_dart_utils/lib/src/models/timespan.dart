@@ -97,7 +97,7 @@ class Timespan {
     assert(from <= to);
     reference ??= dartClock.now().midnight();
     return Timespan(
-        begin: reference!.add(Duration(hours: from)),
+        begin: reference.add(Duration(hours: from)),
         end: reference.add(Duration(hours: to)));
   }
 
