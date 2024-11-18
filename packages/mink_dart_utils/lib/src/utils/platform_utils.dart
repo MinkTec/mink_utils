@@ -1,3 +1,4 @@
+// ignore_for_file: dont_use_io_platform
 import 'dart:io';
 
 final class PlatformInfo {
@@ -22,4 +23,6 @@ final class PlatformInfo {
   static bool get isLinux => Platform.isLinux;
 
   static bool get isFuchsia => Platform.isFuchsia;
+
+  static bool get isWeb => false;
 }

@@ -22,4 +22,6 @@ final class PlatformInfo {
   static bool get isLinux => false;
 
   static bool get isFuchsia => false;
+
+  static bool get isWeb => true;
 }

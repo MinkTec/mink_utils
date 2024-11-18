@@ -1,16 +1,26 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:mink_flutter_utils/mink_flutter_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xdg_directories/xdg_directories.dart';
 
-Future<String> get getLocalPath async => !Platform.isLinux
-    ? await getApplicationDocumentsDirectory().then((e) => e.path)
-    : "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify";
+Future<String> get getLocalPath async {
+  if (kIsWeb) {
+    return "";
+  } else if (!PlatformInfo.isLinux) {
+    return await getApplicationDocumentsDirectory().then((e) => e.path);
+  } else {
+    return "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify";
+  }
+}
 
 Future<String> get getDownloadsPath async =>
     (await getDownloadsDirectory())?.path ?? await getLocalPath;
 
 Future<Directory> getLocalDir(String name) async {
-  if (!Platform.isLinux) {
+  if (kIsWeb) {
+    return Directory("");
+  } else if (!PlatformInfo.isLinux) {
     return Directory(
         "${await getApplicationDocumentsDirectory().then((e) => e.path)}${PathBuf.splitChar}$name");
   } else {
@@ -44,7 +54,7 @@ Future<File> writeToDownloadFile(String name, String content) async =>
     getDownloadsFile(name).then((file) => file.writeAsString(content));
 
 class PathBuf {
-  static final splitChar = Platform.isWindows ? "\\" : "/";
+  static final splitChar = PlatformInfo.pathSeperator;
 
   String path;
   PathBuf(this.path);
