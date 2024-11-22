@@ -133,7 +133,7 @@ void main() {
               (i) =>
                   Timespan.today(daysAgo: i)
                       .daysAgo(align: TimespanPart.middle) ==
-                  i).every(id),
+                  i).every(identity),
           true);
 
       expect(
@@ -142,7 +142,7 @@ void main() {
               (i) =>
                   Timespan.today(daysAgo: i)
                       .daysAgo(align: TimespanPart.middle) ==
-                  i).every(id),
+                  i).every(identity),
           true);
     });
 

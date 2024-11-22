@@ -34,7 +34,7 @@ void main() {
     });
 
     test("advanced", () {
-      final list1 = List<int>.generate(10, id);
+      final list1 = List<int>.generate(10, identity);
       final list2 = List<int>.generate(10, (i) => 10 + i);
 
       final ClusteredData cluster = [list1, list2].cluster(3);

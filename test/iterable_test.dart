@@ -40,10 +40,7 @@ void main() {
     });
 
     test("other", () {
-      expect(l1.lag, [
-        [1, 2],
-        [2, 3]
-      ]);
+      expect(l1.lag, [(1, 2), (2, 3)]);
       expect([].lag, []);
 
       expect(l2.decimate(1), [1]);

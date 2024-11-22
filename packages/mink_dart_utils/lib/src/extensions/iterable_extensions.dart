@@ -90,7 +90,8 @@ extension BasicIteratorMethods<T> on Iterable<T> {
 
   //List<T> sorted(Comparator<T> compare) => [...this]..sort(compare);
 
-  Iterable<(int, T)> enumerate() => List<int>.generate(length, id).zip(this);
+  Iterable<(int, T)> enumerate() =>
+      List<int>.generate(length, identity).zip(this);
 
   /// enumerates the list but inverses (just) the indices
   Iterable<(int, T)> enumerateReverse() {
@@ -144,12 +145,12 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     }
   }
 
-  Iterable<List<T>> get lag sync* {
+  Iterable<(T last, T next)> get lag sync* {
     final i = iterator;
     i.moveNext();
     T temp = i.current;
     while (i.moveNext()) {
-      yield [temp, i.current];
+      yield (temp, i.current);
       temp = i.current;
     }
   }
@@ -297,8 +298,8 @@ extension IntIterableMethods on Iterable<int> {
   bool isMonotonicMod(int mod, {bool strict = false, bool increasing = true}) {
     final fcomp = FMath.matchComp(strict: strict, increasing: increasing);
     return lag.every(
-            (v) => BinaryComparison.eq.func<int, int, num>()(v[0], v[1])) ||
-        lag.every((v) => FMath.cycliccomp(v[1], v[0], mod, fcomp));
+            (v) => BinaryComparison.eq.func<int, int, num>()(v.$1, v.$2)) ||
+        lag.every((v) => FMath.cycliccomp(v.$2, v.$1, mod, fcomp));
   }
 
   bool isIncreasingMod(int mod, {bool strict = false}) =>

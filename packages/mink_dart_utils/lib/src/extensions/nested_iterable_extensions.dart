@@ -2,7 +2,7 @@ import 'package:mink_dart_utils/src/utils/base.dart';
 
 extension MiscIterableIterable<T> on Iterable<Iterable<T>> {
   /// returns a list of t from a list of list of t
-  Iterable<T> flatten() => expand(id);
+  Iterable<T> flatten() => expand(identity);
 
   /// returns the combined length of all elements in a nexted list
   int get flattlength => map((e) => e.length).reduce((a, b) => a + b);

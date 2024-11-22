@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 main() {
   group("element reduction", () {
-    final data = List<int>.generate(10, id);
+    final data = List<int>.generate(10, identity);
 
     test("below", () {
       expect(

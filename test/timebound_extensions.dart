@@ -23,7 +23,7 @@ main() {
     test("day", () {
       final res = data.groupBy(group: SplitType.day);
 
-      for (var [a, b] in res
+      for (var (a, b) in res
           .mapReduce(
             map: (x) => x.value,
             reduce: (a, b) => a + b,

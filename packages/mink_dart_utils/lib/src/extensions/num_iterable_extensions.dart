@@ -27,7 +27,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
 
   bool isMonotonic({bool strict = false, bool increasing = true}) {
     final f = FMath.matchComp(strict: strict, increasing: increasing).func;
-    return lag.every((val) => f<T, T, num>()(val[1], val[0]));
+    return lag.every((val) => f<T, T, num>()(val.$2, val.$1));
   }
 
   bool isIncreasing({bool strict = false}) =>
@@ -109,7 +109,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
 
   double get avg => isNotEmpty ? sum / length : 0;
 
-  Iterable<double> get middleAverages => lag.map((e) => e.sum / 2);
+  Iterable<double> get middleAverages => lag.map((e) => (e.$1 + e.$2) / 2);
 
   Iterable<T> get realabsdiff sync* {
     final it = iterator;

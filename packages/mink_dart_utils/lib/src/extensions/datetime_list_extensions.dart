@@ -7,7 +7,7 @@ import 'package:mink_dart_utils/src/models/timespan.dart';
 
 extension DateTimeListExtension on List<DateTime> {
   /// get Duration between each elemnt of a [List] of [DateTime]s
-  Iterable<Duration> diff() => lag.map((e) => e.last.difference(e.first));
+  Iterable<Duration> diff() => lag.map((e) => e.$2.difference(e.$1));
 
   /// find continuous blocks of [DateTime]s in a [List<DateTime>].
   /// Every section of one or more blocks where the [Duration] between each
@@ -17,7 +17,7 @@ extension DateTimeListExtension on List<DateTime> {
     sort((a, b) => a.compareTo(b));
     return [0, ...diff().findIndices((e) => e > delta), length]
         .lag
-        .map((e) => Timespan(begin: this[e.first], end: this[e.last - 1]));
+        .map((e) => Timespan(begin: this[e.$1], end: this[e.$2 - 1]));
   }
 
   void sortNormal({bool ascending = true}) =>
