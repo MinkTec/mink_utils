@@ -1,6 +1,7 @@
 export 'berzier_approximation.dart';
 export 'byte_size.dart';
 export 'containers/named_content.dart';
+export 'date_time_precision.dart';
 export 'element_reduction.dart';
 export 'fraction_counter.dart';
 export 'future_utils.dart';

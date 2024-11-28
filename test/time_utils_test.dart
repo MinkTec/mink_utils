@@ -199,6 +199,55 @@ void main() {
     });
   });
 
+  group("date time precision", () {
+    test('should return correct enum value for valid input', () {
+      expect(DateTimePrecision.parse('day'), DateTimePrecision.day);
+      expect(DateTimePrecision.parse('hour'), DateTimePrecision.hour);
+      expect(DateTimePrecision.parse('minute'), DateTimePrecision.minute);
+      expect(DateTimePrecision.parse('second'), DateTimePrecision.second);
+      expect(DateTimePrecision.parse('millisecond'),
+          DateTimePrecision.millisecond);
+      expect(DateTimePrecision.parse('microsecond'),
+          DateTimePrecision.microsecond);
+    });
+
+    test('should throw ArgumentError for invalid input', () {
+      expect(() => DateTimePrecision.parse('invalid'), throwsArgumentError);
+    });
+
+    final dateTime = DateTime(2023, 10, 5, 14, 30, 45, 123, 456);
+
+    test('should convert to day precision', () {
+      final result = DateTimePrecision.day.convert(dateTime);
+      expect(result, DateTime(2023, 10, 5));
+    });
+
+    test('should convert to hour precision', () {
+      final result = DateTimePrecision.hour.convert(dateTime);
+      expect(result, DateTime(2023, 10, 5, 14));
+    });
+
+    test('should convert to minute precision', () {
+      final result = DateTimePrecision.minute.convert(dateTime);
+      expect(result, DateTime(2023, 10, 5, 14, 30));
+    });
+
+    test('should convert to second precision', () {
+      final result = DateTimePrecision.second.convert(dateTime);
+      expect(result, DateTime(2023, 10, 5, 14, 30, 45));
+    });
+
+    test('should convert to millisecond precision', () {
+      final result = DateTimePrecision.millisecond.convert(dateTime);
+      expect(result, DateTime(2023, 10, 5, 14, 30, 45, 123));
+    });
+
+    test('should convert to microsecond precision', () {
+      final result = DateTimePrecision.microsecond.convert(dateTime);
+      expect(result, DateTime(2023, 10, 5, 14, 30, 45, 123, 456));
+    });
+  });
+
   test("byte conversion", () {
     final now = DateTime.now();
     final bytes = now.toUint8List();
