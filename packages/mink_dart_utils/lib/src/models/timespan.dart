@@ -45,7 +45,6 @@ enum SplitType {
         return ts.split(delta(timespan.begin)).toList();
       case SplitType.day:
         return timespan.days.toList();
-
       case SplitType.week:
         return timespan.weeks.toList();
       case SplitType.month:
@@ -131,7 +130,9 @@ class Timespan {
     DateTime newTempTime;
     while (tempTime.isBefore(end)) {
       newTempTime = tempTime.addCalendarDay(1);
-      yield Timespan(begin: tempTime, end: newTempTime);
+      yield Timespan(
+          begin: tempTime,
+          end: newTempTime.subtract(Duration(microseconds: 1)));
       tempTime = newTempTime;
     }
   }
@@ -144,7 +145,7 @@ class Timespan {
       yield Timespan(
           begin: DateTime(i.year, i.month + counter),
           end: DateTime(i.year, i.month + counter + 1)
-              .subtract(const Duration(hours: 1)));
+              .subtract(const Duration(microseconds: 1)));
       counter++;
     }
   }
@@ -168,7 +169,7 @@ class Timespan {
       yield Timespan(
           begin: DateTime(i.year + counter),
           end: DateTime(i.year + counter + 1)
-              .subtract(const Duration(hours: 1)));
+              .subtract(const Duration(microseconds: 1)));
       counter++;
     } while (DateTime(begin.year + counter).isBefore(end));
   }
