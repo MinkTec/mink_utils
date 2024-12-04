@@ -32,6 +32,8 @@ enum DateTimePrecision {
     }
   }
 
+  DateTime call(DateTime time) => convert(time);
+
   DateTime convert(DateTime time) => switch (this) {
         DateTimePrecision.year => DateTime(
             time.year,

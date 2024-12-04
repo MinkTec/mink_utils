@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:mink_dart_utils/src/extensions/datetime_extensions.dart';
 
 import '../clock.dart';
+import 'date_time_precision.dart';
 
 part 'timespan.g.dart';
 
@@ -108,6 +109,10 @@ class Timespan {
               begin: dartClock.now().midnight(daysAgo: daysAgo),
               duration: const Duration(days: 1))
           : Timespan(begin: dartClock.now().midnight());
+
+  factory Timespan.day(DateTime time) => Timespan(
+      begin: DateTimePrecision.day(time),
+      duration: const Duration(days: 1) - const Duration(microseconds: 1));
 
   Timespan get dreiviertelzwoelf => Timespan(
       begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),

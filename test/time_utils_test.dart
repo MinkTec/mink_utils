@@ -146,6 +146,18 @@ void main() {
           true);
     });
 
+    test("day factory", () {
+      final reference = DateTime(2023, 10, 5);
+      final dayTimespan = Timespan.day(reference);
+      expect(dayTimespan.begin,
+          DateTime(reference.year, reference.month, reference.day));
+      expect(
+          dayTimespan.end,
+          DateTime(reference.year, reference.month, reference.day)
+              .add(Duration(days: 1))
+              .subtract(Duration(microseconds: 1)));
+    });
+
     test("nearest element", () {
       final now = DateTime.now();
       final times =

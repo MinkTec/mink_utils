@@ -102,9 +102,12 @@ class ClusteredData {
         (limits == null || data.length == limits.length));
 
     final borders = ((limits != null)
-            ? data.mapIndexed(
-                (i, l) => _genHistogramBordersTuple(limits[i] ?? l.extrema, n))
-            : data.map((l) => _genHistogramBordersTuple(l.extrema, n)))
+            ? data.mapIndexed((i, l) => _genHistogramBordersTuple(
+                limits[i] != null
+                    ? (limits[i]![0], limits[i]![1])
+                    : l.extrema(),
+                n))
+            : data.map((l) => _genHistogramBordersTuple(l.extrema(), n)))
         .toList();
 
     final baskets = List<int>.filled(math.pow(n, data.length).toInt(), 0);
@@ -218,10 +221,10 @@ List<double> _genHistogramBorders(num min, num max, int n) => [
       max.toDouble()
     ];
 
-List<double> _genHistogramBordersTuple(List<num> extrema, int n) => [
+List<double> _genHistogramBordersTuple((num, num) extrema, int n) => [
       ...List<double>.generate(
-          n, (i) => extrema.first + (extrema.last - extrema.first) / n * i),
-      extrema.last.toDouble()
+          n, (i) => extrema.$1 + (extrema.$2 - extrema.$1) / n * i),
+      extrema.$2.toDouble()
     ];
 
 extension StatsticsExtensions<T extends num> on Iterable<T> {

@@ -10,7 +10,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
 
   double get average => sum / length;
 
-  List<T> get extrema {
+  (T, T) extrema() {
     T min = first;
     T max = first;
     for (var e in this) {
@@ -22,7 +22,7 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
         max = e;
       }
     }
-    return [min, max];
+    return (min, max);
   }
 
   bool isMonotonic({bool strict = false, bool increasing = true}) {
