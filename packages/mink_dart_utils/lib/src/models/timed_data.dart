@@ -52,4 +52,16 @@ class TimespanningData<T> with Timespanning {
     required this.timespan,
     required this.value,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TimespanningData<T> &&
+        other.timespan == timespan &&
+        other.value == value;
+  }
+
+  @override
+  int get hashCode => timespan.hashCode ^ value.hashCode;
 }

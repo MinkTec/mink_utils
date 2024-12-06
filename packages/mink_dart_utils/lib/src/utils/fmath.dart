@@ -20,4 +20,9 @@ class FMath {
 
   static bool modeq(int a, int b, int mod, BinaryComparison comp) =>
       comp.func<int, int, num>()(a % mod, b % mod);
+
+  static bool isApprox<T extends num, S extends num>(
+      T a, S b, double tolerance) {
+    return ((a - b) / a).abs() < tolerance;
+  }
 }
