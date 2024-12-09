@@ -10,8 +10,10 @@ import 'semver.dart' as semver;
 import 'timeout_buffer.dart' as timeout_buffer;
 import 'element_reduction.dart' as element_reduction;
 import 'timebound_extensions.dart' as timebound_extensions;
+import 'parallel_async_task_queue.dart' as parallel_async_task_queue;
 
 void main() {
+  parallel_async_task_queue.main();
   timebound_extensions.main();
   element_reduction.main();
   timeout_buffer.main();
