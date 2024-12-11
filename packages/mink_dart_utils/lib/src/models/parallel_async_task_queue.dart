@@ -38,6 +38,10 @@ class ParallelAsyncTaskQueue<S, T> {
   }
 
   Future<List<S>> run() async {
+    if (input.isEmpty) {
+      return [];
+    }
+
     int counter = 0;
     int doneCounter = 0;
     final Completer<List<S>> completer = Completer();

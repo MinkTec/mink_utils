@@ -20,6 +20,11 @@ Future<void> main() async {
       },
     );
 
+    test("empty input", () async {
+      final output = await queue.copyWith(input: []).run();
+      expect(output, []);
+    });
+
     test("generic", () async {
       final output = await queue.run();
       expect(current, total);
