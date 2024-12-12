@@ -87,5 +87,5 @@ extension Comparisons on DateTime {
   }
 }
 
-DateTime dateTimeFromUint8List(Uint8List list) =>
-    DateTime.fromMicrosecondsSinceEpoch(list.buffer.asByteData().getUint64(0));
+DateTime dateTimeFromUint8List(List<int> list) =>
+    DateTime.fromMicrosecondsSinceEpoch(Uint8List.fromList(list).buffer.asByteData().getUint64(0));

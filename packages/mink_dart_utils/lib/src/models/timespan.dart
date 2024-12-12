@@ -78,7 +78,7 @@ class Timespan {
 
   factory Timespan.empty() => Timespan(duration: Duration.zero);
 
-  factory Timespan.fromBytes(Uint8List bytes) {
+  factory Timespan.fromBytes(List<int> bytes) {
     return Timespan(
         begin: dateTimeFromUint8List(bytes.sublist(0, 8)),
         end: dateTimeFromUint8List(bytes.sublist(8)));
