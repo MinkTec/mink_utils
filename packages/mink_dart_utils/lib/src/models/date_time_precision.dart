@@ -34,6 +34,22 @@ enum DateTimePrecision {
 
   DateTime call(DateTime time) => convert(time);
 
+  String partialIso8601(DateTime time) {
+    return switch (this) {
+      DateTimePrecision.year => "${time.year}",
+      DateTimePrecision.month => "${year.partialIso8601(time)}-${time.month}",
+      DateTimePrecision.day => "${month.partialIso8601(time)}-${time.day}",
+      DateTimePrecision.hour => "${day.partialIso8601(time)}T${time.hour}",
+      DateTimePrecision.minute => "${hour.partialIso8601(time)}:${time.minute}",
+      DateTimePrecision.second =>
+        "${minute.partialIso8601(time)}:${time.second}",
+      DateTimePrecision.millisecond =>
+        "${second.partialIso8601(time)}.${time.millisecond}",
+      DateTimePrecision.microsecond =>
+        "${millisecond.partialIso8601(time)}${time.microsecond}",
+    };
+  }
+
   DateTime convert(DateTime time) => switch (this) {
         DateTimePrecision.year => DateTime(
             time.year,
