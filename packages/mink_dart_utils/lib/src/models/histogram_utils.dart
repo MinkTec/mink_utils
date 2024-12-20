@@ -136,6 +136,47 @@ class ClusteredData {
     return ClusteredData(borders: borders, baskets: baskets);
   }
 
+  factory ClusteredData.oneDimensional({
+    required Iterable<double> data,
+    required int n,
+    double? min,
+    double? max,
+  }) {
+    final baskets = List<int>.filled(n, 0);
+
+    min ??= data.reduce(math.min);
+    max ??= data.reduce(math.max);
+
+    double i;
+
+    int counter = 0;
+    for (var d in data) {
+      if (d > 90) {
+        counter++;
+      }
+    }
+    print("-------- got ${counter} over 90");
+
+    final borders = _genHistogramBorders(min, max, n);
+
+    for (var x in data) {
+      if (x < min || x > max) {
+        continue;
+      }
+      if (x == max) {
+        baskets.last++;
+        continue;
+      }
+      i = ((x - min) / (max - min));
+      baskets[(i * n).floor()]++;
+    }
+
+    return ClusteredData(
+      borders: [borders],
+      baskets: baskets,
+    );
+  }
+
   factory ClusteredData.oneDimensionalCustomLimitsWithOutliers({
     required Iterable<double> data,
     required List<double> limits,

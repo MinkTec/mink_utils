@@ -25,6 +25,23 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
     return (min, max);
   }
 
+  num clampedSum({
+    required num min,
+    required num max,
+    required num start,
+  }) {
+    num sum = start;
+    for (T i in this) {
+      sum += i;
+      if (sum < min) {
+        sum = min;
+      } else if (sum > max) {
+        sum = max;
+      }
+    }
+    return sum;
+  }
+
   bool isMonotonic({bool strict = false, bool increasing = true}) {
     final f = FMath.matchComp(strict: strict, increasing: increasing).func;
     return lag.every((val) => f<T, T, num>()(val.$2, val.$1));
