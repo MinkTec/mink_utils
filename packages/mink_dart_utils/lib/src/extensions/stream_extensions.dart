@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:mink_dart_utils/src/clock.dart';
 import 'package:mink_dart_utils/src/mixins/time_bound.dart';
 
@@ -49,5 +51,33 @@ extension MinkUtilsTimeBoundStreamExtension<T extends TimeBound> on Stream<T> {
         return false;
       }
     });
+  }
+
+  Stream<T> pickSampleWithRollingOverflowWindow({
+    required Duration window,
+    required int maxCount,
+    Duration? minAcceptanceDelta,
+  }) async* {
+    final acceptedTimes = Queue<DateTime>();
+    await for (final measurement in this) {
+      final now = measurement.time;
+
+      // 1) Remove old accepted timestamps that are outside the 1-second window.
+      while (acceptedTimes.isNotEmpty &&
+          now.difference(acceptedTimes.first) >= window) {
+        acceptedTimes.removeFirst();
+      }
+
+      // 2) Check how many we have left in the last second.
+      if (acceptedTimes.length < maxCount &&
+          (acceptedTimes.isEmpty ||
+              minAcceptanceDelta == null ||
+              now.difference(acceptedTimes.last) >= minAcceptanceDelta)) {
+        // We can accept this measurement
+        yield measurement;
+        acceptedTimes.addLast(now);
+      }
+      // else -> We discard the measurement (because we already have 5 in the last second).
+    }
   }
 }

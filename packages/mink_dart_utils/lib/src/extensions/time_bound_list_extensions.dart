@@ -247,4 +247,56 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
             ? (a, b) => a.time.compareTo(b.time)
             : (a, b) => b.time.compareTo(a.time),
       );
+
+  Iterable<T> pickTimeBoundSample(
+    Duration duration, {
+    double tolerance = 0,
+
+    /// for using synthetic data for testing
+    bool allowTimetravel = false,
+  }) {
+    DateTime? last;
+    DateTime current;
+    final toleratedDuration = duration * (1 - tolerance);
+
+    return where((x) {
+      current = x.time;
+      if (last == null ||
+          current.difference(last!) > toleratedDuration ||
+          (allowTimetravel && current.isBefore(last!))) {
+        last = current;
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+  Iterable<T> pickSampleWithRollingOverflowWindow({
+    required Duration window,
+    required int maxCount,
+    Duration? minAcceptanceDelta,
+  }) sync* {
+    final acceptedTimes = Queue<DateTime>();
+    for (final measurement in this) {
+      final now = measurement.time;
+
+      // 1) Remove old accepted timestamps that are outside the 1-second window.
+      while (acceptedTimes.isNotEmpty &&
+          now.difference(acceptedTimes.first) >= window) {
+        acceptedTimes.removeFirst();
+      }
+
+      // 2) Check how many we have left in the last second.
+      if (acceptedTimes.length < maxCount &&
+          (acceptedTimes.isEmpty ||
+              minAcceptanceDelta == null ||
+              now.difference(acceptedTimes.last) >= minAcceptanceDelta)) {
+        // We can accept this measurement
+        yield measurement;
+        acceptedTimes.addLast(now);
+      }
+      // else -> We discard the measurement (because we already have 5 in the last second).
+    }
+  }
 }

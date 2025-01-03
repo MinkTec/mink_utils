@@ -26,3 +26,24 @@ class TimeoutValue<T> {
   }
 }
 
+class CountingTimeoutValue<T> extends TimeoutValue<T> {
+  int _count = 0;
+  final int countLimit;
+
+  CountingTimeoutValue({
+    required super.value,
+    required super.timeout,
+    required super.onTimeout,
+    required this.countLimit,
+  });
+
+  @override
+  set value(T newValue) {
+    super.value = newValue;
+    _count++;
+    if (_count >= countLimit) {
+      _count = 0;
+      onTimeout(newValue);
+    }
+  }
+}

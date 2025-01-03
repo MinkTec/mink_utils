@@ -149,14 +149,6 @@ class ClusteredData {
 
     double i;
 
-    int counter = 0;
-    for (var d in data) {
-      if (d > 90) {
-        counter++;
-      }
-    }
-    print("-------- got ${counter} over 90");
-
     final borders = _genHistogramBorders(min, max, n);
 
     for (var x in data) {
