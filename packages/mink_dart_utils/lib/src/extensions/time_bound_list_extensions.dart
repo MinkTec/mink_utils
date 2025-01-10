@@ -89,7 +89,7 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
   }
 
   Iterable<TimedData<T?>> bolster({double? maxFrequency}) sync* {
-    maxFrequency ??= nchunks(50)
+    maxFrequency ??= (length >= 150 ? nchunks(50) : [this])
         .where((x) => x.length > 3)
         .map((x) => x.toList().time.frequency())
         .max;
