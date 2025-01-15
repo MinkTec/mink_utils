@@ -146,3 +146,9 @@ extension NumIteratorExtensions<T extends num> on Iterable<T> {
     }
   }
 }
+
+extension NumTupleIteratorExtensions<T extends num, S extends num>
+    on Iterable<(T value, S weight)> {
+  double weightedSum() =>
+      (map((e) => e.$1 * e.$2).sum / map((e) => e.$2).sum).toDouble();
+}
