@@ -5,7 +5,7 @@ final class PlatformInfo {
 
   static bool get isMobile => false;
 
-  static bool get isDesktop => !isMobile;
+  static bool get isDesktop => false;
 
   static String get locale => html.document.body!.localName;
 
