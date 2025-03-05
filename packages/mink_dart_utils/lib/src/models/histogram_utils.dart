@@ -246,6 +246,17 @@ class ClusteredData {
         .mapIndexed((i, c) => [borders[i][c], borders[i][c + 1]])
         .toList();
   }
+
+  ClusteredData scaleBorders(double factor) {
+    final scaledBorders = borders.map((dimension) {
+      return dimension.map((value) => value * factor).toList();
+    }).toList();
+
+    return ClusteredData(
+      baskets: baskets,
+      borders: scaledBorders,
+    );
+  }
 }
 
 // ignore: unused_element
