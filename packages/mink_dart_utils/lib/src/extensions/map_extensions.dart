@@ -27,6 +27,28 @@ extension BigIfTrue<T, S> on Map<T, S> {
       this[key] = val;
     }
   }
+
+  Map<T, S> replaceNanWithZero() {
+    final map = copy();
+    map.forEach((key, value) {
+      if (value is double && (value.isNaN || value.isInfinite)) {
+        map[key] = -1.0 as S;
+      } else if (value is Map) {
+        map[key] = (value as Map).replaceNanWithZero() as S;
+      } else if (value is List) {
+        map[key] = (value).map((e) {
+          if (e is double && (e.isNaN || e.isInfinite)) {
+            return -1.0;
+          } else if (e is Map) {
+            return e.replaceNanWithZero();
+          } else {
+            return e;
+          }
+        }).toList() as S;
+      }
+    });
+    return map;
+  }
 }
 
 extension NumericMapExtensions<T> on Map<T, int> {
