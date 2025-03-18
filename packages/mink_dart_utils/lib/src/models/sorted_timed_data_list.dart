@@ -21,6 +21,12 @@ class SortedTimeBoundDataList<T extends TimeBound>
     return _data.getNearestIndexFromSorted(time, maxDeviation: maxDeviation);
   }
 
+  (int, int) getTimespanIndices(Timespan timespan) {
+    final startIndex = _data.getNearestIndexFromSorted(timespan.begin);
+    final endIndex = _data.getNearestIndexFromSorted(timespan.end);
+    return (startIndex ?? 0, endIndex ?? _data.length - 1);
+  }
+
   SortedTimeBoundDataList<T> getTimespan(Timespan timespan) {
     final startIndex = _data.getNearestIndexFromSorted(timespan.begin);
     final endIndex = _data.getNearestIndexFromSorted(timespan.end);

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:test/test.dart';
 import 'package:mink_utils/mink_utils.dart';
@@ -8,14 +7,13 @@ main() async {
   group("timeout value", () {
     int counter = 0;
 
-    final value = TimeoutValue<int>(
-        value: 0,
-        timeout: Duration(milliseconds: 100),
-        onTimeout: (x) {
-          counter = x;
-        });
-
     test("baseline", () {
+      final value = TimeoutValue<int>(
+          value: 0,
+          timeout: Duration(milliseconds: 100),
+          onTimeout: (x) {
+            counter = x;
+          });
       expect(value.value, 0);
       expect(counter, 0);
     });

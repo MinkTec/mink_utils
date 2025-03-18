@@ -240,7 +240,7 @@ class ClusteredData {
   List<List<double>> getBorders(List<int> coords) {
     if (n < 5) {
       print(StackTrace.current);
-      print("--- coords ${coords} | borders: ${borders}");
+      print("--- coords $coords | borders: $borders");
     }
     return coords
         .mapIndexed((i, c) => [borders[i][c], borders[i][c + 1]])
