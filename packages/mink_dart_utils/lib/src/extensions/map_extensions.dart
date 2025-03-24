@@ -28,6 +28,28 @@ extension BigIfTrue<T, S> on Map<T, S> {
     }
   }
 
+  Map<T, S> doublesToStringAsFixed(int places) {
+    final map = copy();
+    map.forEach((key, value) {
+      if (value is double) {
+        map[key] = value.toStringAsFixed(places) as S;
+      } else if (value is Map) {
+        map[key] = (value as Map).doublesToStringAsFixed(places) as S;
+      } else if (value is List) {
+        map[key] = (value).map((e) {
+          if (e is double) {
+            return e.toStringAsFixed(places);
+          } else if (e is Map) {
+            return e.doublesToStringAsFixed(places);
+          } else {
+            return e;
+          }
+        }).toList() as S;
+      }
+    });
+    return map;
+  }
+
   Map<T, S> replaceNanWithZero() {
     final map = copy();
     map.forEach((key, value) {
