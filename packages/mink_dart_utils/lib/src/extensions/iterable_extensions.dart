@@ -48,6 +48,17 @@ extension BasicIteratorMethods<T> on Iterable<T> {
     for (int i = 0; i < n; i++) for (var x in this) yield x;
   }
 
+  Iterable<T> toSetBy<S>(S Function(T input) toKey) sync* {
+    final seen = <S>{};
+
+    for (var item in this) {
+      final res = toKey(item);
+      if (seen.add(res)) {
+        yield item;
+      }
+    }
+  }
+
   Iterable<T> padRight(int n, T element) sync* {
     final it = iterator;
     for (int i = 0; i < n; i++) {
