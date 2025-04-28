@@ -75,8 +75,9 @@ extension Comparisons on DateTime {
   String get hhmmss =>
       "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}";
   String get hhmmssms =>
-      "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}.$millisecond";
-  String humanReadable() => "$hour:${twoDigits(minute)}:${twoDigits(second)}";
+      "$hour:${twoDigits(minute.remainder(60))}:${twoDigits(second.remainder(60))}.${millisecond.toString().padRight(3, "0")}";
+  String humanReadable() =>
+      "$hour:${twoDigits(minute)}:${twoDigits(second)}".padRight(12, "0");
 
   Uint8List toUint8List() => Uint8List(8)
     ..buffer.asByteData().setUint64(0, microsecondsSinceEpoch, Endian.big);
@@ -88,4 +89,5 @@ extension Comparisons on DateTime {
 }
 
 DateTime dateTimeFromUint8List(List<int> list) =>
-    DateTime.fromMicrosecondsSinceEpoch(Uint8List.fromList(list).buffer.asByteData().getUint64(0));
+    DateTime.fromMicrosecondsSinceEpoch(
+        Uint8List.fromList(list).buffer.asByteData().getUint64(0));

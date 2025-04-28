@@ -10,6 +10,7 @@ export 'models/lock.dart';
 export 'models/parallel_async_task_queue.dart';
 export 'models/predicates.dart';
 export 'models/semver.dart';
+export 'models/sequential_processor.dart';
 export 'models/sorted_timed_data_list.dart';
 export 'models/string_format.dart';
 export 'models/time_unit.dart';

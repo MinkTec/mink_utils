@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:mink_dart_utils/src/clock.dart';
@@ -79,5 +80,61 @@ extension MinkUtilsTimeBoundStreamExtension<T extends TimeBound> on Stream<T> {
       }
       // else -> We discard the measurement (because we already have 5 in the last second).
     }
+  }
+
+  /// Returns a stream that buffers events to ensure a minimum time between emissions.
+  ///
+  /// For example, if the original stream fires multiple events in quick succession,
+  /// this method will space them out according to the specified [interval].
+  ///
+  /// - [interval]: The minimum duration to wait between emitting events.
+  /// - [initialDelay]: Optional delay before emitting the first event.
+  Stream<T> bufferBetweenEvents(Duration interval,
+      {Duration? initialDelay}) async* {
+    // Queue to hold events that came in too quickly
+    final buffer = Queue<T>();
+    bool isProcessingBuffer = false;
+
+    // Create a controller to handle the buffering logic
+    final controller = StreamController<T>();
+
+    // Process function that emits events with proper spacing
+    Future<void> processBuffer() async {
+      if (isProcessingBuffer) return;
+      isProcessingBuffer = true;
+
+      // Apply initial delay if specified
+      if (initialDelay != null) {
+        await Future.delayed(initialDelay ?? Duration.zero);
+        initialDelay = null; // Only apply to first event
+      }
+
+      while (buffer.isNotEmpty) {
+        final event = buffer.removeFirst();
+        controller.add(event);
+
+        if (buffer.isNotEmpty) {
+          // Wait for the specified interval before emitting the next event
+          await Future.delayed(interval);
+        }
+      }
+
+      isProcessingBuffer = false;
+    }
+
+    // Listen to incoming events and buffer them
+    final subscription = listen((event) {
+      buffer.add(event);
+      processBuffer();
+    });
+
+    // Forward events from the controller
+    await for (final event in controller.stream) {
+      yield event;
+    }
+
+    // Clean up resources when done
+    await subscription.cancel();
+    await controller.close();
   }
 }

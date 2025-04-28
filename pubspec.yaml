@@ -5,11 +5,9 @@ homepage: https://github.com/minktec/mink_utils
 publish_to: none
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  freezed_annotation: ^2.4.1
-  json_annotation: ^4.9.0
   mink_flutter_utils:
     git:
       url: git@github.com:MinkTec/mink_utils.git
@@ -17,6 +15,8 @@ dependencies:
       path: packages/mink_flutter_utils
 
 dev_dependencies:
+  flutter_test:
+    sdk: flutter
   build_runner: ^2.4.7
   freezed: ^2.5.2
   json_serializable: ^6.7.1

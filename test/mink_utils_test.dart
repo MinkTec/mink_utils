@@ -1,3 +1,5 @@
+import 'package:mink_flutter_utils/mink_flutter_utils.dart';
+
 import 'iterable_test.dart' as iterables;
 import 'time_utils_test.dart' as time;
 import 'histogram_test.dart' as histogram;
@@ -11,8 +13,10 @@ import 'timeout_buffer.dart' as timeout_buffer;
 import 'element_reduction.dart' as element_reduction;
 import 'timebound_extensions.dart' as timebound_extensions;
 import 'parallel_async_task_queue.dart' as parallel_async_task_queue;
+import 'sequential_processor.dart' as sequential_processor;
 
 void main() {
+  sequential_processor.main();
   parallel_async_task_queue.main();
   timebound_extensions.main();
   element_reduction.main();

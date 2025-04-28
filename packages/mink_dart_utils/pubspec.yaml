@@ -1,7 +1,7 @@
 name: mink_dart_utils
 description: A sample command-line application.
 version: 1.0.0
-publish_to: 'none'
+publish_to: "none"
 
 environment:
   sdk: ^3.2.3
@@ -15,4 +15,3 @@ dependencies:
   collection: ^1.18.0
   filterinio:
     git: git@github.com:MinkTec/filterinio
-

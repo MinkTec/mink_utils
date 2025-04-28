@@ -3,6 +3,7 @@ export 'datetime_list_extensions.dart';
 export 'double_extensions.dart';
 export 'duration_extensions.dart';
 export 'function_extensions.dart';
+export 'future_extensions.dart';
 export 'iterable_extensions.dart';
 export 'list_extensions.dart';
 export 'map_extensions.dart';
