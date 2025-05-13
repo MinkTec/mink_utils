@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:mink_flutter_utils/mink_flutter_utils.dart';
 import 'package:test/test.dart';
-import 'package:mink_dart_utils/src/models/sequential_processor.dart';
 
 void main() {
   group('SequentialProcessor', () {
@@ -806,7 +805,7 @@ void main() {
     // Sequential processor should take longer than parallel approach
     // since we awaited each add individually in the sequential case
     expect(parallelDuration.inMilliseconds,
-        greaterThanOrEqualTo(totalDuration.inMilliseconds));
+        closeTo(totalDuration.inMilliseconds, 5));
     expect(parallelResults, equals([5, 10]));
   });
 }

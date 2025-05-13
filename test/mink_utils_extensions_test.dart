@@ -1,26 +1,7 @@
-import 'package:mink_flutter_utils/mink_flutter_utils.dart';
 import 'package:test/test.dart';
 import 'package:mink_dart_utils/mink_dart_utils.dart';
 
-import 'iterable_test.dart' as iterables;
-import 'time_utils_test.dart' as time;
-import 'histogram_test.dart' as histogram;
-import 'map_tests.dart' as map;
-import 'transform_test.dart' as transform;
-import 'curve_fitting_test.dart' as curves;
-import 'time_bound_methods.dart' as timebound;
-import 'lock_test.dart' as lock;
-import 'semver.dart' as semver;
-import 'timeout_buffer.dart' as timeout_buffer;
-import 'element_reduction.dart' as element_reduction;
-import 'timebound_extensions.dart' as timebound_extensions;
-import 'parallel_async_task_queue.dart' as parallel_async_task_queue;
-import 'sequential_processor.dart' as sequential_processor;
-import 'mink_utils_extensions_test.dart' as mink_utils_extensions_test;
-import 'fraction_counter_test.dart' as fraction_counter_test;
-import 'timespan_test.dart' as timespan_test;
-
-void runAdditionalExtensionTests() {
+void main() {
   group('mink_dart_utils uncovered extensions', () {
     test('record_zip extensions', () {
       final a = [1, 2, 3];
@@ -61,26 +42,48 @@ void runAdditionalExtensionTests() {
       expect((42.0).finite, 42.0);
       expect(double.nan.finite, 0.0);
     });
+    // More tests for uncovered extensions
+    test('FutureExtensions tryAwait', () async {
+      Future<int> good() async => 1;
+      Future<int> bad() async => throw Exception('fail');
+      expect(await good().tryAwait(), 1);
+      expect(await bad().tryAwait(), null);
+    });
+    test('NumIteratorExtensions', () {
+      final nums = [1, 2, 3, 4, 5];
+      expect(nums.sum, 15);
+      expect(nums.max, 5);
+      expect(nums.min, 1);
+      expect(nums.average, 3);
+      expect(nums.isMonotonic(), true);
+      expect(nums.isIncreasing(), true);
+      expect(nums.isDecreasing(), false);
+      expect(nums.absdiff.toList(), [1, 1, 1, 1]);
+    });
+    test('MiscIterableIterable flatten', () {
+      final nested = [
+        [1, 2],
+        [3, 4]
+      ];
+      expect(nested.flatten().toList(), [1, 2, 3, 4]);
+      expect(nested.flattlength, 4);
+      expect(nested.deepList(), [
+        [1, 2],
+        [3, 4]
+      ]);
+    });
+    test('MapExtensions addIfNew', () {
+      final map = {1: 'a'};
+      final result = map.addIfNew([2, 3], 'b');
+      expect(result, {1: 'a', 2: 'b', 3: 'b'});
+    });
+    test('DurationExtensions', () {
+      final d = Duration(hours: 1, minutes: 2, seconds: 3);
+      expect(d.hhmm, '1:02');
+      expect(d.hhmmss, '1:02:03');
+      expect(d.zeroOrAbove, d);
+      expect(d.max(Duration.zero), d);
+      expect(d.min(Duration(hours: 2)), d);
+    });
   });
-}
-
-void main() {
-  sequential_processor.main();
-  parallel_async_task_queue.main();
-  timebound_extensions.main();
-  element_reduction.main();
-  timeout_buffer.main();
-  curves.main();
-  iterables.main();
-  time.main();
-  histogram.main();
-  map.main();
-  transform.main();
-  timebound.main();
-  lock.main();
-  semver.main();
-  mink_utils_extensions_test.main();
-  fraction_counter_test.main();
-  timespan_test.main();
-  runAdditionalExtensionTests();
 }
