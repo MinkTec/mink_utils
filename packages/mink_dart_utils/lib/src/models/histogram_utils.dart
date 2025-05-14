@@ -152,7 +152,7 @@ class ClusteredData {
     final borders = _genHistogramBorders(min, max, n);
 
     for (var x in data) {
-      if (x < min || x > max) {
+      if (!x.isFinite || x < min || x > max) {
         continue;
       }
       if (x == max) {
