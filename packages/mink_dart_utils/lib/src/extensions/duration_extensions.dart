@@ -1,7 +1,4 @@
-import 'dart:io';
-
-import 'package:mink_dart_utils/src/clock.dart';
-import 'package:mink_dart_utils/src/utils/base.dart';
+import 'package:mink_dart_utils/mink_dart_utils.dart';
 
 enum TimeWords {
   hour,
@@ -18,7 +15,7 @@ enum TimeWords {
   ;
 
   String tr() {
-    return switch (Platform.localeName.split("_").first) {
+    return switch (PlatformInfo.locale.split("_").first) {
       "de" => switch (this) {
           TimeWords.hour => "Stunde",
           TimeWords.hourAbb => "h",
@@ -57,7 +54,7 @@ enum CommonWords {
   or,
   ;
 
-  String tr() => switch (Platform.localeName.split("_").first) {
+  String tr() => switch (PlatformInfo.locale.split("_").first) {
         "de" => switch (this) {
             CommonWords.and => "und",
             CommonWords.or => "oder",

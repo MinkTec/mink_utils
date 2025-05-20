@@ -7,7 +7,7 @@ final class PlatformInfo {
 
   static bool get isDesktop => false;
 
-  static String get locale => html.document.body!.localName;
+  static String get locale => "en_US";
 
   static String get pathSeperator => "/";
 
