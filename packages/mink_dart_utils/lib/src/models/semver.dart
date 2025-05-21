@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-/// semantic versioning
 class SemVer implements Comparable<SemVer> {
   final int major;
   final int minor;
@@ -47,26 +44,41 @@ class SemVer implements Comparable<SemVer> {
 
   factory SemVer.parse(String semver) {
     final parts = semver.split(RegExp(r"(\.|\+)"));
-    final label = parts.length == 4 ? parts.last : null;
+    final String? label;
+    if (semver.contains('+')) {
+      label = parts.last;
+    } else {
+      label = null;
+    }
+
+    if (parts.isEmpty) {
+      throw FormatException("Invalid SemVer string: $semver. Cannot be empty.");
+    }
+
+    final major = int.parse(parts[0]);
+    final minor = parts.length > 1 ? int.parse(parts[1]) : 0;
+    final patch;
+
+    if (semver.contains('+')) {
+      // If there's a label, patch is the part before the label, or 0 if not present
+      patch = parts.length > 2 && parts[2] != label ? int.parse(parts[2]) : 0;
+    } else {
+      // If no label, patch is the third part, or 0 if not present
+      patch = parts.length > 2 ? int.parse(parts[2]) : 0;
+    }
+
     return SemVer(
-      major: int.parse(parts[0]),
-      minor: int.parse(parts[1]),
-      patch: int.parse(parts[2]),
+      major: major,
+      minor: minor,
+      patch: patch,
       label: label,
     );
   }
 
-  static SemVer? tryParse(Object semver) {
+  static SemVer? tryParse(Object? semver) {
+    if (semver == null) return null;
     try {
       return SemVer.parse(semver as String);
-    } catch (_) {}
-
-    try {
-      return SemVer.fromJson(jsonDecode(semver as String));
-    } catch (_) {}
-
-    try {
-      return SemVer.fromJson(semver as Map<String, dynamic>);
     } catch (_) {}
 
     return null;

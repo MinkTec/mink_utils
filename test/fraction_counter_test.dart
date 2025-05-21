@@ -56,7 +56,8 @@ void main() {
 
       // First feed triggers callback immediately and resets
       counter.feed(1);
-      expect(counter.numerator, 0); // Incremented to 4, which exceeded denominator, triggered callback and reset to 0
+      expect(counter.numerator,
+          0); // Incremented to 4, which exceeded denominator, triggered callback and reset to 0
       expect(results, [1]);
     });
 
@@ -136,9 +137,10 @@ void main() {
       expect(counter1 == counter2, false); // Should be true but impl is buggy
       expect(counter1 == counter3, false);
 
-      // Check hashCode 
+      // Check hashCode
       expect(counter1.hashCode, equals(counter2.hashCode)); // Same values
-      expect(counter1.hashCode, isNot(equals(counter3.hashCode))); // Different values
+      expect(counter1.hashCode,
+          isNot(equals(counter3.hashCode))); // Different values
     });
   });
 }

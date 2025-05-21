@@ -4,6 +4,16 @@ import 'package:mink_flutter_utils/mink_flutter_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:xdg_directories/xdg_directories.dart';
 
+Future<String> get getTempPath async {
+  if (kIsWeb) {
+    return "";
+  } else if (!PlatformInfo.isLinux) {
+    return await getTemporaryDirectory().then((e) => e.path);
+  } else {
+    return "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify";
+  }
+}
+
 Future<String> get getLocalPath async {
   if (kIsWeb) {
     return "";
