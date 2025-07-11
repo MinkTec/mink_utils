@@ -9,9 +9,30 @@ extension ParallelUtils<T> on List<T> {
     List<S> Function() futureCallbackGenerator(Iterable<T> t) =>
         () => [for (var x in t) function(x)];
 
-    final futures =
-        nchunks(isolatesCount).map(futureCallbackGenerator).map(Isolate.run);
+    // Check if isolates are supported (native platforms)
+    final bool supportsIsolates = _isIsolateSupported();
 
-    return Future.wait(futures).then((x) => x.flatten().toList());
+    if (supportsIsolates) {
+      // Use isolates for native platforms
+      final futures =
+          nchunks(isolatesCount).map(futureCallbackGenerator).map(Isolate.run);
+      return Future.wait(futures).then((x) => x.flatten().toList());
+    } else {
+      // Use regular futures for web platform
+      final futures = nchunks(isolatesCount)
+          .map(futureCallbackGenerator)
+          .map((callback) => Future(() => callback()));
+      return Future.wait(futures).then((x) => x.flatten().toList());
+    }
+  }
+
+  bool _isIsolateSupported() {
+    try {
+      // Try to access Isolate.current - this will throw on web
+      Isolate.current;
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
