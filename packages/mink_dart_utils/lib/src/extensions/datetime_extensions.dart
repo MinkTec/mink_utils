@@ -79,15 +79,44 @@ extension Comparisons on DateTime {
   String humanReadable() =>
       "$hour:${twoDigits(minute)}:${twoDigits(second)}".padRight(12, "0");
 
-  Uint8List toUint8List() => Uint8List(8)
-    ..buffer.asByteData().setUint64(0, microsecondsSinceEpoch, Endian.big);
+  Uint8List toUint8List() {
+    final bytes = Uint8List(8);
+    final bd = bytes.buffer.asByteData();
+    writeUint64(bd, microsecondsSinceEpoch);
+    return bytes;
+  }
 
   static DateTime fromUint8List(Uint8List list) {
-    return DateTime.fromMicrosecondsSinceEpoch(
-        list.buffer.asByteData().getInt64(0));
+    final bd = list.buffer.asByteData();
+    final micros = readUint64(bd);
+    return DateTime.fromMicrosecondsSinceEpoch(micros);
   }
 }
 
+/*
 DateTime dateTimeFromUint8List(List<int> list) =>
     DateTime.fromMicrosecondsSinceEpoch(
         Uint8List.fromList(list).buffer.asByteData().getUint64(0));
+*/
+
+DateTime dateTimeFromUint8List(List<int> list) {
+  final bytes = Uint8List.fromList(list);
+  final micros = readUint64(bytes.buffer.asByteData());
+
+  return DateTime.fromMicrosecondsSinceEpoch(micros);
+}
+
+int readUint64(ByteData data, [int offset = 0]) {
+  final high = data.getUint32(offset, Endian.big);
+  final low = data.getUint32(offset + 4, Endian.big);
+  return ((BigInt.from(high) << 32) | BigInt.from(low)).toInt();
+}
+
+/// Write a 64-bit unsigned integer (big endian) to [data] at [offset].
+void writeUint64(ByteData data, int value, [int offset = 0]) {
+  final big = BigInt.from(value);
+  final high = (big >> 32).toInt();
+  final low = (big & BigInt.from(0xFFFFFFFF)).toInt();
+  data.setUint32(offset, high, Endian.big);
+  data.setUint32(offset + 4, low, Endian.big);
+}
