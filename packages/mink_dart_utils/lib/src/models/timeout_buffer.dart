@@ -10,7 +10,7 @@ import 'dart:collection';
 class TimeoutBuffer<T> {
   final Duration timeout;
   final int size;
-  final Function(List<T> data) onFilled;
+  final FutureOr<void> Function(List<T> data) onFilled;
 
   final Queue<T> data = Queue();
 
@@ -32,21 +32,29 @@ class TimeoutBuffer<T> {
     _checkOnFilledExecution();
   }
 
-  _checkOnFilledExecution() {
+  FutureOr<void> flush() {
+    if (data.isNotEmpty) {
+      return _runAndClear();
+    } else {
+      return null;
+    }
+  }
+
+  FutureOr<void> _checkOnFilledExecution() {
     if (data.length >= size) {
-      _runAndClear();
+      return _runAndClear();
     } else {
       _updateTimer();
     }
   }
 
-  _updateTimer() {
+  void _updateTimer() {
     _triggerTimer?.cancel();
     _triggerTimer = Timer(timeout, _runAndClear);
   }
 
-  _runAndClear() {
-    onFilled([...data]);
+  Future<void> _runAndClear() async {
+    await onFilled([...data]);
     data.clear();
   }
 }

@@ -36,6 +36,14 @@ class SortedTimeBoundDataList<T extends TimeBound>
             : _data.sublist(startIndex ?? 0, endIndex ?? _data.length - 1),
         isSorted: true);
   }
+
+  Timespan totalTimespan() {
+    if (_data.isEmpty) return Timespan(duration: Duration.zero);
+    return Timespan(
+      begin: _data.first.time,
+      end: _data.last.time,
+    );
+  }
 }
 
 abstract class AbstractSortedTimeboundDataList<T extends TimeBound>

@@ -211,7 +211,7 @@ class Timespan {
         : align.get(this).difference(mn).abs().inDays + 1;
   }
 
-  bool includes(DateTime time) => begin.isBefore(time) && end.isAfter(time);
+  bool includes(DateTime time) => (begin == time || end == time) || (begin.isBefore(time) && end.isAfter(time));
 
   Timespan intersection(Timespan other) =>
       end.isBefore(other.begin) || other.end.isBefore(begin)

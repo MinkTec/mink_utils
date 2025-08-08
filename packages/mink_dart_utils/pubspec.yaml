@@ -10,6 +10,7 @@ dev_dependencies:
   lints: ^2.1.0
   custom_lint: any
   minklint: any
+  meta: ^1.17.0
 
 dependencies:
   collection: ^1.18.0
