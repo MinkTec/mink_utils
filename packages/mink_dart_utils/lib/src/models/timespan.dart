@@ -229,6 +229,15 @@ class Timespan {
               x * (end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch))
           .toInt());
 
+  /// Returns the relative position of [time] within the timespan as a double between 0 and 1.
+  /// If [time] is before [begin], returns 0. If after [end], returns 1.
+  double inverseLerp(DateTime time) {
+    final total = end.millisecondsSinceEpoch - begin.millisecondsSinceEpoch;
+    if (total == 0) return 0.0;
+    final value = time.millisecondsSinceEpoch - begin.millisecondsSinceEpoch;
+    return value.clamp(0, total) / total;
+  }
+
   Iterable<Timespan> split(Duration duration) sync* {
     DateTime tempTime = begin;
     while (tempTime.isBefore(end)) {

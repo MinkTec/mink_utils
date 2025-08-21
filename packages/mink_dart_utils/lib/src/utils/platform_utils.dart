@@ -11,6 +11,8 @@ final class PlatformInfo {
   static String get locale => Platform.localeName;
 
   static String get pathSeperator => Platform.pathSeparator;
+  // Alias with correct spelling
+  static String get pathSeparator => pathSeperator;
 
   static bool get isIOS => Platform.isIOS;
 

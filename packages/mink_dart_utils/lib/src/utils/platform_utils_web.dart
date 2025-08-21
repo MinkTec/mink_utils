@@ -10,6 +10,8 @@ final class PlatformInfo {
   static String get locale => "en_US";
 
   static String get pathSeperator => "/";
+  // Alias with correct spelling
+  static String get pathSeparator => pathSeperator;
 
   static bool get isIOS => false;
 
