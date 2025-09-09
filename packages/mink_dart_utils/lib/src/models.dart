@@ -8,6 +8,7 @@ export 'models/future_utils.dart';
 export 'models/histogram_utils.dart';
 export 'models/hour_precision_datetime.dart';
 export 'models/lock.dart';
+export 'models/os_path.dart';
 export 'models/parallel_async_task_queue.dart';
 export 'models/predicates.dart';
 export 'models/semver.dart';

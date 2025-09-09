@@ -27,4 +27,6 @@ final class PlatformInfo {
   static bool get isFuchsia => Platform.isFuchsia;
 
   static bool get isWeb => false;
+
+  static bool get isNixLike => isLinux || isMacOS || isAndroid || isIOS;
 }
