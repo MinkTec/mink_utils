@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:mink_dart_utils/src/extensions/iterable_extensions.dart';
 
 typedef OnError<S, T> = Future<S> Function(dynamic e, (int, T) value);
 
@@ -41,40 +40,55 @@ class ParallelAsyncTaskQueue<Output, Input> {
     if (input.isEmpty) {
       return [];
     }
-
-    int counter = 0;
-    int doneCounter = 0;
-    final Completer<List<Output>> completer = Completer();
-    final enumerated = input.enumerate();
     final List<Output?> results = List<Output?>.filled(input.length, null);
+    final completer = Completer<List<Output>>();
+    int nextIndex = 0;
+    int doneCounter = 0;
+    int running = 0;
 
-    Future<void> executor((int, Input) x) async {
-      counter++;
-      await map(x.$2).then((result) {
-        if (counter < input.length) {
-          executor((counter, input[counter]));
-        }
-        doneCounter++;
-        results[x.$1] = result;
-        progressCallback?.call(doneCounter, input.length);
-        if (doneCounter == input.length) {
-          return completer.complete(results.cast<Output>());
-        }
-      }, onError: (e) async {
+    void maybeComplete() {
+      if (doneCounter == input.length && !completer.isCompleted) {
+        completer.complete(results.cast<Output>());
+      }
+    }
+
+    void startNext() {
+      if (nextIndex >= input.length) {
+        maybeComplete();
+        return;
+      }
+      final current = nextIndex++;
+      final value = input[current];
+      running++;
+  map(value).then((out) => out, onError: (e) async {
         if (onError != null) {
-          results[x.$1] = await onError!(e, x);
-          doneCounter++;
-
-          if (counter < input.length) {
-            executor((counter, input[counter]));
+          try {
+            return await onError!(e, (current, value));
+          } catch (_) {
+    throw e;
           }
-        } else {
-          throw e;
+        }
+    throw e;
+      }).then((output) {
+        results[current] = output;
+      }).catchError((_) {
+        // leave result null on failure without handler
+      }).whenComplete(() {
+        running--;
+        doneCounter++;
+        progressCallback?.call(doneCounter, input.length);
+        if (nextIndex < input.length) {
+          startNext();
+        } else if (running == 0) {
+          maybeComplete();
         }
       });
     }
 
-    enumerated.take(maxParallel).forEach(executor);
+    final initial = maxParallel < input.length ? maxParallel : input.length;
+    for (int i = 0; i < initial; i++) {
+      startNext();
+    }
 
     return completer.future;
   }
