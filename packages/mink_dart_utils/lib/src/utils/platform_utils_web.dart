@@ -26,4 +26,6 @@ final class PlatformInfo {
   static bool get isFuchsia => false;
 
   static bool get isWeb => true;
+
+  static int get nProcs => html.window.navigator.hardwareConcurrency;
 }
