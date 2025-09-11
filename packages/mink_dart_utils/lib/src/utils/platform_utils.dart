@@ -28,8 +28,7 @@ final class PlatformInfo {
 
   static bool get isWeb => false;
 
-  static bool get isNixLike =>
-      isLinux || isMacOS || isAndroid || isIOS || isFuchsia;
+  static bool get isNixLike => !isWindows;
 
   static int get nProcs => Platform.numberOfProcessors;
 }

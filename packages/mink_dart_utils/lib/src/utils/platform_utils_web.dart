@@ -27,5 +27,7 @@ final class PlatformInfo {
 
   static bool get isWeb => true;
 
-  static int get nProcs => html.window.navigator.hardwareConcurrency;
+  static int get nProcs => html.window.navigator.hardwareConcurrency ?? 1;
+
+  static bool get isNixLike => false;
 }
