@@ -120,3 +120,109 @@ void writeUint64(ByteData data, int value, [int offset = 0]) {
   data.setUint32(offset, high, Endian.big);
   data.setUint32(offset + 4, low, Endian.big);
 }
+
+class MsDateTime implements DateTime {
+  int _time;
+
+  MsDateTime(this._time);
+
+  factory MsDateTime.fromDateTime(DateTime dt) =>
+      MsDateTime(dt.millisecondsSinceEpoch);
+
+  toDateTime() => DateTime.fromMillisecondsSinceEpoch(_time);
+
+  @override
+  MsDateTime add(Duration duration) =>
+      MsDateTime(_time + duration.inMilliseconds);
+
+  @override
+  int compareTo(DateTime other) {
+    return _time.compareTo(other.millisecondsSinceEpoch);
+  }
+
+  @override
+  int get day => DateTime.fromMillisecondsSinceEpoch(_time).day;
+
+  @override
+  Duration difference(DateTime other) {
+    if (other is MsDateTime) {
+      return Duration(milliseconds: _time - other._time);
+    } else {
+      return Duration(milliseconds: _time - other.millisecondsSinceEpoch);
+    }
+  }
+
+  @override
+  int get hour => DateTime.fromMillisecondsSinceEpoch(_time).hour;
+
+  @override
+  bool isAfter(DateTime other) {
+    return _time > other.millisecondsSinceEpoch;
+  }
+
+  @override
+  bool isAtSameMomentAs(DateTime other) {
+    return _time == other.millisecondsSinceEpoch;
+  }
+
+  @override
+  bool isBefore(DateTime other) {
+    return _time < other.millisecondsSinceEpoch;
+  }
+
+  @override
+  bool get isUtc => true;
+
+  @override
+  int get microsecond => 0;
+
+  @override
+  int get microsecondsSinceEpoch => _time * 1000;
+
+  @override
+  int get millisecond => _time.remainder(1000);
+
+  @override
+  int get millisecondsSinceEpoch => _time;
+
+  @override
+  int get minute => _time.remainder(3600000) ~/ 60000;
+
+  @override
+  int get month => DateTime.fromMillisecondsSinceEpoch(_time).month;
+
+  @override
+  int get second => _time.remainder(60000) ~/ 1000;
+
+  @override
+  MsDateTime subtract(Duration duration) {
+    return MsDateTime(_time - duration.inMilliseconds);
+  }
+
+  @override
+  String get timeZoneName => 'UTC';
+
+  @override
+  Duration get timeZoneOffset => const Duration(hours: 0);
+
+  @override
+  String toIso8601String() {
+    return DateTime.fromMillisecondsSinceEpoch(_time).toIso8601String();
+  }
+
+  @override
+  DateTime toLocal() {
+    return DateTime.fromMillisecondsSinceEpoch(_time).toLocal();
+  }
+
+  @override
+  MsDateTime toUtc() {
+    return this;
+  }
+
+  @override
+  int get weekday => DateTime.fromMillisecondsSinceEpoch(_time).weekday;
+
+  @override
+  int get year => DateTime.fromMillisecondsSinceEpoch(_time).year;
+}
