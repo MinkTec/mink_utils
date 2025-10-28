@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:mink_dart_utils/src/extensions/num_iterable_extensions.dart';
+import 'package:mink_dart_utils/src/models/list_view.dart';
 
 /// ads list methods that should have (mostly) been included in the
 /// stdlib from the beginning for list of with elemnts of type
@@ -64,6 +65,9 @@ extension Basics<T> on List<T> {
   /// if n is given the first element is popped,
   /// if the list is longer than [n]
   void shiftn(T elem, int len) => (length >= len) ? shift(elem) : add(elem);
+
+  ImmutableListView view(int startIndex, [int? endIndex]) =>
+      ImmutableListView(this, startIndex: 0, endIndex: endIndex);
 
   /// provides python like list indexing which accepts negative values
   List<T> pysublist(int firstIndex, int lastIndex) => sublist(

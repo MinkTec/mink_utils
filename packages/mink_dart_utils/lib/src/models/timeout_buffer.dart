@@ -34,6 +34,7 @@ class TimeoutBuffer<T> {
 
   FutureOr<void> flush() {
     if (data.isNotEmpty) {
+      _triggerTimer?.cancel();
       return _runAndClear();
     } else {
       return null;
@@ -42,6 +43,7 @@ class TimeoutBuffer<T> {
 
   FutureOr<void> _checkOnFilledExecution() {
     if (data.length >= size) {
+      _triggerTimer?.cancel();
       return _runAndClear();
     } else {
       _updateTimer();
@@ -54,7 +56,9 @@ class TimeoutBuffer<T> {
   }
 
   Future<void> _runAndClear() async {
-    await onFilled([...data]);
+    if (data.isEmpty) return;
+    final dataToProcess = [...data];
     data.clear();
+    await onFilled(dataToProcess);
   }
 }

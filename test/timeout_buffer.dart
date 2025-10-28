@@ -38,14 +38,14 @@ main() async {
   });
 
   group("timeout buffer", () {
-    final List<int> callbackCounter = [];
-    final buffer = TimeoutBuffer<int>(
-      onFilled: (x) => callbackCounter.add(x.length),
-      timeout: Duration(milliseconds: 100),
-      size: 50,
-    );
-
     test("callback", () async {
+      final List<int> callbackCounter = [];
+      final buffer = TimeoutBuffer<int>(
+        onFilled: (x) => callbackCounter.add(x.length),
+        timeout: Duration(milliseconds: 100),
+        size: 50,
+      );
+
       for (int i = 0; i < 120; i++) {
         buffer.add(i);
       }
@@ -60,7 +60,12 @@ main() async {
     });
 
     test("timeout", () async {
-      callbackCounter.clear();
+      final List<int> callbackCounter = [];
+      final buffer = TimeoutBuffer<int>(
+        onFilled: (x) => callbackCounter.add(x.length),
+        timeout: Duration(milliseconds: 100),
+        size: 50,
+      );
 
       final completer = Completer();
 
