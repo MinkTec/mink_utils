@@ -114,6 +114,10 @@ class Timespan {
       begin: DateTimePrecision.day(time),
       duration: const Duration(days: 1) - const Duration(microseconds: 1));
 
+  factory Timespan.week(DateTime time) => Timespan(
+      begin: time.beginOfWeek(),
+      duration: const Duration(days: 7) - const Duration(microseconds: 1));
+
   Timespan get dreiviertelzwoelf => Timespan(
       begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),
       duration: const Duration(minutes: 15));
@@ -211,7 +215,9 @@ class Timespan {
         : align.get(this).difference(mn).abs().inDays + 1;
   }
 
-  bool includes(DateTime time) => (begin == time || end == time) || (begin.isBefore(time) && end.isAfter(time));
+  bool includes(DateTime time) =>
+      (begin == time || end == time) ||
+      (begin.isBefore(time) && end.isAfter(time));
 
   Timespan intersection(Timespan other) =>
       end.isBefore(other.begin) || other.end.isBefore(begin)

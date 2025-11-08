@@ -39,9 +39,18 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
     /// if timespan is null, the difference between the earliest and latest element is used
     Timespan? timespan,
     bool isSorted = false,
+    
+    /// if true, includes empty timespans (with empty value lists) for all splits in the range
+    bool includeEmpty = false,
   }) {
-    if (isEmpty) {
+    if (isEmpty && !includeEmpty) {
       return [];
+    }
+    
+    if (isEmpty && includeEmpty && timespan != null) {
+      // Return empty entries for all timespans
+      final List<Timespan> timespans = timespan.splitBy(group);
+      return timespans.map((ts) => TimespanningData(timespan: ts, value: <T>[])).toList();
     }
 
     int sortCallback(TimeBound a, TimeBound b) => a.time.compareTo(b.time);
@@ -82,7 +91,11 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
         innerQueue.add(sorted[index]);
         index++;
       }
-      queue.add(TimespanningData(timespan: ts, value: innerQueue.toList()));
+      
+      // Only add the entry if includeEmpty is true or if there's data
+      if (includeEmpty || innerQueue.isNotEmpty) {
+        queue.add(TimespanningData(timespan: ts, value: innerQueue.toList()));
+      }
       innerQueue.clear();
     }
     return queue.toList();

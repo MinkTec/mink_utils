@@ -20,7 +20,7 @@ Future<String> get getLocalPath async {
   } else if (!PlatformInfo.isLinux) {
     return await getApplicationDocumentsDirectory().then((e) => e.path);
   } else {
-    return "${dataHome.path}${PathBuf.splitChar}de.minktec.rectify";
+    return OsPath([dataHome.path, "de.minktec.rectify"]).path;
   }
 }
 
