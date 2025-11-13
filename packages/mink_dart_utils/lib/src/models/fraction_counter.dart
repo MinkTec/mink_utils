@@ -22,10 +22,11 @@ class CallbackFractionCount<T> extends FractionCounter {
 
   void Function(T value) callback;
 
-  CallbackFractionCount(
-      {required this.denominator,
-      required this.callback,
-      bool runOnFirstFeed = true}) {
+  CallbackFractionCount({
+    required this.denominator,
+    required this.callback,
+    bool runOnFirstFeed = true,
+  }) {
     if (runOnFirstFeed) {
       _numerator = denominator;
     }
