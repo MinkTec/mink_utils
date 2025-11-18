@@ -21,7 +21,7 @@ enum ValueType {
   static String _formatCompactNumber(num value, int decimals) {
     final absValue = value.abs();
     final sign = value < 0 ? '-' : '';
-    
+
     if (absValue >= 1000000000) {
       return '$sign${(absValue / 1000000000).toStringAsFixed(decimals)}B';
     } else if (absValue >= 1000000) {

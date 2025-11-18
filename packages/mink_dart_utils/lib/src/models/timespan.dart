@@ -118,6 +118,17 @@ class Timespan {
       begin: time.beginOfWeek(),
       duration: const Duration(days: 7) - const Duration(microseconds: 1));
 
+  /// Creates a Timespan that normalizes to midnight boundaries.
+  /// If only begin is provided, end defaults to end of current day (23:59:59.999999).
+  /// This factory ensures consistent timespans for caching purposes.
+  factory Timespan.untilEndOfDay({DateTime? begin, DateTime? end}) {
+    final effectiveBegin = begin ?? DateTime(1970);
+    final effectiveEnd = end ??
+        DateTime(dartClock.now().year, dartClock.now().month,
+            dartClock.now().day, 23, 59, 59, 999, 999);
+    return Timespan(begin: effectiveBegin, end: effectiveEnd);
+  }
+
   Timespan get dreiviertelzwoelf => Timespan(
       begin: Timespan.today().lerp(0.5).subtract(const Duration(minutes: 15)),
       duration: const Duration(minutes: 15));
