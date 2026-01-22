@@ -1,4 +1,3 @@
-import 'package:mink_flutter_utils/mink_flutter_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

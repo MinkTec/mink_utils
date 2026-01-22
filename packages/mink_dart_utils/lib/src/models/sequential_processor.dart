@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:mink_dart_utils/src/utils/base.dart'; // For Queue
-
 // Helper class to distinguish data and error events in the queue
 class SequentialEvent<T> {
   final T? data;

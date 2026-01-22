@@ -452,24 +452,81 @@ class SortedTimeBoundDataList<T extends TimeBound>
 
   @Deprecated("Use getTimespanView unless you need a modifiable list")
   SortedTimeBoundDataList<T> getTimespan(Timespan timespan) {
-    final startIndex = _data.getNearestIndexFromSorted(timespan.begin);
-    final endIndex = _data.getNearestIndexFromSorted(timespan.end);
-    return SortedTimeBoundDataListView(
-        startIndex == null && endIndex == null
-            ? []
-            : _data.sublist(startIndex ?? 0, endIndex ?? _data.length - 1),
-        isSorted: true);
+    final view = getTimespanView(timespan);
+    if (view.isEmpty) {
+      return SortedTimeBoundDataList([], isSorted: true);
+    }
+    return SortedTimeBoundDataList(view.toList(), isSorted: true);
   }
 
   SortedTimeBoundDataListView<T> getTimespanView(Timespan timespan) {
-    final startIndex = _data.getNearestIndexFromSorted(timespan.begin);
-    final endIndex = _data.getNearestIndexFromSorted(timespan.end);
+    if (_data.isEmpty) {
+      return SortedTimeBoundDataListView(
+        this._data,
+        startIndex: 0,
+        endIndex: -1, // Empty view
+        isSorted: true,
+      );
+    }
+
+    // Binary search for first index where time >= timespan.begin
+    int? startIndex = _findFirstIndexOnOrAfter(timespan.begin);
+
+    // Binary search for last index where time <= timespan.end
+    int? endIndex = _findLastIndexOnOrBefore(timespan.end);
+
+    // If no valid indices found, return empty view
+    if (startIndex == null || endIndex == null || startIndex > endIndex) {
+      return SortedTimeBoundDataListView(
+        this._data,
+        startIndex: 0,
+        endIndex: -1, // Empty view
+        isSorted: true,
+      );
+    }
+
     return SortedTimeBoundDataListView(
       this._data,
       startIndex: startIndex,
       endIndex: endIndex,
       isSorted: true,
     );
+  }
+
+  /// Binary search to find the first index where element.time >= [time].
+  /// Returns null if no such element exists.
+  int? _findFirstIndexOnOrAfter(DateTime time) {
+    int low = 0;
+    int high = _data.length;
+
+    while (low < high) {
+      final mid = (low + high) ~/ 2;
+      if (_data[mid].time.isBefore(time)) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+
+    return low < _data.length ? low : null;
+  }
+
+  /// Binary search to find the last index where element.time <= [time].
+  /// Returns null if no such element exists.
+  int? _findLastIndexOnOrBefore(DateTime time) {
+    int low = 0;
+    int high = _data.length;
+
+    while (low < high) {
+      final mid = (low + high) ~/ 2;
+      if (_data[mid].time.isAfter(time)) {
+        high = mid;
+      } else {
+        low = mid + 1;
+      }
+    }
+
+    return low > 0 ? low - 1 : null;
   }
 
   Timespan totalTimespan() {

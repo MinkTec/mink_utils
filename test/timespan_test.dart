@@ -1,6 +1,5 @@
 import 'package:mink_flutter_utils/mink_flutter_utils.dart';
 import 'package:test/test.dart';
-import 'package:clock/clock.dart';
 
 void main() {
   group('Timespan', () {
