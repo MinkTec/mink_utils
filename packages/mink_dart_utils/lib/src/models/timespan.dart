@@ -177,7 +177,9 @@ class Timespan {
     while (tempTime.isBefore(end)) {
       yield Timespan(
           begin: tempTime, duration: week - Duration(microseconds: 1));
-      tempTime = tempTime.add(week);
+      // Use calendar-day stepping to avoid DST drift (which can shift the
+      // wall-clock time and make week boundaries appear off-by-one day).
+      tempTime = tempTime.addCalendarDay(7);
     }
   }
 

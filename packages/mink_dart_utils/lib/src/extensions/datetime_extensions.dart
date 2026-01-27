@@ -54,13 +54,29 @@ extension Comparisons on DateTime {
     }
   }
 
+  /// Adds [days] as calendar days (keeps wall-clock time stable).
+  ///
+  /// This avoids DST-related drift that can happen when using
+  /// `add(Duration(days: n))` in local time.
   DateTime addCalendarDay(int days) => DateTime(
-      year, month, day + days, minute, second, millisecond, microsecond);
+        year,
+        month,
+        day + days,
+        hour,
+        minute,
+        second,
+        millisecond,
+        microsecond,
+      );
 
   DateTime mostRecentWeekday(int weekday) =>
       DateTime(year, month, day - (this.weekday - weekday) % 7);
 
-  DateTime beginOfWeek() => mostRecentWeekday(DateTime.monday);
+  DateTime getMostRecentMonday(DateTime date) {
+    return DateTime(date.year, date.month, date.day - (date.weekday - 1));
+  }
+
+  DateTime beginOfWeek() => getMostRecentMonday(this);
 
   DateTime beginOfMonth({int monthAgo = 0}) => DateTime(year, month);
   DateTime endOfMonth({int monthAgo = 0}) => DateTime(year, month + 1);
