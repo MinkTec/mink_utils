@@ -6,6 +6,7 @@ export 'models/element_reduction.dart';
 export 'models/fraction_counter.dart';
 export 'models/future_utils.dart';
 export 'models/histogram_utils.dart';
+export 'models/hour_fraction_precision_date.dart';
 export 'models/hour_precision_datetime.dart';
 export 'models/list_view.dart';
 export 'models/lock.dart';

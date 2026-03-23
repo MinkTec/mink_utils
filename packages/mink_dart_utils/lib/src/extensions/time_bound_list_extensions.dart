@@ -39,18 +39,20 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
     /// if timespan is null, the difference between the earliest and latest element is used
     Timespan? timespan,
     bool isSorted = false,
-    
+
     /// if true, includes empty timespans (with empty value lists) for all splits in the range
     bool includeEmpty = false,
   }) {
     if (isEmpty && !includeEmpty) {
       return [];
     }
-    
+
     if (isEmpty && includeEmpty && timespan != null) {
       // Return empty entries for all timespans
       final List<Timespan> timespans = timespan.splitBy(group);
-      return timespans.map((ts) => TimespanningData(timespan: ts, value: <T>[])).toList();
+      return timespans
+          .map((ts) => TimespanningData(timespan: ts, value: <T>[]))
+          .toList();
     }
 
     int sortCallback(TimeBound a, TimeBound b) => a.time.compareTo(b.time);
@@ -91,7 +93,7 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
         innerQueue.add(sorted[index]);
         index++;
       }
-      
+
       // Only add the entry if includeEmpty is true or if there's data
       if (includeEmpty || innerQueue.isNotEmpty) {
         queue.add(TimespanningData(timespan: ts, value: innerQueue.toList()));
@@ -101,7 +103,10 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
     return queue.toList();
   }
 
-  Iterable<TimedData<T?>> bolster({double? maxFrequency}) sync* {
+  Iterable<TimedData<T?>> bolster({
+    double? maxFrequency,
+    double gapThresholdMultiplier = 5.0,
+  }) sync* {
     maxFrequency ??= (length >= 150 ? nchunks(50) : [this])
         .where((x) => x.length > 3)
         .map((x) => x.toList().time.frequency())
@@ -120,7 +125,8 @@ extension DateTimeExtensionWrapper<T extends TimeBound> on List<T> {
       while (
           iterableIndex < length && dtacc < last.time.millisecondsSinceEpoch) {
         final val = this[iterableIndex];
-        if ((val.time.millisecondsSinceEpoch - dtacc - x).abs() < x * 5) {
+        if ((val.time.millisecondsSinceEpoch - dtacc - x).abs() <
+            x * gapThresholdMultiplier) {
           yield TimedData(time: val.time, value: val);
           dtacc = val.time.millisecondsSinceEpoch;
           iterableIndex++;

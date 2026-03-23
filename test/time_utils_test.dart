@@ -260,6 +260,56 @@ void main() {
     });
   });
 
+  group("hour fraction precision date", () {
+    test('should bucket datetimes into the same 10 minute range', () {
+      final first = HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 10), 10);
+      final second =
+          HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 19, 59, 999), 10);
+
+      expect(first, second);
+      expect(first.bucketStart, DateTime(2023, 10, 5, 6, 10));
+      expect(second.bucketStart, DateTime(2023, 10, 5, 6, 10));
+      expect(first.yymmddhhmm, '231005_0610');
+    });
+
+    test('should keep bucket size as part of equality', () {
+      final tenMinute =
+          HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 10), 10);
+      final fiveMinute =
+          HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 10), 5);
+
+      expect(tenMinute == fiveMinute, false);
+    });
+
+    test('should expose the bucket timespan', () {
+      final value =
+          HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 19, 59), 10);
+
+      expect(
+          value.bucketTimespan,
+          Timespan(
+            begin: DateTime(2023, 10, 5, 6, 10),
+            end: DateTime(2023, 10, 5, 6, 20),
+          ));
+    });
+
+    test('should parse and compare based on the configured bucket size', () {
+      final parsed = HourFractionPrecisionDate.fromTimestamp('231005_0610', 10);
+      final later = HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 27), 10);
+
+      expect(parsed.bucketStart, DateTime(2023, 10, 5, 6, 10));
+      expect(parsed.compareTo(later), lessThan(0));
+      expect(parsed.isSameBucket(DateTime(2023, 10, 5, 6, 18)), true);
+    });
+
+    test('should reject invalid bucket sizes and misaligned timestamps', () {
+      expect(() => HourFractionPrecisionDate(DateTime(2023, 10, 5, 6, 10), 7),
+          throwsArgumentError);
+      expect(() => HourFractionPrecisionDate.fromTimestamp('231005_0612', 10),
+          throwsArgumentError);
+    });
+  });
+
   test("byte conversion", () {
     final now = DateTime.now();
     final bytes = now.toUint8List();
