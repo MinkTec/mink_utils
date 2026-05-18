@@ -24,6 +24,17 @@ class TimeoutValue<T> {
     _triggerTimer?.cancel();
     _triggerTimer = Timer(timeout, () => onTimeout(_value));
   }
+
+  /// Cancel the pending timer and reset the value to [zero] without scheduling
+  /// a new timer and without calling [onTimeout].
+  ///
+  /// Use this instead of the [value] setter when you want a hard reset that
+  /// stops any ongoing cascade (e.g. in test tearDown / resetForTest).
+  void cancelAndSetValue(T zero) {
+    _triggerTimer?.cancel();
+    _triggerTimer = null;
+    _value = zero;
+  }
 }
 
 class CountingTimeoutValue<T> extends TimeoutValue<T> {
@@ -45,5 +56,11 @@ class CountingTimeoutValue<T> extends TimeoutValue<T> {
       _count = 0;
       onTimeout(newValue);
     }
+  }
+
+  @override
+  void cancelAndSetValue(T zero) {
+    super.cancelAndSetValue(zero);
+    _count = 0;
   }
 }
